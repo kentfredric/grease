@@ -1,0 +1,8 @@
+[package]
+name = "grease-bin"
+version = "0.1.0"
+authors = ["Kent Fredric <kentnl@gentoo.org>"]
+edition = "2018"
+
+[dependencies]
+grease = { path = "../grease" }

@@ -1,0 +1,11 @@
+[[package]]
+name = "grease"
+version = "0.1.0"
+
+[[package]]
+name = "grease-bin"
+version = "0.1.0"
+dependencies = [
+ "grease 0.1.0",
+]
+
