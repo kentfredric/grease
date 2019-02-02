@@ -1,6 +1,10 @@
 extern crate grease;
 
 use std::path::Path;
+use std::alloc::System;
+
+#[global_allocator]
+static GLOBAL: System = System;
 
 fn main() {
     let p = Path::new("/usr/local/gentoo");
