@@ -53,8 +53,9 @@ pub fn read_profile(root: &'static path::Path) -> CategoryIterResult {
 }
 
 pub fn iterator(root: &'static path::Path) -> CategoryIterResult {
-    match profile_category_file(root).as_path().exists() {
-        true => read_profile(root),
-        false => discover_in(root),
+    if profile_category_file(root).as_path().exists() {
+        read_profile(root)
+    } else {
+        discover_in(root)
     }
 }
