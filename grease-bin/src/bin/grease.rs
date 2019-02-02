@@ -11,7 +11,7 @@ fn main() {
     for ent in grease::category::iterator(p).unwrap() {
         for pkg in grease::package::iterator(p, &ent).unwrap() {
             for ebuild in grease::ebuild::iterator(p, &ent, &pkg).unwrap() {
-                println!("> {}/{}/{}", ent, pkg, ebuild);
+                println!("> {}/{}/{}", ent, pkg, ebuild.unwrap().into_string().unwrap());
             }
         }
     }

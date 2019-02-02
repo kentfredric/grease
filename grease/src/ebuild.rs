@@ -2,8 +2,9 @@
 use std::path;
 use std::result;
 use std::io;
+use std::ffi;
 
-type EbuildIter = Box<Iterator<Item = String>>;
+type EbuildIter = Box<Iterator<Item = result::Result<ffi::OsString, io::Error>>>;
 type EbuildIterResult = result::Result<EbuildIter, io::Error>;
 
 fn in_package_dir(ebuild_root: &path::Path) -> EbuildIterResult {
@@ -20,7 +21,7 @@ fn in_package_dir(ebuild_root: &path::Path) -> EbuildIterResult {
             } else {
                 false
             })
-            .map(|e| e.unwrap().file_name().into_string().unwrap()),
+            .map(|e| e.map( |ent| ent.file_name())),
     ))
 }
 
