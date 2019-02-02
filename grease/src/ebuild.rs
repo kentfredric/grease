@@ -16,12 +16,18 @@ fn in_package_dir(ebuild_root: &path::Path) -> EbuildIterResult {
                 if let Some(ext) = p.extension() {
                     ext.eq("ebuild") && !p.is_dir()
                 } else {
+                    // Files with no extension are not ebuilds
+                    // nor are they errors
                     false
                 }
             } else {
-                false
+                // read_dir failures should be passed through the iterator
+                true
             })
-            .map(|e| e.map( |ent| ent.file_name())),
+            .map(|e|
+                 // Convert Ok() into Result(OsString)
+                 // but leave Err() as-is
+                 e.map(|ent| ent.file_name())),
     ))
 }
 
