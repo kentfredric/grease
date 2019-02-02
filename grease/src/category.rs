@@ -8,15 +8,15 @@ type CategoryIter = Box<Iterator<Item = String>>;
 type CategoryIterResult = result::Result<CategoryIter, io::Error>;
 
 #[inline]
-fn dirname_blacklisted(name: &String) -> bool {
-    match name.as_str() {
+fn dirname_blacklisted(name: &str) -> bool {
+    match name {
         "metadata" | "profiles" | "eclass" | ".git" | "distfiles" | "packages" | "scripts" => true,
         _ => false,
     }
 }
 
 #[inline]
-fn valid_category(root: &path::Path, name: &String) -> bool {
+fn valid_category(root: &path::Path, name: &str) -> bool {
     if dirname_blacklisted(name) {
         return false;
     }

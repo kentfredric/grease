@@ -8,10 +8,9 @@ static GLOBAL: System = System;
 
 fn main() {
     let p = Path::new("/usr/local/gentoo");
-    let iter = grease::category::iterator(p);
-    for ent in iter.unwrap().into_iter() {
-        for pkg in grease::package::iterator(p, &ent).unwrap().into_iter() {
-            for ebuild in grease::ebuild::iterator(p, &ent, &pkg).unwrap().into_iter() {
+    for ent in grease::category::iterator(p).unwrap() {
+        for pkg in grease::package::iterator(p, &ent).unwrap() {
+            for ebuild in grease::ebuild::iterator(p, &ent, &pkg).unwrap() {
                 println!("> {}/{}/{}", ent, pkg, ebuild);
             }
         }

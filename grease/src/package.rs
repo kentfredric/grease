@@ -19,6 +19,6 @@ fn in_category_dir(category_root: &path::Path) -> PackageIterResult {
     ))
 }
 
-pub fn iterator(root: &'static path::Path, category: &String) -> PackageIterResult {
+pub fn iterator(root: &'static path::Path, category: &str) -> PackageIterResult {
     in_category_dir(&root.join(category))
 }
