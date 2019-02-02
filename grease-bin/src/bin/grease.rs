@@ -6,14 +6,22 @@ use std::alloc::System;
 #[global_allocator]
 static GLOBAL: System = System;
 
-fn main() {
+fn main() -> std::result::Result<(), std::io::Error> {
     let p = Path::new("/usr/local/gentoo");
-    for ent in grease::category::iterator(p).unwrap() {
-        for pkg in grease::package::iterator(p, &ent).unwrap() {
-            for ebuild in grease::ebuild::iterator(p, &ent, &pkg).unwrap() {
-                println!("> {}/{}/{}", ent, pkg, ebuild.unwrap().into_string().unwrap());
+    for ent in grease::category::iterator(p)? {
+        let ent_u = ent?;
+        for pkg in grease::package::iterator(p, &ent_u)? {
+            let pkg_u = pkg?;
+            for ebuild in grease::ebuild::iterator(p, &ent_u, &pkg_u).unwrap() {
+                let ebuild_u = ebuild.unwrap();
+                println!(
+                    "> {}/{}/{}",
+                    ent_u.clone().into_string().unwrap(),
+                    pkg_u.clone().into_string().unwrap(),
+                    ebuild_u.into_string().unwrap()
+                );
             }
         }
     }
-
+    Ok(())
 }

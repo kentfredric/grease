@@ -3,8 +3,9 @@ use std::io;
 use std::io::BufRead;
 use std::path;
 use std::result;
+use std::ffi;
 
-type CategoryIter = Box<Iterator<Item = String>>;
+type CategoryIter = Box<Iterator<Item = result::Result<ffi::OsString, io::Error>>>;
 type CategoryIterResult = result::Result<CategoryIter, io::Error>;
 
 #[inline]
@@ -34,9 +35,10 @@ pub fn discover_in(root: &'static path::Path) -> CategoryIterResult {
             .filter(move |e| if let Ok(entry) = e {
                 valid_category(root, &entry.file_name().into_string().unwrap())
             } else {
+                // Passthrough errors
                 true
             })
-            .map(|e| e.unwrap().file_name().into_string().unwrap()),
+            .map(|e| e.map(|ent| ent.file_name())),
     ))
 }
 
@@ -48,7 +50,7 @@ pub fn read_profile(root: &'static path::Path) -> CategoryIterResult {
         } else {
             true
         })
-        .map(|line| line.unwrap().clone());
+        .map(|line| line.map(|content| ffi::OsString::from(content)));
     Ok(Box::new(iter))
 }
 

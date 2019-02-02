@@ -31,6 +31,10 @@ fn in_package_dir(ebuild_root: &path::Path) -> EbuildIterResult {
     ))
 }
 
-pub fn iterator(root: &path::Path, category: &str, package: &str) -> EbuildIterResult {
+pub fn iterator(
+    root: &path::Path,
+    category: &ffi::OsStr,
+    package: &ffi::OsStr,
+) -> EbuildIterResult {
     in_package_dir(&root.join(category).join(package))
 }
