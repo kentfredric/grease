@@ -1,4 +1,5 @@
 extern crate grease;
+#[macro_use]
 extern crate clap;
 
 use std::alloc::System;
@@ -7,9 +8,11 @@ use std::alloc::System;
 static GLOBAL: System = System;
 
 fn main() {
-    let matches = clap::App::new("grease-util")
-        .version("0.1.0")
-        .author("Kent Fredric <kentnl@gentoo.org>")
-        .about("Low level utility portage multi-tool")
-        .get_matches();
+    let matches = clap_app!(
+            greaseutil =>
+        (name: "grease-util")
+        (version: crate_version!())
+        (author: crate_authors!())
+        (about: "Low level utility portage multi-tool")
+    ).get_matches();
 }
