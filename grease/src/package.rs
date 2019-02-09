@@ -31,13 +31,15 @@ pub fn ebuild_iterator(root: &'static path::Path, category: &ffi::OsStr) -> Pack
     let mut out = Vec::new();
     for packageResult in iterator(&root, &category)? {
         let package = packageResult?;
-        for ebuildResult in super::ebuild::iterator(&root, &category, &package)? {
-            out.push(Ok(ffi::OsString::from(format!(
-                "{}/{}",
-                package.clone().into_string().unwrap(),
-                ebuildResult?.into_string().unwrap()
-            ))));
-        }
+        out.push(super::ebuild::iterator(&root, &category, &package)?.map(
+            move |ebuild| {
+                Ok(ffi::OsString::from(format!(
+                    "{}/{}",
+                    package.clone().into_string().unwrap(),
+                    ebuild?.into_string().unwrap()
+                )))
+            },
+        ));
     }
-    Ok(Box::new(out.into_iter()))
+    Ok(Box::new(out.into_iter().flatten()))
 }
