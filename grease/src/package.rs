@@ -28,17 +28,14 @@ pub fn iterator(root: &'static path::Path, category: &ffi::OsStr) -> PackageIter
 }
 
 pub fn ebuild_iterator(root: &'static path::Path, category: &ffi::OsStr) -> PackageIterResult {
-    let packages = iterator(&root, &category)?;
     let mut out = Vec::new();
-    for packageResult in packages {
+    for packageResult in iterator(&root, &category)? {
         let package = packageResult?;
-        let ebuilds = super::ebuild::iterator(&root, &category, &package)?;
-        for ebuildResult in ebuilds {
-            let ebuild = ebuildResult?;
+        for ebuildResult in super::ebuild::iterator(&root, &category, &package)? {
             out.push(Ok(ffi::OsString::from(format!(
                 "{}/{}",
                 package.clone().into_string().unwrap(),
-                ebuild.into_string().unwrap()
+                ebuildResult?.into_string().unwrap()
             ))));
         }
     }
