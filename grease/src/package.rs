@@ -27,18 +27,29 @@ pub fn iterator(root: &'static path::Path, category: &ffi::OsStr) -> PackageIter
     in_category_dir(&root.join(category))
 }
 
+#[inline]
+fn path_concat(a: &ffi::OsString, b: &ffi::OsString) -> Result<ffi::OsString, io::Error> {
+    let a_pth = a.to_str().ok_or_else(|| {
+        io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("Base path {:?} to concat did not convert to a str", a),
+        )
+    })?;
+    let b_pth = b.to_str().ok_or_else(|| {
+        io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("Leaf path {:?} to concat did not convert to a str", b),
+        )
+    })?;
+    Ok(ffi::OsString::from(format!("{}/{}", a_pth, b_pth)))
+}
+
 pub fn ebuild_iterator(root: &'static path::Path, category: &ffi::OsStr) -> PackageIterResult {
     let mut out = Vec::new();
-    for packageResult in iterator(&root, &category)? {
-        let package = packageResult?;
+    for package_result in iterator(&root, &category)? {
+        let package = package_result?;
         out.push(super::ebuild::iterator(&root, &category, &package)?.map(
-            move |ebuild| {
-                Ok(ffi::OsString::from(format!(
-                    "{}/{}",
-                    package.clone().into_string().unwrap(),
-                    ebuild?.into_string().unwrap()
-                )))
-            },
+            move |ebuild| path_concat(&package, &ebuild?),
         ));
     }
     Ok(Box::new(out.into_iter().flatten()))
