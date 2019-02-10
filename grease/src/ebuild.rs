@@ -33,6 +33,18 @@ impl Ebuild {
     pub fn category_path(&self) -> PathBuf {
         self.root.join(&self.category)
     }
+    pub fn version(&self) -> Option<String> {
+        let epath = self.ebuild_path();
+        if let Some(osstr) = epath.file_stem() {
+            if let Some(str) = osstr.to_str() {
+                Some(str.to_string())
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
 }
 
 fn in_package_dir(ebuild_root: &Path) -> EbuildIterResult {
