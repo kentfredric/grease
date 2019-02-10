@@ -50,7 +50,7 @@ pub fn read_profile(root: &'static path::Path) -> CategoryIterResult {
         } else {
             true
         })
-        .map(|line| line.map(|content| ffi::OsString::from(content)));
+        .map(|line| line.map(ffi::OsString::from));
     Ok(Box::new(iter))
 }
 
