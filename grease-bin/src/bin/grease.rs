@@ -13,7 +13,13 @@ fn main() -> std::result::Result<(), std::io::Error> {
         for pkg in grease::package::iterator(p, &ent_u)? {
             let pkg_u = pkg?;
             for ebuild in grease::ebuild::ebuild_iterator(p, &ent_u, &pkg_u)? {
-            println!( ">{:?}", ebuild);
+                if let Ok(e) = ebuild {
+                    let v = e.version();
+                    match v {
+                        Some(version) => println!( ">v={}, {:?} ", version, e),
+                        _ => println!( ">v=None, {:?}", e),
+                    }
+                }
             }
             /*
             for ebuild in grease::ebuild::iterator(p, &ent_u, &pkg_u).unwrap() {

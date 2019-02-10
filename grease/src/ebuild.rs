@@ -35,9 +35,20 @@ impl Ebuild {
     }
     pub fn version(&self) -> Option<String> {
         let epath = self.ebuild_path();
+        let epackage = &self.package.to_str().map(move |pkg| pkg.to_owned() + "-");
         if let Some(osstr) = epath.file_stem() {
             if let Some(str) = osstr.to_str() {
-                Some(str.to_string())
+                if let Some(pkg) = epackage {
+                    let ebuild_string = str.to_string();
+                    let suffix = ebuild_string.trim_start_matches(pkg);
+                    if suffix == ebuild_string {
+                        None
+                    } else {
+                        Some(suffix.to_string())
+                    }
+                } else {
+                    None
+                }
             } else {
                 None
             }
