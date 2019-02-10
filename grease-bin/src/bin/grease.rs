@@ -12,15 +12,19 @@ fn main() -> std::result::Result<(), std::io::Error> {
         let ent_u = ent?;
         for pkg in grease::package::iterator(p, &ent_u)? {
             let pkg_u = pkg?;
+            for ebuild in grease::ebuild::ebuild_iterator(p, &ent_u, &pkg_u)? {
+            println!( ">{:?}", ebuild);
+            }
+            /*
             for ebuild in grease::ebuild::iterator(p, &ent_u, &pkg_u).unwrap() {
-                let ebuild_u = ebuild.unwrap();
                 println!(
                     "> {}/{}/{}",
                     ent_u.clone().into_string().unwrap(),
                     pkg_u.clone().into_string().unwrap(),
-                    ebuild_u.into_string().unwrap()
+                    ebuild?.into_string().unwrap()
                 );
             }
+            */
         }
     }
     Ok(())

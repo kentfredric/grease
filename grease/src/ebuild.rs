@@ -63,16 +63,16 @@ pub fn iterator(root: &Path, category: &OsStr, package: &OsStr) -> EbuildIterRes
     in_package_dir(&root.join(category).join(package))
 }
 
-pub fn ebuild_iterator(
-    root: &'static Path,
-    category: &'static OsStr,
-    package: &'static OsStr,
-) -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
+pub fn ebuild_iterator<'a>(
+    root: &'a Path,
+    category: &'a OsStr,
+    package: &'a OsStr,
+) -> Result<Box<Iterator<Item = Result<Ebuild, Error>> + 'a>, Error> {
     let eroot = &root.join(&category).join(&package);
     Ok(Box::new(
         eroot
             .read_dir()?
-            .filter(move |e| if let Ok(entry) = e {
+            .filter(|e| if let Ok(entry) = e {
                 let p = entry.path();
                 if let Some(ext) = p.extension() {
                     ext.eq("ebuild") && !p.is_dir()
