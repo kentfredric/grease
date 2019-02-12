@@ -21,21 +21,11 @@ impl Ebuild {
             ebuild: ebuild.to_os_string(),
         }
     }
-    pub fn ebuild_path(&self) -> PathBuf {
-        self.package_path().join(&self.ebuild)
-    }
-    pub fn package_path(&self) -> PathBuf {
-        self.category_path().join(&self.package)
-    }
-    pub fn category_path(&self) -> PathBuf {
-        self.root.join(&self.category)
-    }
-    pub fn cat(&self) -> Option<String> {
-        self.category.to_str().map(String::from)
-    }
-    pub fn pn(&self) -> Option<String> {
-        self.package.to_str().map(String::from)
-    }
+    pub fn ebuild_path(&self) -> PathBuf { self.package_path().join(&self.ebuild) }
+    pub fn package_path(&self) -> PathBuf { self.category_path().join(&self.package) }
+    pub fn category_path(&self) -> PathBuf { self.root.join(&self.category) }
+    pub fn cat(&self) -> Option<String> { self.category.to_str().map(String::from) }
+    pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
     pub fn pf(&self) -> Option<String> {
         if let Some(osstr) = self.ebuild_path().file_stem() {
             if let Some(str) = osstr.to_str() {
@@ -76,9 +66,7 @@ impl std::fmt::Debug for Ebuild {
     }
 }
 
-fn in_package_dir(
-    ebuild_root: &Path,
-) -> Result<Box<impl Iterator<Item = Result<OsString, Error>>>, Error> {
+fn in_package_dir(ebuild_root: &Path) -> Result<Box<impl Iterator<Item = Result<OsString, Error>>>, Error> {
     Ok(Box::new(
         ebuild_root
             .read_dir()?
@@ -102,19 +90,13 @@ fn in_package_dir(
     ))
 }
 
-pub fn iterator(
-    root: &Path,
-    category: &OsStr,
-    package: &OsStr,
-) -> Result<Box<impl Iterator<Item = Result<OsString, Error>>>, Error> {
+pub fn iterator(root: &Path, category: &OsStr, package: &OsStr)
+    -> Result<Box<impl Iterator<Item = Result<OsString, Error>>>, Error> {
     in_package_dir(&root.join(category).join(package))
 }
 
-pub fn ebuild_iterator<'a>(
-    root: &'a Path,
-    category: &'a OsStr,
-    package: &'a OsStr,
-) -> Result<Box<Iterator<Item = Result<Ebuild, Error>> + 'a>, Error> {
+pub fn ebuild_iterator<'a>(root: &'a Path, category: &'a OsStr, package: &'a OsStr)
+    -> Result<Box<Iterator<Item = Result<Ebuild, Error>> + 'a>, Error> {
     let eroot = &root.join(&category).join(&package);
     Ok(Box::new(
         eroot
