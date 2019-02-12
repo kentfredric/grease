@@ -63,6 +63,11 @@ impl Ebuild {
             }
         })
     }
+    pub fn p(&self) -> Option<String> {
+        self.pn().and_then(
+            |pn| self.pv().and_then(|pv| Some(pn + &pv)),
+        )
+    }
 }
 
 impl std::fmt::Debug for Ebuild {
