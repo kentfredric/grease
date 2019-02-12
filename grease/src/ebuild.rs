@@ -24,7 +24,8 @@ impl Ebuild {
     pub fn ebuild_path(&self) -> PathBuf { self.package_path().join(&self.ebuild) }
     pub fn package_path(&self) -> PathBuf { self.category_path().join(&self.package) }
     pub fn category_path(&self) -> PathBuf { self.root.join(&self.category) }
-    pub fn cat(&self) -> Option<String> { self.category.to_str().map(String::from) }
+
+    pub fn category(&self) -> Option<String> { self.category.to_str().map(String::from) }
     pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
     pub fn pf(&self) -> Option<String> {
         self.ebuild_path().file_stem().and_then(|osstr| {
@@ -73,7 +74,7 @@ impl Ebuild {
 impl std::fmt::Debug for Ebuild {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "cat: {}, pf: {}, pn: {}, pvr: {} pv: {}",
-               self.cat().unwrap_or_else(||String::from("None")),
+               self.category().unwrap_or_else(||String::from("None")),
                self.pf().unwrap_or_else(||String::from("None")),
                self.pn().unwrap_or_else(||String::from("None")),
                self.pvr().unwrap_or_else(||String::from("None")),
