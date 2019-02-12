@@ -32,20 +32,16 @@ impl Ebuild {
         })
     }
     pub fn pvr(&self) -> Option<String> {
-        if let Some(pf) = self.pf() {
-            if let Some(pn) = self.pn() {
+        self.pf().and_then(|pf| {
+            self.pn().and_then(|pn| {
                 let suffix = pf.trim_start_matches((pn + "-").as_str());
                 if suffix == pf {
                     None
                 } else {
                     Some(String::from(suffix))
                 }
-            } else {
-                None
-            }
-        } else {
-            None
-        }
+            })
+        })
     }
     pub fn pv(&self) -> Option<String> {
         self.pvr().map(|pvr| {
