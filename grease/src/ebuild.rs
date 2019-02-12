@@ -53,15 +53,36 @@ impl Ebuild {
             None
         }
     }
+    pub fn pv(&self) -> Option<String> {
+        self.pvr().map(|pvr| {
+            let mut chunks: Vec<_> = pvr.split_terminator("-r").collect();
+            // This finds the trailing block of PVR which *might* be "-r" + a series of
+            // digits if such a block exists, return PVR without it otherwise, perform no
+            // changes and return PVR as PV
+            if chunks.len() < 2 {
+                return pvr;
+            }
+            match chunks.pop() {
+                None => pvr,
+                Some(rversion) => {
+                    match rversion.parse::<u32>() {
+                        Ok(_) => chunks.join("-"),
+                        Err(_) => pvr,
+                    }
+                },
+            }
+        })
+    }
 }
 
 impl std::fmt::Debug for Ebuild {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "cat: {}, pf: {}, pn: {}, pvr: {}",
+        write!(f, "cat: {}, pf: {}, pn: {}, pvr: {} pv: {}",
                self.cat().unwrap_or_else(||String::from("None")),
                self.pf().unwrap_or_else(||String::from("None")),
                self.pn().unwrap_or_else(||String::from("None")),
                self.pvr().unwrap_or_else(||String::from("None")),
+               self.pv().unwrap_or_else(||String::from("None")),
         )
     }
 }
