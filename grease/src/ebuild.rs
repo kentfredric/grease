@@ -122,14 +122,10 @@ pub fn ebuild_iterator<'a>(root: &'a Path, category: &'a OsStr, package: &'a OsS
             } else {
                 true
             })
-            .map(move |dirent| match dirent {
-                Ok(entry) => Ok(Ebuild::new(
-                    root.to_path_buf(),
-                    category,
-                    package,
-                    &entry.file_name(),
-                )),
-                Err(err) => Err(err),
+            .map(move |dirent| {
+                dirent.map(|entry| {
+                    Ebuild::new(root.to_path_buf(), category, package, &entry.file_name())
+                })
             }),
     ))
 }
