@@ -1,13 +1,10 @@
 
+use std::ffi::{OsString, OsStr};
+use std::io::Error;
+use std::option::Option;
 use std::path::{PathBuf, Path};
 use std::result::Result;
-use std::io::Error;
-use std::ffi::{OsString, OsStr};
 
-type EbuildIter = Box<Iterator<Item = Result<OsString, Error>>>;
-type EbuildIterResult = Result<EbuildIter, Error>;
-
-#[derive(Debug)]
 pub struct Ebuild {
     pub root: PathBuf,
     pub category: OsString,
@@ -33,21 +30,31 @@ impl Ebuild {
     pub fn category_path(&self) -> PathBuf {
         self.root.join(&self.category)
     }
-    pub fn version(&self) -> Option<String> {
-        let epath = self.ebuild_path();
-        let epackage = &self.package.to_str().map(move |pkg| pkg.to_owned() + "-");
-        if let Some(osstr) = epath.file_stem() {
+    pub fn cat(&self) -> Option<String> {
+        self.category.to_str().map(String::from)
+    }
+    pub fn pn(&self) -> Option<String> {
+        self.package.to_str().map(String::from)
+    }
+    pub fn pf(&self) -> Option<String> {
+        if let Some(osstr) = self.ebuild_path().file_stem() {
             if let Some(str) = osstr.to_str() {
-                if let Some(pkg) = epackage {
-                    let ebuild_string = str.to_string();
-                    let suffix = ebuild_string.trim_start_matches(pkg);
-                    if suffix == ebuild_string {
-                        None
-                    } else {
-                        Some(suffix.to_string())
-                    }
-                } else {
+                Some(String::from(str))
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+    pub fn pvr(&self) -> Option<String> {
+        if let Some(pf) = self.pf() {
+            if let Some(pn) = self.pn() {
+                let suffix = pf.trim_start_matches((pn + "-").as_str());
+                if suffix == pf {
                     None
+                } else {
+                    Some(String::from(suffix))
                 }
             } else {
                 None
@@ -58,7 +65,20 @@ impl Ebuild {
     }
 }
 
-fn in_package_dir(ebuild_root: &Path) -> EbuildIterResult {
+impl std::fmt::Debug for Ebuild {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "cat: {}, pf: {}, pn: {}, pvr: {}",
+               self.cat().unwrap_or_else(||String::from("None")),
+               self.pf().unwrap_or_else(||String::from("None")),
+               self.pn().unwrap_or_else(||String::from("None")),
+               self.pvr().unwrap_or_else(||String::from("None")),
+        )
+    }
+}
+
+fn in_package_dir(
+    ebuild_root: &Path,
+) -> Result<Box<impl Iterator<Item = Result<OsString, Error>>>, Error> {
     Ok(Box::new(
         ebuild_root
             .read_dir()?
@@ -82,7 +102,11 @@ fn in_package_dir(ebuild_root: &Path) -> EbuildIterResult {
     ))
 }
 
-pub fn iterator(root: &Path, category: &OsStr, package: &OsStr) -> EbuildIterResult {
+pub fn iterator(
+    root: &Path,
+    category: &OsStr,
+    package: &OsStr,
+) -> Result<Box<impl Iterator<Item = Result<OsString, Error>>>, Error> {
     in_package_dir(&root.join(category).join(package))
 }
 
