@@ -27,15 +27,9 @@ impl Ebuild {
     pub fn cat(&self) -> Option<String> { self.category.to_str().map(String::from) }
     pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
     pub fn pf(&self) -> Option<String> {
-        if let Some(osstr) = self.ebuild_path().file_stem() {
-            if let Some(str) = osstr.to_str() {
-                Some(String::from(str))
-            } else {
-                None
-            }
-        } else {
-            None
-        }
+        self.ebuild_path().file_stem().and_then(|osstr| {
+            osstr.to_str().map(|str| String::from(str))
+        })
     }
     pub fn pvr(&self) -> Option<String> {
         if let Some(pf) = self.pf() {
