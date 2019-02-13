@@ -1,12 +1,11 @@
-use std::ffi;
-use std::fs;
-use std::io;
-use std::io::BufRead;
-use std::path;
-use std::result;
+use std::ffi::OsString;
+use std::fs::File;
+use std::io::{BufReader, BufRead, Error};
+use std::path::{Path, PathBuf};
+use std::result::Result;
 
-type CategoryIter = Box<Iterator<Item = result::Result<ffi::OsString, io::Error>>>;
-type CategoryIterResult = result::Result<CategoryIter, io::Error>;
+type CategoryIter = Box<Iterator<Item = Result<OsString, Error>>>;
+type CategoryIterResult = Result<CategoryIter, Error>;
 
 #[inline]
 fn dirname_blacklisted(name: &str) -> bool {
@@ -17,7 +16,7 @@ fn dirname_blacklisted(name: &str) -> bool {
 }
 
 #[inline]
-fn valid_category(root: &path::Path, name: &str) -> bool {
+fn valid_category(root: &Path, name: &str) -> bool {
     if dirname_blacklisted(name) {
         return false;
     }
@@ -25,9 +24,9 @@ fn valid_category(root: &path::Path, name: &str) -> bool {
 }
 
 #[inline]
-fn profile_category_file(root: &path::Path) -> path::PathBuf { root.join("profiles").join("categories") }
+fn profile_category_file(root: &Path) -> PathBuf { root.join("profiles").join("categories") }
 
-pub fn discover_in(root: &'static path::Path) -> CategoryIterResult {
+pub fn discover_in(root: &'static Path) -> CategoryIterResult {
     Ok(Box::new(
         root.read_dir()?
             .filter(move |e| if let Ok(entry) = e {
@@ -40,19 +39,19 @@ pub fn discover_in(root: &'static path::Path) -> CategoryIterResult {
     ))
 }
 
-pub fn read_profile(root: &'static path::Path) -> CategoryIterResult {
-    let buf = io::BufReader::new(fs::File::open(profile_category_file(root))?);
+pub fn read_profile(root: &'static Path) -> CategoryIterResult {
+    let buf = BufReader::new(File::open(profile_category_file(root))?);
     let iter = buf.lines()
         .filter(move |line| if let Ok(l) = line {
             root.join(l).is_dir()
         } else {
             true
         })
-        .map(|line| line.map(ffi::OsString::from));
+        .map(|line| line.map(OsString::from));
     Ok(Box::new(iter))
 }
 
-pub fn iterator(root: &'static path::Path) -> CategoryIterResult {
+pub fn iterator(root: &'static Path) -> CategoryIterResult {
     if profile_category_file(root).as_path().exists() {
         read_profile(root)
     } else {
