@@ -1,17 +1,20 @@
 extern crate grease;
 
-use std::alloc::System;
+use grease::repository::Repository;
 use std::path::Path;
+use std::result::Result;
+use std::io::Error;
 
 #[global_allocator]
-static GLOBAL: System = System;
+static GLOBAL: std::alloc::System = std::alloc::System;
 
-fn main() -> std::result::Result<(), std::io::Error> {
+fn main() -> Result<(), Error> {
     let p = Path::new("/usr/local/gentoo");
-    for ent in grease::category::iterator(p)? {
-        let ent_u = ent?;
-        println!("{:?}", ent_u);
-        for pkg in ent_u.packages()? {
+    let r = Repository::new(p);
+    for cat in r.categories()? {
+        let cat_u = cat?;
+        println!("{:?}", cat_u);
+        for pkg in cat_u.packages()? {
             let pkg_u = pkg?;
             println!("{:?}", pkg_u);
             for ebuild in pkg_u.ebuilds()? {
