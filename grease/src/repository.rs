@@ -1,13 +1,9 @@
-
-
-use std::path;
+use std::path::{PathBuf, Path};
 
 pub struct Repository {
-    root: path::PathBuf,
+    root: PathBuf,
 }
 
 impl Repository {
-    pub fn new(root: &path::Path) -> Repository {
-        Repository { root: root.to_path_buf() }
-    }
+    pub fn new(root: &Path) -> Repository { Repository { root: root.to_path_buf() } }
 }
