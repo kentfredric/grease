@@ -1,13 +1,63 @@
+use super::ebuild::{self, Ebuild};
+use std::ffi::{OsString, OsStr};
+use std::io::Error;
+use std::path::{Path, PathBuf};
+use std::result::Result;
 
-use std::io;
-use std::result;
-use std::path;
-use std::ffi;
+pub struct Package {
+    root: PathBuf,
+    category: OsString,
+    package: OsString,
+}
+impl Package {
+    fn new(root: PathBuf, category: &OsStr, package: &OsStr) -> Package {
+        Package {
+            root,
+            category: category.to_os_string(),
+            package: package.to_os_string(),
+        }
+    }
+    pub fn package_path(&self) -> PathBuf { self.category_path().join(&self.package) }
+    pub fn category_path(&self) -> PathBuf { self.root.join(&self.category) }
 
-type PackageIter = Box<Iterator<Item = result::Result<ffi::OsString, io::Error>>>;
-type PackageIterResult = result::Result<PackageIter, io::Error>;
+    pub fn category(&self) -> Option<String> { self.category.to_str().map(String::from) }
+    pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
 
-fn in_category_dir(category_root: &path::Path) -> PackageIterResult {
+    pub fn ebuilds<'a>(&'a self) -> Result<Box<Iterator<Item = Result<Ebuild, Error>> + 'a>, Error> {
+        ebuild::iterator(&self.root, &self.category, &self.package)
+    }
+}
+
+impl std::fmt::Debug for Package {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "cat: {}, pn: {}",
+               self.category().unwrap_or_else(||String::from("None")),
+               self.pn().unwrap_or_else(||String::from("None")),
+        )
+    }
+}
+
+pub fn package_iterator<'a>(root: &'a Path, category: &'a OsStr)
+    -> Result<Box<impl Iterator<Item = Result<Package, Error>> + 'a>, Error> {
+    Ok(Box::new(
+        root.join(category).read_dir()?
+        .filter(move |e| if let Ok(entry) = e {
+            entry.path().is_dir()
+        } else {
+            // readdir entry failures passthrough
+            true
+        })
+        // Munge Ok(), passthru Err()
+        .map(move |e| e.map(  |ent|
+                         Package::new( root.to_path_buf(), &category, &ent.file_name() ) )),
+    ))
+}
+
+
+type PackageIter = Box<Iterator<Item = Result<OsString, Error>>>;
+type PackageIterResult = Result<PackageIter, Error>;
+
+fn in_category_dir(category_root: &Path) -> PackageIterResult {
     Ok(Box::new(
         category_root
             .read_dir()?
@@ -23,34 +73,4 @@ fn in_category_dir(category_root: &path::Path) -> PackageIterResult {
     ))
 }
 
-pub fn iterator(root: &'static path::Path, category: &ffi::OsStr) -> PackageIterResult {
-    in_category_dir(&root.join(category))
-}
-
-#[inline]
-fn path_concat(a: &ffi::OsString, b: &ffi::OsString) -> Result<ffi::OsString, io::Error> {
-    let a_pth = a.to_str().ok_or_else(|| {
-        io::Error::new(
-            io::ErrorKind::InvalidInput,
-            format!("Base path {:?} to concat did not convert to a str", a),
-        )
-    })?;
-    let b_pth = b.to_str().ok_or_else(|| {
-        io::Error::new(
-            io::ErrorKind::InvalidInput,
-            format!("Leaf path {:?} to concat did not convert to a str", b),
-        )
-    })?;
-    Ok(ffi::OsString::from(format!("{}/{}", a_pth, b_pth)))
-}
-
-pub fn ebuild_iterator(root: &'static path::Path, category: &ffi::OsStr) -> PackageIterResult {
-    let mut out = Vec::new();
-    for package_result in iterator(&root, &category)? {
-        let package = package_result?;
-        out.push(super::ebuild::iterator(&root, &category, &package)?.map(
-            move |ebuild| path_concat(&package, &ebuild?),
-        ));
-    }
-    Ok(Box::new(out.into_iter().flatten()))
-}
+pub fn iterator(root: &'static Path, category: &OsStr) -> PackageIterResult { in_category_dir(&root.join(category)) }
