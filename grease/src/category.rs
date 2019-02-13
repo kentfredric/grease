@@ -1,9 +1,9 @@
+use std::ffi;
 use std::fs;
 use std::io;
 use std::io::BufRead;
 use std::path;
 use std::result;
-use std::ffi;
 
 type CategoryIter = Box<Iterator<Item = result::Result<ffi::OsString, io::Error>>>;
 type CategoryIterResult = result::Result<CategoryIter, io::Error>;
@@ -25,9 +25,7 @@ fn valid_category(root: &path::Path, name: &str) -> bool {
 }
 
 #[inline]
-fn profile_category_file(root: &path::Path) -> path::PathBuf {
-    root.join("profiles").join("categories")
-}
+fn profile_category_file(root: &path::Path) -> path::PathBuf { root.join("profiles").join("categories") }
 
 pub fn discover_in(root: &'static path::Path) -> CategoryIterResult {
     Ok(Box::new(
