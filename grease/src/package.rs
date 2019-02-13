@@ -37,7 +37,7 @@ impl std::fmt::Debug for Package {
     }
 }
 
-pub fn package_iterator<'a>(root: &'a Path, category: &'a OsStr)
+pub fn iterator<'a>(root: &'a Path, category: &'a OsStr)
     -> Result<Box<impl Iterator<Item = Result<Package, Error>> + 'a>, Error> {
     Ok(Box::new(
         root.join(category).read_dir()?
@@ -52,25 +52,3 @@ pub fn package_iterator<'a>(root: &'a Path, category: &'a OsStr)
                          Package::new( root.to_path_buf(), &category, &ent.file_name() ) )),
     ))
 }
-
-
-type PackageIter = Box<Iterator<Item = Result<OsString, Error>>>;
-type PackageIterResult = Result<PackageIter, Error>;
-
-fn in_category_dir(category_root: &Path) -> PackageIterResult {
-    Ok(Box::new(
-        category_root
-            .read_dir()?
-            .filter(move |e| if let Ok(entry) = e {
-                entry.path().is_dir()
-            } else {
-                // readdir entry failures passthrough
-                true
-            })
-
-            // Munge Ok(), passthru Err()
-            .map(|e| e.map( |ent| ent.file_name() ) ),
-    ))
-}
-
-pub fn iterator(root: &'static Path, category: &OsStr) -> PackageIterResult { in_category_dir(&root.join(category)) }
