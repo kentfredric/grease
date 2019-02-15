@@ -3,7 +3,7 @@ use super::package::{self, Package};
 use std::ffi::OsString;
 use std::fs::File;
 use std::io::{BufReader, BufRead, Error};
-use std::io::ErrorKind::NotFound;
+use std::io::ErrorKind::{NotFound, InvalidData};
 use std::path::PathBuf;
 use std::result::Result;
 
@@ -37,6 +37,17 @@ impl Category {
                 Err(e) => Box::new(vec![Err(e)].into_iter()),
             })) as Box<Iterator<Item = _>>
         })
+    }
+
+    /// Get a validated package within this category
+    pub fn get_package(&self, name: &str) -> Result<Package, Error> {
+        match self.category.to_owned().into_string() {
+            Ok(cat) => package::get(self.root.to_owned(), &cat, name),
+            Err(_) => Err(Error::new(
+                InvalidData,
+                "Failed converting category to UTF8 String",
+            )),
+        }
     }
 }
 impl std::fmt::Debug for Category {
