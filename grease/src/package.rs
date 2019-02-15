@@ -25,25 +25,26 @@ impl Package {
 
     pub fn ebuilds(&self) -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
         ebuild::iterator(
-            self.root.clone(),
-            self.category.clone(),
-            self.package.clone(),
+            self.root.to_owned(),
+            self.category.to_owned(),
+            self.package.to_owned(),
         )
     }
 }
 
 impl std::fmt::Debug for Package {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let none_str = || String::from("None");
         write!(f, "cat: {}, pn: {}",
-               self.category().unwrap_or_else(||String::from("None")),
-               self.pn().unwrap_or_else(||String::from("None")),
+               self.category().unwrap_or_else(none_str),
+               self.pn().unwrap_or_else(none_str),
         )
     }
 }
 
 pub fn iterator(root: PathBuf, category: OsString) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
     Ok(Box::new(
-        root.join(category.clone()).read_dir()?
+        root.join(&category).read_dir()?
         .filter(move |e| if let Ok(entry) = e {
             entry.path().is_dir()
         } else {
@@ -52,6 +53,6 @@ pub fn iterator(root: PathBuf, category: OsString) -> Result<Box<Iterator<Item =
         })
         // Munge Ok(), passthru Err()
         .map( move |e| e.map(  |ent|
-                         Package::new( root.to_path_buf(), category.clone(), ent.file_name() ) )),
+                         Package::new( root.to_owned(), category.to_owned(), ent.file_name() ) )),
     ))
 }
