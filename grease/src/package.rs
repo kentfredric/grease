@@ -1,6 +1,9 @@
+
+use super::category;
 use super::ebuild::{self, Ebuild};
 use std::ffi::OsString;
 use std::io::Error;
+use std::io::ErrorKind::NotFound;
 use std::path::PathBuf;
 use std::result::Result;
 
@@ -55,4 +58,20 @@ pub fn iterator(root: PathBuf, category: OsString) -> Result<Box<Iterator<Item =
         .map( move |e| e.map(  |ent|
                          Package::new( root.to_owned(), category.to_owned(), ent.file_name() ) )),
     ))
+}
+
+pub fn get(root: PathBuf, category: &str, package: &str) -> Result<Package, Error> {
+    let my_root = root.to_owned();
+    category::get(root, category).and_then(|cat| {
+        let pkg_path = cat.path().join(package);
+        if pkg_path.exists() && pkg_path.is_dir() {
+            Ok(Package::new(
+                my_root.to_owned(),
+                OsString::from(category),
+                OsString::from(package),
+            ))
+        } else {
+            Err(Error::new(NotFound, "Package not found/ not a directory"))
+        }
+    })
 }
