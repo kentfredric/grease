@@ -1,5 +1,7 @@
+use super::package;
 use std::ffi::OsString;
 use std::io::Error;
+use std::io::ErrorKind::NotFound;
 use std::option::Option;
 use std::path::PathBuf;
 use std::result::Result;
@@ -113,4 +115,21 @@ pub fn iterator(root: PathBuf, category: OsString, package: OsString)
                 })
             }),
     ))
+}
+
+pub fn get(root: PathBuf, category: &str, package: &str, ebuild: &str) -> Result<Ebuild, Error> {
+    let my_root = root.to_owned();
+    package::get(root, category, package).and_then(|pkg| {
+        let ebuild_path = pkg.path().join(ebuild);
+        if ebuild_path.exists() && !ebuild_path.is_dir() {
+            Ok(Ebuild::new(
+                my_root.to_owned(),
+                OsString::from(category),
+                OsString::from(package),
+                OsString::from(ebuild),
+            ))
+        } else {
+            Err(Error::new(NotFound, "Ebuild not found/ is a directory"))
+        }
+    })
 }
