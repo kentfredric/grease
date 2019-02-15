@@ -1,3 +1,4 @@
+use super::ebuild::Ebuild;
 use super::package::{self, Package};
 use std::ffi::OsString;
 use std::fs::File;
@@ -5,7 +6,6 @@ use std::io::{BufReader, BufRead, Error};
 use std::path::PathBuf;
 use std::result::Result;
 
-#[derive(Clone)]
 pub struct Category {
     root: PathBuf,
     category: OsString,
@@ -15,6 +15,19 @@ impl Category {
     fn new(root: PathBuf, category: OsString) -> Category { Category { root, category } }
     pub fn packages(&self) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
         package::iterator(self.root.to_owned(), self.category.to_owned())
+    }
+    pub fn ebuilds(&self) -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
+        self.packages().map(|pkg_it| {
+            Box::new(pkg_it.flat_map(|pkg_res| match pkg_res {
+                Ok(pkg) => {
+                    match pkg.ebuilds() {
+                        Ok(ebuild_iter) => ebuild_iter,
+                        Err(e) => Box::new(vec![Err(e)].into_iter()),
+                    }
+                },
+                Err(e) => Box::new(vec![Err(e)].into_iter()),
+            })) as Box<Iterator<Item = _>>
+        })
     }
 }
 impl std::fmt::Debug for Category {
