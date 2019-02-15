@@ -1,3 +1,13 @@
-[workspace]
+[package]
+name = "grease"
+version = "0.1.0"
+authors = ["Kent Fredric <kentnl@gentoo.org>"]
+edition = "2018"
 
-members = ["grease-bin", "grease"]
+[dependencies]
+
+[dependencies.clap]
+version = "~2.32"
+default-features = false
+
+features = ["suggestions", "color", "vec_map"]

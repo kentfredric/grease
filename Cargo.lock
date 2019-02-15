@@ -38,13 +38,8 @@ dependencies = [
 [[package]]
 name = "grease"
 version = "0.1.0"
-
-[[package]]
-name = "grease-bin"
-version = "0.1.0"
 dependencies = [
  "clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "grease 0.1.0",
 ]
 
 [[package]]

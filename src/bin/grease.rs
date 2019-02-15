@@ -1,5 +1,3 @@
-extern crate grease;
-
 use grease::repository::Repository;
 use std::io::Error;
 use std::path::Path;
