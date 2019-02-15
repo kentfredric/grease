@@ -13,6 +13,9 @@ pub struct Category {
 
 impl Category {
     fn new(root: PathBuf, category: OsString) -> Category { Category { root, category } }
+
+    pub fn path(&self) -> PathBuf { self.root.join(&self.category) }
+
     pub fn packages(&self) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
         package::iterator(self.root.to_owned(), self.category.to_owned())
     }

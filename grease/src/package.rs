@@ -17,8 +17,8 @@ impl Package {
             package,
         }
     }
-    pub fn package_path(&self) -> PathBuf { self.category_path().join(&self.package) }
-    pub fn category_path(&self) -> PathBuf { self.root.join(&self.category) }
+
+    pub fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package) }
 
     pub fn category(&self) -> Option<String> { self.category.to_str().map(String::from) }
     pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }

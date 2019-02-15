@@ -20,14 +20,17 @@ impl Ebuild {
             ebuild,
         }
     }
-    pub fn ebuild_path(&self) -> PathBuf { self.package_path().join(&self.ebuild) }
-    pub fn package_path(&self) -> PathBuf { self.category_path().join(&self.package) }
-    pub fn category_path(&self) -> PathBuf { self.root.join(&self.category) }
+
+    pub fn path(&self) -> PathBuf {
+        self.root.join(&self.category).join(&self.package).join(
+            &self.ebuild,
+        )
+    }
 
     pub fn category(&self) -> Option<String> { self.category.to_str().map(String::from) }
     pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
     pub fn pf(&self) -> Option<String> {
-        self.ebuild_path().file_stem().and_then(|osstr| {
+        self.path().file_stem().and_then(|osstr| {
             osstr.to_str().map(String::from)
         })
     }

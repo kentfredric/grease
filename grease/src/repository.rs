@@ -12,6 +12,8 @@ pub struct Repository {
 impl Repository {
     pub fn new(root: &Path) -> Repository { Repository { root: root.to_path_buf() } }
 
+    pub fn path(&self) -> PathBuf { self.root.to_owned() }
+
     pub fn categories(&self) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
         category::iterator(self.root.to_owned())
     }
