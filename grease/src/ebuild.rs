@@ -68,6 +68,27 @@ impl Ebuild {
             }
         })
     }
+    pub fn pr(&self) -> Option<String> {
+        self.pvr().map(|pvr| {
+            let mut chunks: Vec<_> = pvr.split_terminator("-r").collect();
+            // This finds the trailing block of PVR which *might* be "-r" + a series of
+            // digits if such a block exists, return the r-suffix, otherwise, perform no
+            // changes and return PVR as PV
+            if chunks.len() < 2 {
+                return String::from("r0");
+            }
+            match chunks.pop() {
+                None => String::from("r0"),
+                Some(rversion) => {
+                    match rversion.parse::<u32>() {
+                        Ok(_) => String::from("r".to_owned() + rversion),
+                        Err(_) => String::from("r0"),
+                    }
+                },
+            }
+        })
+    }
+
     pub fn p(&self) -> Option<String> {
         self.pn().and_then(
             |pn| self.pv().and_then(|pv| Some(pn + &pv)),
@@ -78,12 +99,13 @@ impl Ebuild {
 impl std::fmt::Debug for Ebuild {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let none_str = || String::from("None");
-        write!(f, "cat: {}, pf: {}, pn: {}, pvr: {} pv: {}",
+        write!(f, "cat: {}, pf: {}, pn: {}, pvr: {} pv: {} pr: {}",
                self.category().unwrap_or_else(none_str),
                self.pf().unwrap_or_else(none_str),
                self.pn().unwrap_or_else(none_str),
                self.pvr().unwrap_or_else(none_str),
                self.pv().unwrap_or_else(none_str),
+               self.pr().unwrap_or_else(none_str),
         )
     }
 }
