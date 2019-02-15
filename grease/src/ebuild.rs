@@ -72,21 +72,22 @@ impl Ebuild {
 
 impl std::fmt::Debug for Ebuild {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let none_str = || String::from("None");
         write!(f, "cat: {}, pf: {}, pn: {}, pvr: {} pv: {}",
-               self.category().unwrap_or_else(||String::from("None")),
-               self.pf().unwrap_or_else(||String::from("None")),
-               self.pn().unwrap_or_else(||String::from("None")),
-               self.pvr().unwrap_or_else(||String::from("None")),
-               self.pv().unwrap_or_else(||String::from("None")),
+               self.category().unwrap_or_else(none_str),
+               self.pf().unwrap_or_else(none_str),
+               self.pn().unwrap_or_else(none_str),
+               self.pvr().unwrap_or_else(none_str),
+               self.pv().unwrap_or_else(none_str),
         )
     }
 }
 
 pub fn iterator(root: PathBuf, category: OsString, package: OsString)
     -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
-    let eroot = &root.join(&category).join(&package);
     Ok(Box::new(
-        eroot
+        root.join(&category)
+            .join(&package)
             .read_dir()?
             .filter(|e| if let Ok(entry) = e {
                 let p = entry.path();
@@ -101,9 +102,9 @@ pub fn iterator(root: PathBuf, category: OsString, package: OsString)
             .map(move |dirent| {
                 dirent.map(|entry| {
                     Ebuild::new(
-                        root.to_path_buf(),
-                        category.clone(),
-                        package.clone(),
+                        root.to_owned(),
+                        category.to_owned(),
+                        package.to_owned(),
                         entry.file_name(),
                     )
                 })
