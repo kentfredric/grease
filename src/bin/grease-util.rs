@@ -1,4 +1,3 @@
-extern crate grease;
 #[macro_use]
 extern crate clap;
 
