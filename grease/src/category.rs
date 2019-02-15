@@ -3,6 +3,7 @@ use super::package::{self, Package};
 use std::ffi::OsString;
 use std::fs::File;
 use std::io::{BufReader, BufRead, Error};
+use std::io::ErrorKind::NotFound;
 use std::path::PathBuf;
 use std::result::Result;
 
@@ -105,5 +106,16 @@ pub fn iterator(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Er
         read_profile(root.to_owned())
     } else {
         discover_in(root.to_owned())
+    }
+}
+pub fn get(root: PathBuf, name: &str) -> Result<Category, Error> {
+    if valid_category(root.to_owned(), name) {
+        Ok(Category::new(root, OsString::from(name)))
+    } else {
+        Err(Error::new(
+            NotFound,
+            "Specified category name was not a directory/not \
+             found/illegal",
+        ))
     }
 }
