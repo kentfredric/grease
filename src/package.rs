@@ -7,6 +7,7 @@ use std::io::ErrorKind::NotFound;
 use std::path::PathBuf;
 use std::result::Result;
 
+/// Represent a discrete gentoo package
 pub struct Package {
     root: PathBuf,
     category: OsString,
@@ -21,11 +22,16 @@ impl Package {
         }
     }
 
+    /// Return the path to a gentoo package
     pub fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package) }
 
+    /// Get the category name of the package
     pub fn category(&self) -> Option<String> { self.category.to_str().map(String::from) }
+
+    /// Get the package name of the package
     pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
 
+    /// Iterate all ebuilds within the package
     pub fn ebuilds(&self) -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
         ebuild::iterator(
             self.root.to_owned(),
@@ -45,6 +51,7 @@ impl std::fmt::Debug for Package {
     }
 }
 
+/// Create an iterator of all Packages
 pub fn iterator(root: PathBuf, category: OsString) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
     Ok(Box::new(
         root.join(&category).read_dir()?
@@ -60,6 +67,7 @@ pub fn iterator(root: PathBuf, category: OsString) -> Result<Box<Iterator<Item =
     ))
 }
 
+/// Get a validated package
 pub fn get(root: PathBuf, category: &str, package: &str) -> Result<Package, Error> {
     let my_root = root.to_owned();
     category::get(root, category).and_then(|cat| {

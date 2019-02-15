@@ -124,6 +124,7 @@ impl std::fmt::Debug for Ebuild {
     }
 }
 
+/// Iterate all ebuilds within a package
 pub fn iterator(root: PathBuf, category: OsString, package: OsString)
     -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
     Ok(Box::new(
@@ -153,6 +154,7 @@ pub fn iterator(root: PathBuf, category: OsString, package: OsString)
     ))
 }
 
+/// Get a validated Ebuild object by explicit path
 pub fn get(root: PathBuf, category: &str, package: &str, ebuild: &str) -> Result<Ebuild, Error> {
     let my_root = root.to_owned();
     package::get(root, category, package).and_then(|pkg| {

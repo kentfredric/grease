@@ -7,6 +7,7 @@ use std::io::ErrorKind::NotFound;
 use std::path::PathBuf;
 use std::result::Result;
 
+/// Represents a discrete Gentoo category
 pub struct Category {
     root: PathBuf,
     category: OsString,
@@ -15,11 +16,15 @@ pub struct Category {
 impl Category {
     fn new(root: PathBuf, category: OsString) -> Category { Category { root, category } }
 
+    /// Return the path to the category
     pub fn path(&self) -> PathBuf { self.root.join(&self.category) }
 
+    /// Return an iterator over all packages in this category
     pub fn packages(&self) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
         package::iterator(self.root.to_owned(), self.category.to_owned())
     }
+
+    /// Return an iterator over all ebuilds in this category
     pub fn ebuilds(&self) -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
         self.packages().map(|pkg_it| {
             Box::new(pkg_it.flat_map(|pkg_res| match pkg_res {
@@ -101,6 +106,7 @@ fn read_profile(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Er
     ))
 }
 
+/// Return an iterator over all categories in the given root
 pub fn iterator(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
     if profile_category_file(root.to_owned()).exists() {
         read_profile(root.to_owned())
@@ -108,6 +114,8 @@ pub fn iterator(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Er
         discover_in(root.to_owned())
     }
 }
+
+/// Get a validated category from the root
 pub fn get(root: PathBuf, name: &str) -> Result<Category, Error> {
     if valid_category(root.to_owned(), name) {
         Ok(Category::new(root, OsString::from(name)))
