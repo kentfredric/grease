@@ -1,7 +1,7 @@
-use std::ffi::{OsString, OsStr};
+use std::ffi::OsString;
 use std::io::Error;
 use std::option::Option;
-use std::path::{PathBuf, Path};
+use std::path::PathBuf;
 use std::result::Result;
 
 pub struct Ebuild {
@@ -12,12 +12,12 @@ pub struct Ebuild {
 }
 
 impl Ebuild {
-    fn new(root: PathBuf, category: &OsStr, package: &OsStr, ebuild: &OsStr) -> Ebuild {
+    fn new(root: PathBuf, category: OsString, package: OsString, ebuild: OsString) -> Ebuild {
         Ebuild {
             root,
-            category: category.to_os_string(),
-            package: package.to_os_string(),
-            ebuild: ebuild.to_os_string(),
+            category,
+            package,
+            ebuild,
         }
     }
     pub fn ebuild_path(&self) -> PathBuf { self.package_path().join(&self.ebuild) }
@@ -28,7 +28,7 @@ impl Ebuild {
     pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
     pub fn pf(&self) -> Option<String> {
         self.ebuild_path().file_stem().and_then(|osstr| {
-            osstr.to_str().map(|str| String::from(str))
+            osstr.to_str().map(String::from)
         })
     }
     pub fn pvr(&self) -> Option<String> {
@@ -82,8 +82,8 @@ impl std::fmt::Debug for Ebuild {
     }
 }
 
-pub fn iterator<'a>(root: &'a Path, category: &'a OsStr, package: &'a OsStr)
-    -> Result<Box<Iterator<Item = Result<Ebuild, Error>> + 'a>, Error> {
+pub fn iterator(root: PathBuf, category: OsString, package: OsString)
+    -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
     let eroot = &root.join(&category).join(&package);
     Ok(Box::new(
         eroot
@@ -100,7 +100,12 @@ pub fn iterator<'a>(root: &'a Path, category: &'a OsStr, package: &'a OsStr)
             })
             .map(move |dirent| {
                 dirent.map(|entry| {
-                    Ebuild::new(root.to_path_buf(), category, package, &entry.file_name())
+                    Ebuild::new(
+                        root.to_path_buf(),
+                        category.clone(),
+                        package.clone(),
+                        entry.file_name(),
+                    )
                 })
             }),
     ))

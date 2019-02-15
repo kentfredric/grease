@@ -1,24 +1,20 @@
 use super::package::{self, Package};
-use std::ffi::{OsString, OsStr};
+use std::ffi::OsString;
 use std::fs::File;
 use std::io::{BufReader, BufRead, Error};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::result::Result;
 
+#[derive(Clone)]
 pub struct Category {
     root: PathBuf,
     category: OsString,
 }
 
 impl Category {
-    fn new(root: PathBuf, category: &OsStr) -> Category {
-        Category {
-            root,
-            category: category.to_os_string(),
-        }
-    }
-    pub fn packages<'a>(&'a self) -> Result<Box<impl Iterator<Item = Result<Package, Error>> + 'a>, Error> {
-        package::iterator(&self.root, &self.category)
+    fn new(root: PathBuf, category: OsString) -> Category { Category { root, category } }
+    pub fn packages(&self) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
+        package::iterator(self.root.clone(), self.category.clone())
     }
 }
 impl std::fmt::Debug for Category {
@@ -45,7 +41,7 @@ fn dirname_blacklisted(name: &str) -> bool {
 }
 
 #[inline]
-fn valid_category(root: &Path, name: &str) -> bool {
+fn valid_category(root: PathBuf, name: &str) -> bool {
     if dirname_blacklisted(name) {
         return false;
     }
@@ -53,25 +49,30 @@ fn valid_category(root: &Path, name: &str) -> bool {
 }
 
 #[inline]
-fn profile_category_file(root: &Path) -> PathBuf { root.join("profiles").join("categories") }
+fn profile_category_file(root: PathBuf) -> PathBuf { root.join("profiles").join("categories") }
 
-fn discover_in<'a>(root: &'a Path) -> Result<Box<Iterator<Item = Result<Category, Error>> + 'a>, Error> {
+fn discover_in(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
+    let root_clone = root.clone();
     Ok(Box::new(
         root.read_dir()?
             .filter(move |e| if let Ok(entry) = e {
-                valid_category(root, &entry.file_name().into_string().unwrap())
+                valid_category(
+                    root.clone(),
+                    &entry.clone().file_name().into_string().unwrap(),
+                )
             } else {
                 // Passthrough errors
                 true
             })
             .map(move |e| {
-                e.map(|ent| Category::new(root.to_path_buf(), &ent.file_name()))
+                e.map(|ent| Category::new(root_clone.clone(), ent.file_name()))
             }),
     ))
 }
 
-fn read_profile<'a>(root: &'a Path) -> Result<Box<Iterator<Item = Result<Category, Error>> + 'a>, Error> {
-    let buf = BufReader::new(File::open(profile_category_file(root))?);
+fn read_profile(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
+    let buf = BufReader::new(File::open(profile_category_file(root.to_path_buf()))?);
+    let root_clone = root.clone();
     let iter = buf.lines()
         .filter(move |line| if let Ok(l) = line {
             root.join(l).is_dir()
@@ -80,16 +81,16 @@ fn read_profile<'a>(root: &'a Path) -> Result<Box<Iterator<Item = Result<Categor
         })
         .map(move |line_res| {
             line_res.map(|line| {
-                Category::new(root.to_path_buf(), &OsString::from(line))
+                Category::new(root_clone.clone(), OsString::from(line))
             })
         });
     Ok(Box::new(iter))
 }
 
-pub fn iterator<'a>(root: &'a Path) -> Result<Box<Iterator<Item = Result<Category, Error>> + 'a>, Error> {
-    if profile_category_file(root).as_path().exists() {
-        read_profile(root)
+pub fn iterator(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
+    if profile_category_file(root.clone()).as_path().exists() {
+        read_profile(root.clone())
     } else {
-        discover_in(root)
+        discover_in(root.clone())
     }
 }
