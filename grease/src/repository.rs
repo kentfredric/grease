@@ -1,4 +1,5 @@
 use super::category::{self, Category};
+use super::ebuild::Ebuild;
 use super::package::Package;
 use std::io::Error;
 use std::path::{Path, PathBuf};
@@ -12,7 +13,7 @@ impl Repository {
     pub fn new(root: &Path) -> Repository { Repository { root: root.to_path_buf() } }
 
     pub fn categories(&self) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
-        category::iterator(self.root.clone())
+        category::iterator(self.root.to_owned())
     }
 
     pub fn packages(&self) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
@@ -21,6 +22,19 @@ impl Repository {
                 Ok(cat) => {
                     match cat.packages() {
                         Ok(package_iter) => package_iter,
+                        Err(e) => Box::new(vec![Err(e)].into_iter()),
+                    }
+                },
+                Err(e) => Box::new(vec![Err(e)].into_iter()),
+            })) as Box<Iterator<Item = _>>
+        })
+    }
+    pub fn ebuilds(&self) -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
+        self.packages().map(|pkg_it| {
+            Box::new(pkg_it.flat_map(|pkg_res| match pkg_res {
+                Ok(pkg) => {
+                    match pkg.ebuilds() {
+                        Ok(ebuild_iter) => ebuild_iter,
                         Err(e) => Box::new(vec![Err(e)].into_iter()),
                     }
                 },
