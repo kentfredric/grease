@@ -44,4 +44,6 @@ impl Repository {
             })) as Box<Iterator<Item = _>>
         })
     }
+
+    pub fn get_category(&self, name: &str) -> Result<Category, Error> { category::get(self.root.to_owned(), name) }
 }
