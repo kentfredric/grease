@@ -3,7 +3,7 @@ use super::category;
 use super::ebuild::{self, Ebuild};
 use std::ffi::OsString;
 use std::io::Error;
-use std::io::ErrorKind::NotFound;
+use std::io::ErrorKind::{NotFound,InvalidData};
 use std::path::PathBuf;
 use std::result::Result;
 
@@ -38,6 +38,23 @@ impl Package {
             self.category.to_owned(),
             self.package.to_owned(),
         )
+    }
+
+    /// Get a validated ebuild within this category
+    pub fn get_ebuild(&self, name: &str) -> Result<Ebuild, Error> {
+        match self.package.to_owned().into_string() {
+            Ok(pkg) => match self.category.to_owned().into_string() {
+                Ok(cat) => ebuild::get(self.root.to_owned(), &cat, &pkg, name),
+                Err(_) => Err(Error::new(
+                    InvalidData,
+                    "Failed converting category to UTF8 String",
+                )),
+            },
+            Err(_) => Err(Error::new(
+                    InvalidData,
+                    "Failed converting package to UTF8 String",
+            )),
+        }
     }
 }
 
