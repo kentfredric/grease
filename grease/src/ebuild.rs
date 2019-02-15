@@ -6,6 +6,7 @@ use std::option::Option;
 use std::path::PathBuf;
 use std::result::Result;
 
+/// Represent a discrete Gentoo ebuild
 pub struct Ebuild {
     root: PathBuf,
     category: OsString,
@@ -23,19 +24,27 @@ impl Ebuild {
         }
     }
 
+    /// Returns a path to the ebuild file
     pub fn path(&self) -> PathBuf {
         self.root.join(&self.category).join(&self.package).join(
             &self.ebuild,
         )
     }
 
+    /// Returns the ebuilds category similar to `PMS` variable `CATEGORY`
     pub fn category(&self) -> Option<String> { self.category.to_str().map(String::from) }
+
+    /// Returns the ebuilds package name similar to `PMS` variable `PN`
     pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
+
+    /// Returns the ebuilds full package version similar to `PMS` variable `PF`
     pub fn pf(&self) -> Option<String> {
         self.path().file_stem().and_then(|osstr| {
             osstr.to_str().map(String::from)
         })
     }
+    /// Returns the ebuilds version with revision similar to `PMS` variable
+    /// `PVR`
     pub fn pvr(&self) -> Option<String> {
         self.pf().and_then(|pf| {
             self.pn().and_then(|pn| {
@@ -48,6 +57,8 @@ impl Ebuild {
             })
         })
     }
+    /// Returns the ebuilds version without revision similar to `PMS` variable
+    /// `PV`
     pub fn pv(&self) -> Option<String> {
         self.pvr().map(|pvr| {
             let mut chunks: Vec<_> = pvr.split_terminator("-r").collect();
@@ -68,6 +79,7 @@ impl Ebuild {
             }
         })
     }
+    /// Returns the ebuilds revision, or r0, similar to `PMS` variable `PR`
     pub fn pr(&self) -> Option<String> {
         self.pvr().map(|pvr| {
             let mut chunks: Vec<_> = pvr.split_terminator("-r").collect();
@@ -89,6 +101,8 @@ impl Ebuild {
         })
     }
 
+    /// Returns the ebuilds package name without revision, similar to `PMS`
+    /// variable `P`
     pub fn p(&self) -> Option<String> {
         self.pn().and_then(
             |pn| self.pv().and_then(|pv| Some(pn + &pv)),
