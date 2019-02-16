@@ -20,12 +20,12 @@ impl Category {
     pub fn path(&self) -> PathBuf { self.root.join(&self.category) }
 
     /// Return an iterator over all packages in this category
-    pub fn packages(&self) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
+    pub fn packages(&self) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
         package::iterator(self.root.to_owned(), self.category.to_owned())
     }
 
     /// Return an iterator over all ebuilds in this category
-    pub fn ebuilds(&self) -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
+    pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
         self.packages().map(|pkg_it| {
             Box::new(pkg_it.flat_map(|pkg_res| match pkg_res {
                 Ok(pkg) => {
@@ -35,7 +35,7 @@ impl Category {
                     }
                 },
                 Err(e) => Box::new(vec![Err(e)].into_iter()),
-            })) as Box<Iterator<Item = _>>
+            })) as Box<dyn Iterator<Item = _>>
         })
     }
 
@@ -51,7 +51,7 @@ impl Category {
     }
 }
 impl std::fmt::Debug for Category {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "cat: {}",
@@ -79,7 +79,7 @@ fn valid_category(root: PathBuf, name: &str) -> bool { !dirname_blacklisted(name
 #[inline]
 fn profile_category_file(root: PathBuf) -> PathBuf { root.join("profiles").join("categories") }
 
-fn discover_in(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
+fn discover_in(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
     let my_root = root.to_owned();
     Ok(Box::new(
         root.read_dir()?
@@ -98,7 +98,7 @@ fn discover_in(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Err
     ))
 }
 
-fn read_profile(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
+fn read_profile(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
     let my_root = root.to_owned();
     Ok(Box::new(
         BufReader::new(
@@ -118,7 +118,7 @@ fn read_profile(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Er
 }
 
 /// Return an iterator over all categories in the given root
-pub fn iterator(root: PathBuf) -> Result<Box<Iterator<Item = Result<Category, Error>>>, Error> {
+pub fn iterator(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
     if profile_category_file(root.to_owned()).exists() {
         read_profile(root.to_owned())
     } else {

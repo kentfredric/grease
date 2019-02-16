@@ -32,7 +32,7 @@ impl Package {
     pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
 
     /// Iterate all ebuilds within the package
-    pub fn ebuilds(&self) -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
+    pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
         ebuild::iterator(
             self.root.to_owned(),
             self.category.to_owned(),
@@ -59,7 +59,7 @@ impl Package {
 }
 
 impl std::fmt::Debug for Package {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let none_str = || String::from("None");
         write!(f, "cat: {}, pn: {}",
                self.category().unwrap_or_else(none_str),
@@ -69,7 +69,7 @@ impl std::fmt::Debug for Package {
 }
 
 /// Create an iterator of all Packages
-pub fn iterator(root: PathBuf, category: OsString) -> Result<Box<Iterator<Item = Result<Package, Error>>>, Error> {
+pub fn iterator(root: PathBuf, category: OsString) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
     Ok(Box::new(
         root.join(&category).read_dir()?
         .filter(move |e| if let Ok(entry) = e {

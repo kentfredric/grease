@@ -1,5 +1,3 @@
-extern crate once_cell;
-
 use super::package;
 use super::version::{self, Version};
 use once_cell::sync::OnceCell;
@@ -75,7 +73,7 @@ impl Ebuild {
 }
 
 impl std::fmt::Debug for Ebuild {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let none_str = || String::from("None");
         write!(f, "cat: {}, pf: {}, pn: {}, pvr: {} pv: {} pr: {}",
                self.category().unwrap_or_else(none_str),
@@ -106,7 +104,7 @@ fn ebuild_to_pvr(package: OsString, ebuild: OsString) -> String {
 
 /// Iterate all ebuilds within a package
 pub fn iterator(root: PathBuf, category: OsString, package: OsString)
-    -> Result<Box<Iterator<Item = Result<Ebuild, Error>>>, Error> {
+    -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
     Ok(Box::new(
         root.join(&category)
             .join(&package)
