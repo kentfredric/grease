@@ -1,8 +1,16 @@
 extern crate grease;
-use grease::version::Version;
-use std::ffi::OsString;
+use grease::version;
 
 #[test]
-pub fn basic() -> () {
-    Version::new(OsString::from("1234"));
+pub fn simple_pv_without_r() -> () {
+    let v = version::parse("1234");
+    assert_eq!( v.pv(), "1234");
+    assert_eq!( v.pr(), "r0");
+}
+
+#[test]
+pub fn simple_pv_with_r() -> () {
+    let v = version::parse("1234-r1");
+    assert_eq!( v.pv(), "1234");
+    assert_eq!( v.pr(), "r1");
 }
