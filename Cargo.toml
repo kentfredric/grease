@@ -11,3 +11,10 @@ version = "~2.32"
 default-features = false
 
 features = ["suggestions", "color", "vec_map"]
+
+[dev-dependencies]
+criterion = "~0.2"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
