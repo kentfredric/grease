@@ -1,4 +1,8 @@
+extern crate once_cell;
+
 use super::package;
+use super::version::{self, Version};
+use once_cell::sync::OnceCell;
 use std::ffi::OsString;
 use std::io::Error;
 use std::io::ErrorKind::NotFound;
@@ -12,6 +16,7 @@ pub struct Ebuild {
     category: OsString,
     package: OsString,
     ebuild: OsString,
+    version: OnceCell<Version>,
 }
 
 impl Ebuild {
@@ -21,6 +26,7 @@ impl Ebuild {
             category,
             package,
             ebuild,
+            version: OnceCell::INIT,
         }
     }
 
@@ -29,6 +35,15 @@ impl Ebuild {
         self.root.join(&self.category).join(&self.package).join(
             &self.ebuild,
         )
+    }
+
+    pub fn version(&self) -> &Version {
+        self.version.get_or_init(|| {
+            version::parse(&ebuild_to_pvr(
+                self.package.to_owned(),
+                self.ebuild.to_owned(),
+            ))
+        })
     }
 
     /// Returns the ebuilds category similar to `PMS` variable `CATEGORY`
@@ -45,69 +60,18 @@ impl Ebuild {
     }
     /// Returns the ebuilds version with revision similar to `PMS` variable
     /// `PVR`
-    pub fn pvr(&self) -> Option<String> {
-        self.pf().and_then(|pf| {
-            self.pn().and_then(|pn| {
-                let suffix = pf.trim_start_matches((pn + "-").as_str());
-                if suffix == pf {
-                    None
-                } else {
-                    Some(String::from(suffix))
-                }
-            })
-        })
+    pub fn pvr(&self) -> String {
+        self.version().pvr()
     }
     /// Returns the ebuilds version without revision similar to `PMS` variable
     /// `PV`
-    pub fn pv(&self) -> Option<String> {
-        self.pvr().map(|pvr| {
-            let mut chunks: Vec<_> = pvr.split_terminator("-r").collect();
-            // This finds the trailing block of PVR which *might* be "-r" + a series of
-            // digits if such a block exists, return PVR without it otherwise, perform no
-            // changes and return PVR as PV
-            if chunks.len() < 2 {
-                return pvr;
-            }
-            match chunks.pop() {
-                None => pvr,
-                Some(rversion) => {
-                    match rversion.parse::<u32>() {
-                        Ok(_) => chunks.join("-"),
-                        Err(_) => pvr,
-                    }
-                },
-            }
-        })
-    }
+    pub fn pv(&self) -> &str { self.version().pv() }
     /// Returns the ebuilds revision, or r0, similar to `PMS` variable `PR`
-    pub fn pr(&self) -> Option<String> {
-        self.pvr().map(|pvr| {
-            let mut chunks: Vec<_> = pvr.split_terminator("-r").collect();
-            // This finds the trailing block of PVR which *might* be "-r" + a series of
-            // digits if such a block exists, return the r-suffix, otherwise, perform no
-            // changes and return PVR as PV
-            if chunks.len() < 2 {
-                return String::from("r0");
-            }
-            match chunks.pop() {
-                None => String::from("r0"),
-                Some(rversion) => {
-                    match rversion.parse::<u32>() {
-                        Ok(_) => String::from("r".to_owned() + rversion),
-                        Err(_) => String::from("r0"),
-                    }
-                },
-            }
-        })
-    }
+    pub fn pr(&self) -> &str { self.version().pr() }
 
     /// Returns the ebuilds package name without revision, similar to `PMS`
     /// variable `P`
-    pub fn p(&self) -> Option<String> {
-        self.pn().and_then(
-            |pn| self.pv().and_then(|pv| Some(pn + &pv)),
-        )
-    }
+    pub fn p(&self) -> Option<String> { self.pn().and_then(|pn| Some(pn + &self.pv())) }
 }
 
 impl std::fmt::Debug for Ebuild {
@@ -117,11 +81,27 @@ impl std::fmt::Debug for Ebuild {
                self.category().unwrap_or_else(none_str),
                self.pf().unwrap_or_else(none_str),
                self.pn().unwrap_or_else(none_str),
-               self.pvr().unwrap_or_else(none_str),
-               self.pv().unwrap_or_else(none_str),
-               self.pr().unwrap_or_else(none_str),
+               self.pvr(),
+               self.pv(),
+               self.pr(),
         )
     }
+}
+
+fn ebuild_to_pvr(package: OsString, ebuild: OsString) -> String {
+    let package_str = package.to_str().map(String::from).expect(
+        "Can't decode \
+         package:OsString to \
+         UTF8 String",
+    );
+    let ebuild_str = ebuild.to_str().map(String::from).expect(
+        "Can't decode \
+         ebuild:OsStrting to UTF8 \
+         String",
+    );
+    let pf = ebuild_str.trim_end_matches(".ebuild");
+    pf.trim_start_matches((package_str + "-").as_str())
+        .to_owned()
 }
 
 /// Iterate all ebuilds within a package
