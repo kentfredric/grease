@@ -1,25 +1,19 @@
 extern crate criterion;
 extern crate grease;
 
-use criterion::{Criterion, BatchSize};
+use criterion::{BatchSize, Criterion};
 use grease::version;
-use std::ffi::OsString;
-use std::time::Duration;
+use std::{ffi::OsString, time::Duration};
 
 fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function_over_inputs(
         "new",
         |b, &inp| {
-            b.iter_batched(
-                || inp,
-                |data| version::parse(data),
-                BatchSize::NumIterations(10_000),
-            );
+            b.iter_batched(|| inp, |data| version::parse(data), BatchSize::NumIterations(10_000));
         },
         &["1", "1-r1", "10", "10-r1", "1234", "12345-r1"],
     );
 }
-
 
 fn main() {
     let mut c = Criterion::default()

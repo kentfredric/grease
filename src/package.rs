@@ -1,26 +1,25 @@
-
-use super::category;
-use super::ebuild::{self, Ebuild};
-use std::ffi::OsString;
-use std::io::Error;
-use std::io::ErrorKind::{NotFound,InvalidData};
-use std::path::PathBuf;
-use std::result::Result;
+use super::{
+    category,
+    ebuild::{self, Ebuild},
+};
+use std::{
+    ffi::OsString,
+    io::{
+        Error,
+        ErrorKind::{InvalidData, NotFound},
+    },
+    path::PathBuf,
+    result::Result,
+};
 
 /// Represent a discrete gentoo package
 pub struct Package {
-    root: PathBuf,
+    root:     PathBuf,
     category: OsString,
-    package: OsString,
+    package:  OsString,
 }
 impl Package {
-    fn new(root: PathBuf, category: OsString, package: OsString) -> Package {
-        Package {
-            root,
-            category,
-            package,
-        }
-    }
+    fn new(root: PathBuf, category: OsString, package: OsString) -> Package { Package { root, category, package } }
 
     /// Return the path to a gentoo package
     pub fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package) }
@@ -33,11 +32,7 @@ impl Package {
 
     /// Iterate all ebuilds within the package
     pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
-        ebuild::iterator(
-            self.root.to_owned(),
-            self.category.to_owned(),
-            self.package.to_owned(),
-        )
+        ebuild::iterator(self.root.to_owned(), self.category.to_owned(), self.package.to_owned())
     }
 
     /// Get a validated ebuild within this category
@@ -45,15 +40,9 @@ impl Package {
         match self.package.to_owned().into_string() {
             Ok(pkg) => match self.category.to_owned().into_string() {
                 Ok(cat) => ebuild::get(self.root.to_owned(), &cat, &pkg, name),
-                Err(_) => Err(Error::new(
-                    InvalidData,
-                    "Failed converting category to UTF8 String",
-                )),
+                Err(_) => Err(Error::new(InvalidData, "Failed converting category to UTF8 String")),
             },
-            Err(_) => Err(Error::new(
-                    InvalidData,
-                    "Failed converting package to UTF8 String",
-            )),
+            Err(_) => Err(Error::new(InvalidData, "Failed converting package to UTF8 String")),
         }
     }
 }
@@ -61,10 +50,7 @@ impl Package {
 impl std::fmt::Debug for Package {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let none_str = || String::from("None");
-        write!(f, "cat: {}, pn: {}",
-               self.category().unwrap_or_else(none_str),
-               self.pn().unwrap_or_else(none_str),
-        )
+        write!(f, "cat: {}, pn: {}", self.category().unwrap_or_else(none_str), self.pn().unwrap_or_else(none_str),)
     }
 }
 
@@ -90,11 +76,7 @@ pub fn get(root: PathBuf, category: &str, package: &str) -> Result<Package, Erro
     category::get(root, category).and_then(|cat| {
         let pkg_path = cat.path().join(package);
         if pkg_path.exists() && pkg_path.is_dir() {
-            Ok(Package::new(
-                my_root.to_owned(),
-                OsString::from(category),
-                OsString::from(package),
-            ))
+            Ok(Package::new(my_root.to_owned(), OsString::from(category), OsString::from(package)))
         } else {
             Err(Error::new(NotFound, "Package not found/ not a directory"))
         }

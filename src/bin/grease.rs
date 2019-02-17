@@ -1,7 +1,5 @@
 use grease::repository::Repository;
-use std::io::Error;
-use std::path::Path;
-use std::result::Result;
+use std::{io::Error, path::Path, result::Result};
 
 #[global_allocator]
 static GLOBAL: std::alloc::System = std::alloc::System;

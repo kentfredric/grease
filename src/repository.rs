@@ -1,9 +1,13 @@
-use super::category::{self, Category};
-use super::ebuild::Ebuild;
-use super::package::Package;
-use std::io::Error;
-use std::path::{Path, PathBuf};
-use std::result::Result;
+use super::{
+    category::{self, Category},
+    ebuild::Ebuild,
+    package::Package,
+};
+use std::{
+    io::Error,
+    path::{Path, PathBuf},
+    result::Result,
+};
 
 /// Represents a gentoo repository
 pub struct Repository {
@@ -25,11 +29,9 @@ impl Repository {
     pub fn packages(&self) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
         self.categories().map(|cat_it| {
             Box::new(cat_it.flat_map(|cat_res| match cat_res {
-                Ok(cat) => {
-                    match cat.packages() {
-                        Ok(package_iter) => package_iter,
-                        Err(e) => Box::new(vec![Err(e)].into_iter()),
-                    }
+                Ok(cat) => match cat.packages() {
+                    Ok(package_iter) => package_iter,
+                    Err(e) => Box::new(vec![Err(e)].into_iter()),
                 },
                 Err(e) => Box::new(vec![Err(e)].into_iter()),
             })) as Box<dyn Iterator<Item = _>>
@@ -40,11 +42,9 @@ impl Repository {
     pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
         self.packages().map(|pkg_it| {
             Box::new(pkg_it.flat_map(|pkg_res| match pkg_res {
-                Ok(pkg) => {
-                    match pkg.ebuilds() {
-                        Ok(ebuild_iter) => ebuild_iter,
-                        Err(e) => Box::new(vec![Err(e)].into_iter()),
-                    }
+                Ok(pkg) => match pkg.ebuilds() {
+                    Ok(ebuild_iter) => ebuild_iter,
+                    Err(e) => Box::new(vec![Err(e)].into_iter()),
                 },
                 Err(e) => Box::new(vec![Err(e)].into_iter()),
             })) as Box<dyn Iterator<Item = _>>

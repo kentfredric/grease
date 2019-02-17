@@ -1,15 +1,21 @@
-use super::ebuild::Ebuild;
-use super::package::{self, Package};
-use std::ffi::OsString;
-use std::fs::File;
-use std::io::{BufReader, BufRead, Error};
-use std::io::ErrorKind::{NotFound, InvalidData};
-use std::path::PathBuf;
-use std::result::Result;
+use super::{
+    ebuild::Ebuild,
+    package::{self, Package},
+};
+use std::{
+    ffi::OsString,
+    fs::File,
+    io::{
+        BufRead, BufReader, Error,
+        ErrorKind::{InvalidData, NotFound},
+    },
+    path::PathBuf,
+    result::Result,
+};
 
 /// Represents a discrete Gentoo category
 pub struct Category {
-    root: PathBuf,
+    root:     PathBuf,
     category: OsString,
 }
 
@@ -28,11 +34,9 @@ impl Category {
     pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
         self.packages().map(|pkg_it| {
             Box::new(pkg_it.flat_map(|pkg_res| match pkg_res {
-                Ok(pkg) => {
-                    match pkg.ebuilds() {
-                        Ok(ebuild_iter) => ebuild_iter,
-                        Err(e) => Box::new(vec![Err(e)].into_iter()),
-                    }
+                Ok(pkg) => match pkg.ebuilds() {
+                    Ok(ebuild_iter) => ebuild_iter,
+                    Err(e) => Box::new(vec![Err(e)].into_iter()),
                 },
                 Err(e) => Box::new(vec![Err(e)].into_iter()),
             })) as Box<dyn Iterator<Item = _>>
@@ -43,27 +47,15 @@ impl Category {
     pub fn get_package(&self, name: &str) -> Result<Package, Error> {
         match self.category.to_owned().into_string() {
             Ok(cat) => package::get(self.root.to_owned(), &cat, name),
-            Err(_) => Err(Error::new(
-                InvalidData,
-                "Failed converting category to UTF8 String",
-            )),
+            Err(_) => Err(Error::new(InvalidData, "Failed converting category to UTF8 String")),
         }
     }
 }
 impl std::fmt::Debug for Category {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "cat: {}",
-            self.category.to_str().map(String::from).unwrap_or_else(
-                || {
-                    String::from("None")
-                },
-            )
-        )
+        write!(f, "cat: {}", self.category.to_str().map(String::from).unwrap_or_else(|| String::from("None"),))
     }
 }
-
 
 #[inline]
 fn dirname_blacklisted(name: &str) -> bool {
@@ -83,37 +75,25 @@ fn discover_in(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category,
     let my_root = root.to_owned();
     Ok(Box::new(
         root.read_dir()?
-            .filter(move |e| if let Ok(entry) = e {
-                valid_category(
-                    root.to_owned(),
-                    &entry.to_owned().file_name().into_string().unwrap(),
-                )
-            } else {
-                // Passthrough errors
-                true
+            .filter(move |e| {
+                if let Ok(entry) = e {
+                    valid_category(root.to_owned(), &entry.to_owned().file_name().into_string().unwrap())
+                } else {
+                    // Passthrough errors
+                    true
+                }
             })
-            .map(move |e| {
-                e.map(|ent| Category::new(my_root.to_owned(), ent.file_name()))
-            }),
+            .map(move |e| e.map(|ent| Category::new(my_root.to_owned(), ent.file_name()))),
     ))
 }
 
 fn read_profile(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
     let my_root = root.to_owned();
     Ok(Box::new(
-        BufReader::new(
-            File::open(profile_category_file(root.to_owned()))?,
-        ).lines()
-            .filter(move |line| if let Ok(l) = line {
-                root.join(l).is_dir()
-            } else {
-                true
-            })
-            .map(move |line_res| {
-                line_res.map(|line| {
-                    Category::new(my_root.to_owned(), OsString::from(line))
-                })
-            }),
+        BufReader::new(File::open(profile_category_file(root.to_owned()))?)
+            .lines()
+            .filter(move |line| if let Ok(l) = line { root.join(l).is_dir() } else { true })
+            .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), OsString::from(line)))),
     ))
 }
 
@@ -131,10 +111,6 @@ pub fn get(root: PathBuf, name: &str) -> Result<Category, Error> {
     if valid_category(root.to_owned(), name) {
         Ok(Category::new(root, OsString::from(name)))
     } else {
-        Err(Error::new(
-            NotFound,
-            "Specified category name was not a directory/not \
-             found/illegal",
-        ))
+        Err(Error::new(NotFound, "Specified category name was not a directory/not found/illegal"))
     }
 }

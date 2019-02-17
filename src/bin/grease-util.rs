@@ -13,5 +13,6 @@ fn main() {
         (version: crate_version!())
         (author: crate_authors!())
         (about: "Low level utility portage multi-tool")
-    ).get_matches();
+    )
+    .get_matches();
 }
