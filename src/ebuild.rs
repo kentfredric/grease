@@ -4,9 +4,7 @@ use super::{
 };
 use once_cell::sync::OnceCell;
 use std::{
-    ffi::OsString,
     io::{Error, ErrorKind::NotFound},
-    option::Option,
     path::PathBuf,
     result::Result,
 };
@@ -14,14 +12,14 @@ use std::{
 /// Represent a discrete Gentoo ebuild
 pub struct Ebuild {
     root:     PathBuf,
-    category: OsString,
-    package:  OsString,
-    ebuild:   OsString,
+    category: String,
+    package:  String,
+    ebuild:   String,
     version:  OnceCell<Version>,
 }
 
 impl Ebuild {
-    fn new(root: PathBuf, category: OsString, package: OsString, ebuild: OsString) -> Ebuild {
+    fn new(root: PathBuf, category: String, package: String, ebuild: String) -> Ebuild {
         Ebuild { root, category, package, ebuild, version: OnceCell::INIT }
     }
 
@@ -33,13 +31,21 @@ impl Ebuild {
     }
 
     /// Returns the ebuilds category similar to `PMS` variable `CATEGORY`
-    pub fn category(&self) -> Option<String> { self.category.to_str().map(String::from) }
+    pub fn category(&self) -> String { self.category.to_owned() }
 
     /// Returns the ebuilds package name similar to `PMS` variable `PN`
-    pub fn pn(&self) -> Option<String> { self.package.to_str().map(String::from) }
+    pub fn pn(&self) -> String { self.package.to_owned() }
 
     /// Returns the ebuilds full package version similar to `PMS` variable `PF`
-    pub fn pf(&self) -> Option<String> { self.path().file_stem().and_then(|osstr| osstr.to_str().map(String::from)) }
+    pub fn pf(&self) -> String {
+        String::from(
+            self.path()
+                .file_stem()
+                .expect("Could not extract file stem from file")
+                .to_str()
+                .expect("Could not decode UTF8"),
+        )
+    }
 
     /// Returns the ebuilds version with revision similar to `PMS` variable
     /// `PVR`
@@ -54,18 +60,17 @@ impl Ebuild {
 
     /// Returns the ebuilds package name without revision, similar to `PMS`
     /// variable `P`
-    pub fn p(&self) -> Option<String> { self.pn().and_then(|pn| Some(pn + &self.pv())) }
+    pub fn p(&self) -> String { self.pn() + &self.pv() }
 }
 
 impl std::fmt::Debug for Ebuild {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let none_str = || String::from("None");
         write!(
             f,
             "cat: {}, pf: {}, pn: {}, pvr: {} pv: {} pr: {}",
-            self.category().unwrap_or_else(none_str),
-            self.pf().unwrap_or_else(none_str),
-            self.pn().unwrap_or_else(none_str),
+            self.category(),
+            self.pf(),
+            self.pn(),
             self.pvr(),
             self.pv(),
             self.pr(),
@@ -73,16 +78,14 @@ impl std::fmt::Debug for Ebuild {
     }
 }
 
-fn ebuild_to_pvr(package: OsString, ebuild: OsString) -> String {
-    let package_str = package.to_str().map(String::from).expect("Can't decode package:OsString to UTF8 String");
-    let ebuild_str = ebuild.to_str().map(String::from).expect("Can't decode ebuild:OsStrting to UTF8 String");
-    let pf = ebuild_str.trim_end_matches(".ebuild");
-    pf.trim_start_matches((package_str + "-").as_str()).to_owned()
+fn ebuild_to_pvr(package: String, ebuild: String) -> String {
+    let pf = ebuild.trim_end_matches(".ebuild");
+    pf.trim_start_matches((package + "-").as_str()).to_owned()
 }
 
 /// Iterate all ebuilds within a package
 pub fn iterator(
-    root: PathBuf, category: OsString, package: OsString,
+    root: PathBuf, category: String, package: String,
 ) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
     Ok(Box::new(
         root.join(&category)
@@ -102,7 +105,9 @@ pub fn iterator(
             })
             .map(move |dirent| {
                 dirent.map(|entry| {
-                    Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), entry.file_name())
+                    let e_fn = entry.file_name();
+                    let e = e_fn.to_str().expect("Could not decode filename to UTF8");
+                    Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), e.to_owned())
                 })
             }),
     ))
@@ -114,12 +119,7 @@ pub fn get(root: PathBuf, category: &str, package: &str, ebuild: &str) -> Result
     package::get(root, category, package).and_then(|pkg| {
         let ebuild_path = pkg.path().join(ebuild);
         if ebuild_path.exists() && !ebuild_path.is_dir() {
-            Ok(Ebuild::new(
-                my_root.to_owned(),
-                OsString::from(category),
-                OsString::from(package),
-                OsString::from(ebuild),
-            ))
+            Ok(Ebuild::new(my_root.to_owned(), category.to_owned(), package.to_owned(), ebuild.to_owned()))
         } else {
             Err(Error::new(NotFound, "Ebuild not found/ is a directory"))
         }
