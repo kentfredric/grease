@@ -3,12 +3,8 @@ use super::{
     package::{self, Package},
 };
 use std::{
-    ffi::OsString,
     fs::File,
-    io::{
-        BufRead, BufReader, Error,
-        ErrorKind::{InvalidData, NotFound},
-    },
+    io::{BufRead, BufReader, Error, ErrorKind::NotFound},
     path::PathBuf,
     result::Result,
 };
@@ -16,20 +12,20 @@ use std::{
 /// Represents a discrete Gentoo category
 pub struct Category {
     root:     PathBuf,
-    category: OsString,
+    category: String,
 }
 
 impl Category {
-    fn new(root: PathBuf, category: OsString) -> Category { Category { root, category } }
+    fn new(root: PathBuf, category: String) -> Category { Category { root, category } }
 
     /// Return the path to the category
     pub fn path(&self) -> PathBuf { self.root.join(&self.category) }
 
-    pub fn name(&self) -> String { self.category.to_str().expect("Can't convert to UTF8").to_owned() }
+    pub fn name(&self) -> String { self.category.to_owned() }
 
     /// Return an iterator over all packages in this category
     pub fn packages(&self) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
-        package::iterator(self.root.to_owned(), self.category.to_str().expect("Can't decode filename").to_owned())
+        package::iterator(self.root.to_owned(), self.category.to_owned())
     }
 
     /// Return an iterator over all ebuilds in this category
@@ -47,16 +43,12 @@ impl Category {
 
     /// Get a validated package within this category
     pub fn get_package(&self, name: &str) -> Result<Package, Error> {
-        match self.category.to_owned().into_string() {
-            Ok(cat) => package::get(self.root.to_owned(), &cat, name),
-            Err(_) => Err(Error::new(InvalidData, "Failed converting category to UTF8 String")),
-        }
+        let c = self.category.to_owned();
+        package::get(self.root.to_owned(), &c, name)
     }
 }
 impl std::fmt::Debug for Category {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "cat: {}", self.category.to_str().map(String::from).unwrap_or_else(|| String::from("None"),))
-    }
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { write!(f, "cat: {}", &self.category) }
 }
 
 #[inline]
@@ -85,7 +77,7 @@ fn discover_in(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category,
                     true
                 }
             })
-            .map(move |e| e.map(|ent| Category::new(my_root.to_owned(), ent.file_name()))),
+            .map(move |e| e.map(|ent| Category::new(my_root.to_owned(), ent.file_name().to_str().unwrap().to_owned()))),
     ))
 }
 
@@ -95,7 +87,7 @@ fn read_profile(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category
         BufReader::new(File::open(profile_category_file(root.to_owned()))?)
             .lines()
             .filter(move |line| if let Ok(l) = line { root.join(l).is_dir() } else { true })
-            .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), OsString::from(line)))),
+            .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line))),
     ))
 }
 
@@ -111,7 +103,7 @@ pub fn iterator(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category
 /// Get a validated category from the root
 pub fn get(root: PathBuf, name: &str) -> Result<Category, Error> {
     if valid_category(root.to_owned(), name) {
-        Ok(Category::new(root, OsString::from(name)))
+        Ok(Category::new(root, name.to_owned()))
     } else {
         Err(Error::new(NotFound, "Specified category name was not a directory/not found/illegal"))
     }
