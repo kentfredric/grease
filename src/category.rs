@@ -25,6 +25,8 @@ impl Category {
     /// Return the path to the category
     pub fn path(&self) -> PathBuf { self.root.join(&self.category) }
 
+    pub fn name(&self) -> String { self.category.to_str().expect("Can't convert to UTF8").to_owned() }
+
     /// Return an iterator over all packages in this category
     pub fn packages(&self) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
         package::iterator(self.root.to_owned(), self.category.to_str().expect("Can't decode filename").to_owned())

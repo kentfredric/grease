@@ -26,6 +26,8 @@ impl Package {
     /// Get the package name of the package
     pub fn pn(&self) -> String { self.package.to_owned() }
 
+    pub fn name(&self) -> String { self.category.to_owned() + "/" + &self.package }
+
     /// Iterate all ebuilds within the package
     pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
         ebuild::iterator(self.root.to_owned(), self.category.to_owned(), self.package.to_owned())

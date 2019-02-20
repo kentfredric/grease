@@ -30,6 +30,8 @@ impl Ebuild {
         self.version.get_or_init(|| version::parse(&ebuild_to_pvr(self.package.to_owned(), self.ebuild.to_owned())))
     }
 
+    pub fn name(&self) -> String { self.category.to_owned() + "/" + &self.package + "/" + &self.ebuild }
+
     /// Returns the ebuilds category similar to `PMS` variable `CATEGORY`
     pub fn category(&self) -> String { self.category.to_owned() }
 
