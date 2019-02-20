@@ -27,7 +27,7 @@ impl Category {
 
     /// Return an iterator over all packages in this category
     pub fn packages(&self) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
-        package::iterator(self.root.to_owned(), self.category.to_owned())
+        package::iterator(self.root.to_owned(), self.category.to_str().expect("Can't decode filename").to_owned())
     }
 
     /// Return an iterator over all ebuilds in this category
