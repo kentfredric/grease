@@ -9,7 +9,7 @@ use std::{
     result::Result,
 };
 
-mod filter;
+pub mod filter;
 
 /// Represents a discrete Gentoo category
 pub struct Category {
