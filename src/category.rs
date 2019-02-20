@@ -9,6 +9,8 @@ use std::{
     result::Result,
 };
 
+mod filter;
+
 /// Represents a discrete Gentoo category
 pub struct Category {
     root:     PathBuf,
