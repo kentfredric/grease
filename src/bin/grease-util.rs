@@ -2,11 +2,7 @@
 extern crate clap;
 
 use grease::repository::Repository;
-use std::{
-    alloc::System,
-    io::{Stdout, Write},
-    path::Path,
-};
+use std::{alloc::System, path::Path};
 
 #[global_allocator]
 static GLOBAL: System = System;
@@ -50,12 +46,12 @@ fn main() {
     .get_matches();
     match app_m.subcommand() {
         ("iterate", Some(sub_m)) => match sub_m.subcommand() {
-            ("categories", Some(sub_it)) => iter_repo_categories(sub_m.value_of("REPOSITORY").unwrap()),
-            ("packages", Some(sub_it)) => iter_repo_packages(sub_m.value_of("REPOSITORY").unwrap()),
-            ("ebuilds", Some(sub_it)) => iter_repo_ebuilds(sub_m.value_of("REPOSITORY").unwrap()),
-            ("category-paths", Some(sub_it)) => iter_repo_category_paths(sub_m.value_of("REPOSITORY").unwrap()),
-            ("package-paths", Some(sub_it)) => iter_repo_package_paths(sub_m.value_of("REPOSITORY").unwrap()),
-            ("ebuild-paths", Some(sub_it)) => iter_repo_ebuild_paths(sub_m.value_of("REPOSITORY").unwrap()),
+            ("categories", Some(_)) => iter_repo_categories(sub_m.value_of("REPOSITORY").unwrap()),
+            ("packages", Some(_)) => iter_repo_packages(sub_m.value_of("REPOSITORY").unwrap()),
+            ("ebuilds", Some(_)) => iter_repo_ebuilds(sub_m.value_of("REPOSITORY").unwrap()),
+            ("category-paths", Some(_)) => iter_repo_category_paths(sub_m.value_of("REPOSITORY").unwrap()),
+            ("package-paths", Some(_)) => iter_repo_package_paths(sub_m.value_of("REPOSITORY").unwrap()),
+            ("ebuild-paths", Some(_)) => iter_repo_ebuild_paths(sub_m.value_of("REPOSITORY").unwrap()),
 
             _ => clap::Error::with_description(sub_m.usage(), clap::ErrorKind::MissingSubcommand).exit(),
         },
