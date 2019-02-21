@@ -1,6 +1,7 @@
 use super::{
     ebuild::Ebuild,
     package::{self, Package},
+    util::optfilter::OptFilter,
 };
 use std::{
     fs::File,
@@ -71,15 +72,8 @@ fn discover_in(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category,
     let my_root = root.to_owned();
     Ok(Box::new(
         root.read_dir()?
-            .filter(move |e| {
-                if let Ok(entry) = e {
-                    valid_category(root.to_owned(), &entry.to_owned().file_name().into_string().unwrap())
-                } else {
-                    // Passthrough errors
-                    true
-                }
-            })
-            .map(move |e| e.map(|ent| Category::new(my_root.to_owned(), ent.file_name().to_str().unwrap().to_owned()))),
+            .map(move |e| e.map(|ent| Category::new(my_root.to_owned(), ent.file_name().to_str().unwrap().to_owned())))
+            .filter_oks(self::filter::legal_name),
     ))
 }
 
