@@ -102,8 +102,8 @@ fn read_profile(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category
     Ok(Box::new(
         BufReader::new(File::open(profile_category_file(root.to_owned()))?)
             .lines()
-            .filter(move |line| if let Ok(l) = line { root.join(l).is_dir() } else { true })
-            .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line))),
+            .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line)))
+            .filter_oks(self::Category::has_legal_name),
     ))
 }
 
