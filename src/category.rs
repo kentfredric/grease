@@ -10,8 +10,6 @@ use std::{
     result::Result,
 };
 
-pub mod filter;
-
 /// Represents a discrete Gentoo category
 pub struct Category {
     root:     PathBuf,
@@ -49,6 +47,28 @@ impl Category {
         let c = self.category.to_owned();
         package::get(self.root.to_owned(), &c, name)
     }
+
+    /// returns if a given category exists or not
+    pub fn exists(&self) -> bool { self.path().exists() }
+
+    /// determines if a category has a legal name or not
+    pub fn has_legal_name(&self) -> bool {
+        match self.category.as_str() {
+            "metadata" | "profiles" | "eclass" | ".git" | "distfiles" | "packages" | "scripts" => false,
+            _ => true,
+        }
+    }
+
+    /// Returns if a category is "legal" or not
+    ///
+    /// This means the category has both a legal name, and its path is a directory
+    pub fn is_legal(&self) -> bool { self.has_legal_name() && self.path().is_dir() }
+
+    /// Determines if a category has children
+    ///
+    /// This is a perfomance hit because it has to invoke readdir on the category
+    /// and begins package discovery, but returns true as soon as readdir yeilds a package
+    pub fn is_non_empty(&self) -> bool { self.packages().unwrap().any(|x| x.is_ok()) }
 }
 impl std::fmt::Debug for Category {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { write!(f, "cat: {}", &self.category) }
@@ -73,7 +93,7 @@ fn discover_in(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category,
     Ok(Box::new(
         root.read_dir()?
             .map(move |e| e.map(|ent| Category::new(my_root.to_owned(), ent.file_name().to_str().unwrap().to_owned())))
-            .filter_oks(self::filter::legal_name),
+            .filter_oks(self::Category::has_legal_name),
     ))
 }
 
