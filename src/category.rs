@@ -103,7 +103,6 @@ fn read_profile(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category
         BufReader::new(File::open(profile_category_file(root.to_owned()))?)
             .lines()
             .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line)))
-            .filter_oks(self::Category::has_legal_name),
     ))
 }
 
