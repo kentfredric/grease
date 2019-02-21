@@ -67,12 +67,11 @@ pub fn iterator(root: PathBuf, category: String) -> Result<Box<dyn Iterator<Item
 /// Get a validated package
 pub fn get(root: PathBuf, category: &str, package: &str) -> Result<Package, Error> {
     let my_root = root.to_owned();
-    category::get(root, category).and_then(|cat| {
-        let pkg_path = cat.path().join(package);
-        if pkg_path.exists() && pkg_path.is_dir() {
-            Ok(Package::new(my_root.to_owned(), category.to_owned(), package.to_owned()))
-        } else {
-            Err(Error::new(NotFound, "Package not found/ not a directory"))
-        }
-    })
+    let cat = category::get(root, category);
+    let pkg_path = cat.path().join(package);
+    if pkg_path.exists() && pkg_path.is_dir() {
+        Ok(Package::new(my_root.to_owned(), category.to_owned(), package.to_owned()))
+    } else {
+        Err(Error::new(NotFound, "Package not found/ not a directory"))
+    }
 }

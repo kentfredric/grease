@@ -26,7 +26,7 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     c.bench_function("repo.get_category(dev-perl).packages.count", move |b| {
         b.iter_batched(
-            || Repository::new(&p).get_category("dev-perl").unwrap(),
+            || Repository::new(&p).get_category("dev-perl"),
             |x| x.packages().unwrap().count(),
             BatchSize::NumIterations(100),
         )

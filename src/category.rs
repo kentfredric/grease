@@ -5,7 +5,7 @@ use super::{
 };
 use std::{
     fs::File,
-    io::{BufRead, BufReader, Error, ErrorKind::NotFound},
+    io::{BufRead, BufReader, Error},
     path::PathBuf,
     result::Result,
 };
@@ -75,17 +75,6 @@ impl std::fmt::Debug for Category {
 }
 
 #[inline]
-fn dirname_blacklisted(name: &str) -> bool {
-    match name {
-        "metadata" | "profiles" | "eclass" | ".git" | "distfiles" | "packages" | "scripts" => true,
-        _ => false,
-    }
-}
-
-#[inline]
-fn valid_category(root: PathBuf, name: &str) -> bool { !dirname_blacklisted(name) && root.join(name).is_dir() }
-
-#[inline]
 fn profile_category_file(root: PathBuf) -> PathBuf { root.join("profiles").join("categories") }
 
 fn discover_in(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
@@ -102,7 +91,7 @@ fn read_profile(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category
     Ok(Box::new(
         BufReader::new(File::open(profile_category_file(root.to_owned()))?)
             .lines()
-            .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line)))
+            .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line))),
     ))
 }
 
@@ -115,11 +104,5 @@ pub fn iterator(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category
     }
 }
 
-/// Get a validated category from the root
-pub fn get(root: PathBuf, name: &str) -> Result<Category, Error> {
-    if valid_category(root.to_owned(), name) {
-        Ok(Category::new(root, name.to_owned()))
-    } else {
-        Err(Error::new(NotFound, "Specified category name was not a directory/not found/illegal"))
-    }
-}
+/// Get a category from the root
+pub fn get(root: PathBuf, name: &str) -> Category { Category::new(root, name.to_owned()) }

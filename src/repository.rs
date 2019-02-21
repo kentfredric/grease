@@ -51,6 +51,6 @@ impl Repository {
         })
     }
 
-    /// Fetch a validated category by name in this repository
-    pub fn get_category(&self, name: &str) -> Result<Category, Error> { category::get(self.root.to_owned(), name) }
+    /// Fetch a category by name in this repository
+    pub fn get_category(&self, name: &str) -> Category { category::get(self.root.to_owned(), name) }
 }
