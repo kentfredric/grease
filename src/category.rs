@@ -1,14 +1,8 @@
 use super::{
     ebuild::Ebuild,
     package::{self, Package},
-    util::optfilter::OptFilter,
 };
-use std::{
-    fs::File,
-    io::{BufRead, BufReader, Error},
-    path::PathBuf,
-    result::Result,
-};
+use std::{io::Error, path::PathBuf, result::Result};
 
 /// Represents a discrete Gentoo category
 pub struct Category {
@@ -17,7 +11,7 @@ pub struct Category {
 }
 
 impl Category {
-    fn new(root: PathBuf, category: String) -> Category { Category { root, category } }
+    pub fn new(root: PathBuf, category: String) -> Category { Category { root, category } }
 
     /// Return the path to the category
     pub fn path(&self) -> PathBuf { self.root.join(&self.category) }
@@ -72,36 +66,6 @@ impl Category {
 }
 impl std::fmt::Debug for Category {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { write!(f, "cat: {}", &self.category) }
-}
-
-#[inline]
-fn profile_category_file(root: PathBuf) -> PathBuf { root.join("profiles").join("categories") }
-
-fn discover_in(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
-    let my_root = root.to_owned();
-    Ok(Box::new(
-        root.read_dir()?
-            .map(move |e| e.map(|ent| Category::new(my_root.to_owned(), ent.file_name().to_str().unwrap().to_owned())))
-            .filter_oks(self::Category::has_legal_name),
-    ))
-}
-
-fn read_profile(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
-    let my_root = root.to_owned();
-    Ok(Box::new(
-        BufReader::new(File::open(profile_category_file(root.to_owned()))?)
-            .lines()
-            .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line))),
-    ))
-}
-
-/// Return an iterator over all categories in the given root
-pub fn iterator(root: PathBuf) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
-    if profile_category_file(root.to_owned()).exists() {
-        read_profile(root.to_owned())
-    } else {
-        discover_in(root.to_owned())
-    }
 }
 
 /// Get a category from the root

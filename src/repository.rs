@@ -2,9 +2,11 @@ use super::{
     category::{self, Category},
     ebuild::Ebuild,
     package::Package,
+    util::optfilter::OptFilter,
 };
 use std::{
-    io::Error,
+    fs::File,
+    io::{BufRead, BufReader, Error},
     path::{Path, PathBuf},
     result::Result,
 };
@@ -22,7 +24,24 @@ impl Repository {
 
     /// Returns an iterator over all categories in this repository
     pub fn categories(&self) -> Result<Box<dyn Iterator<Item = Result<Category, Error>>>, Error> {
-        category::iterator(self.root.to_owned())
+        let my_root = self.root.to_owned();
+        let profile_category_file = my_root.join("profiles").join("categories");
+        if profile_category_file.exists() {
+            Ok(Box::new(
+                BufReader::new(File::open(profile_category_file)?)
+                    .lines()
+                    .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line))),
+            ))
+        } else {
+            Ok(Box::new(
+                self.root
+                    .read_dir()?
+                    .map(move |e| {
+                        e.map(|ent| Category::new(my_root.to_owned(), ent.file_name().to_str().unwrap().to_owned()))
+                    })
+                    .filter_oks(Category::has_legal_name),
+            ))
+        }
     }
 
     /// Returns an iterator over all packages in this repository
