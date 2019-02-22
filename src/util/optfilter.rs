@@ -30,9 +30,12 @@ where
             match &iterator_return {
                 None => return iterator_return,
                 Some(item_result) => match item_result {
-                    Ok(item) => match (self.filter)(item) {
-                        true => return iterator_return,
-                        false => continue,
+                    Ok(item) => {
+                        if (self.filter)(item) {
+                            return iterator_return;
+                        } else {
+                            continue;
+                        }
                     },
                     Err(_) => return iterator_return,
                 },
