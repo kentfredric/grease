@@ -22,7 +22,7 @@ pub fn parse(version: &str) -> Version {
         && tail.is_some()
         && tail.expect("no value returned from string iterator").parse::<u32>().is_ok()
     {
-        Version::new(v_chunks.join("-"), String::from("r".to_owned() + tail.unwrap()))
+        Version::new(v_chunks.join("-"), "r".to_owned() + tail.unwrap())
     } else {
         Version::new(vx.to_owned(), String::from("r0"))
     }
