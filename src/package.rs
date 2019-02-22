@@ -1,12 +1,5 @@
-use super::{
-    category,
-    ebuild::{self, Ebuild},
-};
-use std::{
-    io::{Error, ErrorKind::NotFound},
-    path::PathBuf,
-    result::Result,
-};
+use super::ebuild::{self, Ebuild};
+use std::{io::Error, path::PathBuf, result::Result};
 
 /// Represent a discrete gentoo package
 pub struct Package {
@@ -34,9 +27,11 @@ impl Package {
     }
 
     /// Get a validated ebuild within this category
-    pub fn get_ebuild(&self, name: &str) -> Result<Ebuild, Error> {
+    pub fn get_ebuild(&self, name: &str) -> Ebuild {
         ebuild::get(self.root.to_owned(), &self.category, &self.package, name)
     }
+
+    pub fn is_legal(&self) -> bool { self.path().is_dir() }
 }
 
 impl std::fmt::Debug for Package {
@@ -47,31 +42,19 @@ impl std::fmt::Debug for Package {
 
 /// Create an iterator of all Packages
 pub fn iterator(root: PathBuf, category: String) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
-    Ok(Box::new(
-        root.join(&category).read_dir()?
-        .filter(move |e| if let Ok(entry) = e {
-            entry.path().is_dir()
-        } else {
-            // readdir entry failures passthrough
-            true
+    Ok(Box::new(root.join(&category).read_dir()?.map(move |e| {
+        e.map(|ent| {
+            let ent_fn = ent.file_name();
+            Package::new(
+                root.to_owned(),
+                category.to_owned(),
+                ent_fn.to_str().expect("Could not decode filename as UTF8").to_owned(),
+            )
         })
-        // Munge Ok(), passthru Err()
-        .map( move |e| e.map(  |ent| {
-                        let ent_fn = ent.file_name();
-                         Package::new( root.to_owned(), category.to_owned(), ent_fn.to_str().expect("Could not decode filename as UTF8").to_owned()  )
-            }
-    )),
-    ))
+    })))
 }
 
-/// Get a validated package
-pub fn get(root: PathBuf, category: &str, package: &str) -> Result<Package, Error> {
-    let my_root = root.to_owned();
-    let cat = category::get(root, category);
-    let pkg_path = cat.path().join(package);
-    if pkg_path.exists() && pkg_path.is_dir() {
-        Ok(Package::new(my_root.to_owned(), category.to_owned(), package.to_owned()))
-    } else {
-        Err(Error::new(NotFound, "Package not found/ not a directory"))
-    }
+/// Get a package
+pub fn get(root: PathBuf, category: &str, package: &str) -> Package {
+    Package::new(root.to_owned(), category.to_owned(), package.to_owned())
 }

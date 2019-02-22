@@ -43,7 +43,7 @@ impl Category {
     }
 
     /// Get a validated package within this category
-    pub fn get_package(&self, name: &str) -> Result<Package, Error> {
+    pub fn get_package(&self, name: &str) -> Package {
         let c = self.category.to_owned();
         package::get(self.root.to_owned(), &c, name)
     }

@@ -1,13 +1,6 @@
-use super::{
-    package,
-    version::{self, Version},
-};
+use super::version::{self, Version};
 use once_cell::sync::OnceCell;
-use std::{
-    io::{Error, ErrorKind::NotFound},
-    path::PathBuf,
-    result::Result,
-};
+use std::{io::Error, path::PathBuf, result::Result};
 
 /// Represent a discrete Gentoo ebuild
 pub struct Ebuild {
@@ -116,14 +109,6 @@ pub fn iterator(
 }
 
 /// Get a validated Ebuild object by explicit path
-pub fn get(root: PathBuf, category: &str, package: &str, ebuild: &str) -> Result<Ebuild, Error> {
-    let my_root = root.to_owned();
-    package::get(root, category, package).and_then(|pkg| {
-        let ebuild_path = pkg.path().join(ebuild);
-        if ebuild_path.exists() && !ebuild_path.is_dir() {
-            Ok(Ebuild::new(my_root.to_owned(), category.to_owned(), package.to_owned(), ebuild.to_owned()))
-        } else {
-            Err(Error::new(NotFound, "Ebuild not found/ is a directory"))
-        }
-    })
+pub fn get(root: PathBuf, category: &str, package: &str, ebuild: &str) -> Ebuild {
+    Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), ebuild.to_owned())
 }
