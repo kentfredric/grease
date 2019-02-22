@@ -62,7 +62,7 @@ impl Ebuild {
 
     /// Returns the ebuilds package name without revision, similar to `PMS`
     /// variable `P`
-    pub fn p(&self) -> String { self.pn() + &self.pv() }
+    pub fn p(&self) -> String { self.pn() + self.pv() }
 }
 
 impl std::fmt::Debug for Ebuild {
