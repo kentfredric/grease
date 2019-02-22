@@ -18,7 +18,7 @@ pub fn parse(version: &str) -> Version {
     let vx = version.to_string();
     let mut v_chunks: Vec<_> = vx.split_terminator("-r").collect();
     let tail = v_chunks.pop();
-    if v_chunks.len() > 0
+    if !v_chunks.is_empty()
         && tail.is_some()
         && tail.expect("no value returned from string iterator").parse::<u32>().is_ok()
     {
