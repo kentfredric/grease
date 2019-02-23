@@ -1,4 +1,4 @@
-use super::{ebuild::Ebuild, package::Package};
+use super::{ebuild::Ebuild, package::Package, util::optfilter::OptFilter};
 use std::{io::Error, path::PathBuf, result::Result};
 
 /// Represents a discrete Gentoo category
@@ -19,15 +19,13 @@ impl Category {
     pub fn packages(&self) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
         let root = self.root.to_owned();
         let category = self.category.to_owned();
-        Ok(Box::new(root.join(&category).read_dir()?.map(move |e| {
-            e.map(|ent| {
-                let ent_fn = ent.file_name();
-                Package::new(
-                    root.to_owned(),
-                    category.to_owned(),
-                    ent_fn.to_str().expect("Could not decode filename as UTF8").to_owned(),
-                )
-            })
+        Ok(Box::new(root.join(&category).read_dir()?.map_oks(move |ent| {
+            let ent_fn = ent.file_name();
+            Ok(Package::new(
+                root.to_owned(),
+                category.to_owned(),
+                ent_fn.to_str().expect("Could not decode filename as UTF8").to_owned(),
+            ))
         })))
     }
 

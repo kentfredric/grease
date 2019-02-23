@@ -1,6 +1,5 @@
-use super::ebuild::Ebuild;
+use super::{ebuild::Ebuild, util::optfilter::OptFilter};
 use std::{io::Error, path::PathBuf, result::Result};
-
 /// Represent a discrete gentoo package
 pub struct Package {
     root:     PathBuf,
@@ -42,12 +41,10 @@ impl Package {
                         true
                     }
                 })
-                .map(move |dirent| {
-                    dirent.map(|entry| {
-                        let e_fn = entry.file_name();
-                        let e = e_fn.to_str().expect("Could not decode filename to UTF8");
-                        Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), e.to_owned())
-                    })
+                .map_oks(move |entry| {
+                    let e_fn = entry.file_name();
+                    let e = e_fn.to_str().expect("Could not decode filename to UTF8");
+                    Ok(Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), e.to_owned()))
                 }),
         ))
     }

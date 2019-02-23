@@ -25,14 +25,14 @@ impl Repository {
             Ok(Box::new(
                 BufReader::new(File::open(profile_category_file)?)
                     .lines()
-                    .map(move |line_res| line_res.map(|line| Category::new(my_root.to_owned(), line))),
+                    .map_oks(move |line| Ok(Category::new(my_root.to_owned(), line.to_owned()))),
             ))
         } else {
             Ok(Box::new(
                 self.root
                     .read_dir()?
-                    .map(move |e| {
-                        e.map(|ent| Category::new(my_root.to_owned(), ent.file_name().to_str().unwrap().to_owned()))
+                    .map_oks(move |ent| {
+                        Ok(Category::new(my_root.to_owned(), ent.file_name().to_str().unwrap().to_owned()))
                     })
                     .filter_oks(Category::has_legal_name),
             ))
