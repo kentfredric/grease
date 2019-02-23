@@ -20,7 +20,11 @@ impl Ebuild {
     pub fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package).join(&self.ebuild) }
 
     pub fn version(&self) -> &Version {
-        self.version.get_or_init(|| version::parse(&ebuild_to_pvr(self.package.to_owned(), self.ebuild.to_owned())))
+        self.version.get_or_init(|| {
+            version::parse(
+                self.ebuild.trim_end_matches(".ebuild").trim_start_matches((self.package.to_owned() + "-").as_str()),
+            )
+        })
     }
 
     pub fn name(&self) -> String { self.category.to_owned() + "/" + &self.package + "/" + &self.ebuild }
@@ -71,11 +75,6 @@ impl std::fmt::Debug for Ebuild {
             self.pr(),
         )
     }
-}
-
-fn ebuild_to_pvr(package: String, ebuild: String) -> String {
-    let pf = ebuild.trim_end_matches(".ebuild");
-    pf.trim_start_matches((package + "-").as_str()).to_owned()
 }
 
 /// Get a validated Ebuild object by explicit path
