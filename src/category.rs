@@ -74,6 +74,3 @@ impl Category {
 impl std::fmt::Debug for Category {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { write!(f, "cat: {}", &self.category) }
 }
-
-/// Get a category from the root
-pub fn get(root: PathBuf, name: &str) -> Category { Category::new(root, name.to_owned()) }
