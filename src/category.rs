@@ -20,7 +20,18 @@ impl Category {
 
     /// Return an iterator over all packages in this category
     pub fn packages(&self) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
-        package::iterator(self.root.to_owned(), self.category.to_owned())
+        let root = self.root.to_owned();
+        let category = self.category.to_owned();
+        Ok(Box::new(root.join(&category).read_dir()?.map(move |e| {
+            e.map(|ent| {
+                let ent_fn = ent.file_name();
+                Package::new(
+                    root.to_owned(),
+                    category.to_owned(),
+                    ent_fn.to_str().expect("Could not decode filename as UTF8").to_owned(),
+                )
+            })
+        })))
     }
 
     /// Return an iterator over all ebuilds in this category

@@ -8,7 +8,7 @@ pub struct Package {
     package:  String,
 }
 impl Package {
-    fn new(root: PathBuf, category: String, package: String) -> Package { Package { root, category, package } }
+    pub fn new(root: PathBuf, category: String, package: String) -> Package { Package { root, category, package } }
 
     /// Return the path to a gentoo package
     pub fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package) }
@@ -38,20 +38,6 @@ impl std::fmt::Debug for Package {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "cat: {}, pn: {}", self.category(), self.pn())
     }
-}
-
-/// Create an iterator of all Packages
-pub fn iterator(root: PathBuf, category: String) -> Result<Box<dyn Iterator<Item = Result<Package, Error>>>, Error> {
-    Ok(Box::new(root.join(&category).read_dir()?.map(move |e| {
-        e.map(|ent| {
-            let ent_fn = ent.file_name();
-            Package::new(
-                root.to_owned(),
-                category.to_owned(),
-                ent_fn.to_str().expect("Could not decode filename as UTF8").to_owned(),
-            )
-        })
-    })))
 }
 
 /// Get a package
