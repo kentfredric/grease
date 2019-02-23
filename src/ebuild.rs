@@ -76,8 +76,3 @@ impl std::fmt::Debug for Ebuild {
         )
     }
 }
-
-/// Get a validated Ebuild object by explicit path
-pub fn get(root: PathBuf, category: &str, package: &str, ebuild: &str) -> Ebuild {
-    Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), ebuild.to_owned())
-}

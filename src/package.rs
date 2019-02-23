@@ -1,4 +1,4 @@
-use super::ebuild::{self, Ebuild};
+use super::ebuild::Ebuild;
 use std::{io::Error, path::PathBuf, result::Result};
 
 /// Represent a discrete gentoo package
@@ -52,9 +52,9 @@ impl Package {
         ))
     }
 
-    /// Get a validated ebuild within this category
+    /// Get an ebuild within this category
     pub fn get_ebuild(&self, name: &str) -> Ebuild {
-        ebuild::get(self.root.to_owned(), &self.category, &self.package, name)
+        Ebuild::new(self.root.to_owned(), self.category.to_owned(), self.package.to_owned(), name.to_string())
     }
 
     pub fn is_legal(&self) -> bool { self.path().is_dir() }
@@ -64,9 +64,4 @@ impl std::fmt::Debug for Package {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "cat: {}, pn: {}", self.category(), self.pn())
     }
-}
-
-/// Get a package
-pub fn get(root: PathBuf, category: &str, package: &str) -> Package {
-    Package::new(root.to_owned(), category.to_owned(), package.to_owned())
 }

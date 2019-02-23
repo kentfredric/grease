@@ -1,7 +1,4 @@
-use super::{
-    ebuild::Ebuild,
-    package::{self, Package},
-};
+use super::{ebuild::Ebuild, package::Package};
 use std::{io::Error, path::PathBuf, result::Result};
 
 /// Represents a discrete Gentoo category
@@ -47,10 +44,9 @@ impl Category {
         })
     }
 
-    /// Get a validated package within this category
+    /// Get a package within this category
     pub fn get_package(&self, name: &str) -> Package {
-        let c = self.category.to_owned();
-        package::get(self.root.to_owned(), &c, name)
+        Package::new(self.root.to_owned(), self.category.to_owned(), name.to_string())
     }
 
     /// returns if a given category exists or not

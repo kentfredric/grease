@@ -1,9 +1,4 @@
-use super::{
-    category::{self, Category},
-    ebuild::Ebuild,
-    package::Package,
-    util::optfilter::OptFilter,
-};
+use super::{category::Category, ebuild::Ebuild, package::Package, util::optfilter::OptFilter};
 use std::{
     fs::File,
     io::{BufRead, BufReader, Error},
@@ -71,5 +66,5 @@ impl Repository {
     }
 
     /// Fetch a category by name in this repository
-    pub fn get_category(&self, name: &str) -> Category { category::get(self.root.to_owned(), name) }
+    pub fn get_category(&self, name: &str) -> Category { Category::new(self.root.to_owned(), name.to_string()) }
 }
