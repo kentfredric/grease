@@ -23,7 +23,33 @@ impl Package {
 
     /// Iterate all ebuilds within the package
     pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
-        ebuild::iterator(self.root.to_owned(), self.category.to_owned(), self.package.to_owned())
+        let root = self.root.to_owned();
+        let category = self.category.to_owned();
+        let package = self.package.to_owned();
+        Ok(Box::new(
+            root.join(&category)
+                .join(&package)
+                .read_dir()?
+                .filter(|e| {
+                    if let Ok(entry) = e {
+                        let p = entry.path();
+                        if let Some(ext) = p.extension() {
+                            ext.eq("ebuild") && !p.is_dir()
+                        } else {
+                            false
+                        }
+                    } else {
+                        true
+                    }
+                })
+                .map(move |dirent| {
+                    dirent.map(|entry| {
+                        let e_fn = entry.file_name();
+                        let e = e_fn.to_str().expect("Could not decode filename to UTF8");
+                        Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), e.to_owned())
+                    })
+                }),
+        ))
     }
 
     /// Get a validated ebuild within this category

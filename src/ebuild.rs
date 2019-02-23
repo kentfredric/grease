@@ -1,6 +1,6 @@
 use super::version::{self, Version};
 use once_cell::sync::OnceCell;
-use std::{io::Error, path::PathBuf, result::Result};
+use std::path::PathBuf;
 
 /// Represent a discrete Gentoo ebuild
 pub struct Ebuild {
@@ -12,7 +12,7 @@ pub struct Ebuild {
 }
 
 impl Ebuild {
-    fn new(root: PathBuf, category: String, package: String, ebuild: String) -> Ebuild {
+    pub fn new(root: PathBuf, category: String, package: String, ebuild: String) -> Ebuild {
         Ebuild { root, category, package, ebuild, version: OnceCell::INIT }
     }
 
@@ -76,36 +76,6 @@ impl std::fmt::Debug for Ebuild {
 fn ebuild_to_pvr(package: String, ebuild: String) -> String {
     let pf = ebuild.trim_end_matches(".ebuild");
     pf.trim_start_matches((package + "-").as_str()).to_owned()
-}
-
-/// Iterate all ebuilds within a package
-pub fn iterator(
-    root: PathBuf, category: String, package: String,
-) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
-    Ok(Box::new(
-        root.join(&category)
-            .join(&package)
-            .read_dir()?
-            .filter(|e| {
-                if let Ok(entry) = e {
-                    let p = entry.path();
-                    if let Some(ext) = p.extension() {
-                        ext.eq("ebuild") && !p.is_dir()
-                    } else {
-                        false
-                    }
-                } else {
-                    true
-                }
-            })
-            .map(move |dirent| {
-                dirent.map(|entry| {
-                    let e_fn = entry.file_name();
-                    let e = e_fn.to_str().expect("Could not decode filename to UTF8");
-                    Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), e.to_owned())
-                })
-            }),
-    ))
 }
 
 /// Get a validated Ebuild object by explicit path
