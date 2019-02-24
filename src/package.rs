@@ -29,18 +29,7 @@ impl Package {
             root.join(&category)
                 .join(&package)
                 .read_dir()?
-                .filter(|e| {
-                    if let Ok(entry) = e {
-                        let p = entry.path();
-                        if let Some(ext) = p.extension() {
-                            ext.eq("ebuild") && !p.is_dir()
-                        } else {
-                            false
-                        }
-                    } else {
-                        true
-                    }
-                })
+                .filter_oks(|entry| if let Some(ext) = entry.path().extension() { ext.eq("ebuild") } else { false })
                 .map_oks(move |entry| {
                     let e_fn = entry.file_name();
                     let e = e_fn.to_str().expect("Could not decode filename to UTF8");
