@@ -78,7 +78,7 @@ fn iter_repo_packages(repo: &str) {
 fn iter_repo_ebuilds(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.ebuilds().expect("Error reading ebuilds from repo");
-    for it in citer {
+    for it in citer.filter_oks(Ebuild::is_legal) {
         println!("{}", it.unwrap().name());
     }
 }
@@ -101,7 +101,7 @@ fn iter_repo_package_paths(repo: &str) {
 fn iter_repo_ebuild_paths(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.ebuilds().expect("Error reading ebuilds from repo");
-    for it in citer {
+    for it in citer.filter_oks(Ebuild::is_legal) {
         println!("{}", path_conv(&it.unwrap().path()))
     }
 }

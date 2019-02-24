@@ -60,6 +60,11 @@ impl Ebuild {
     /// Returns the ebuilds package name without revision, similar to `PMS`
     /// variable `P`
     pub fn p(&self) -> String { self.pn() + self.pv() }
+
+    pub fn is_legal(&self) -> bool {
+        let p = self.path();
+        p.exists() && !p.is_dir()
+    }
 }
 
 impl std::fmt::Debug for Ebuild {
