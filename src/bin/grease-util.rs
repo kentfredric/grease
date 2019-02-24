@@ -64,22 +64,22 @@ fn main() {
 fn iter_repo_categories(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.categories().expect("Error reading categories from repo");
-    for it in OptFilter::filter_oks(citer, Category::is_legal) {
-        println!("{}", it.unwrap().name());
+    for it in citer.filter_oks(Category::is_legal).extract_errs(|e| panic!(e)) {
+        println!("{}", it.name());
     }
 }
 fn iter_repo_packages(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.packages().expect("Error reading ebuilds from repo");
-    for it in citer.filter_oks(Package::is_legal) {
-        println!("{}", it.unwrap().name());
+    for it in citer.filter_oks(Package::is_legal).extract_errs(|e| panic!(e)) {
+        println!("{}", it.name());
     }
 }
 fn iter_repo_ebuilds(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.ebuilds().expect("Error reading ebuilds from repo");
-    for it in citer.filter_oks(Ebuild::is_legal) {
-        println!("{}", it.unwrap().name());
+    for it in citer.filter_oks(Ebuild::is_legal).extract_errs(|e| panic!(e)) {
+        println!("{}", it.name());
     }
 }
 
@@ -87,21 +87,21 @@ fn path_conv(path: &Path) -> String { path.as_os_str().to_str().unwrap().to_stri
 fn iter_repo_category_paths(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.categories().expect("Error reading categories from repo");
-    for it in citer.filter_oks(Category::is_legal) {
-        println!("{}", path_conv(&it.unwrap().path()))
+    for it in citer.filter_oks(Category::is_legal).extract_errs(|e| panic!(e)) {
+        println!("{}", path_conv(&it.path()))
     }
 }
 fn iter_repo_package_paths(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.packages().expect("Error reading ebuilds from repo");
-    for it in citer.filter_oks(Package::is_legal) {
-        println!("{}", path_conv(&it.unwrap().path()))
+    for it in citer.filter_oks(Package::is_legal).extract_errs(|e| panic!(e)) {
+        println!("{}", path_conv(&it.path()))
     }
 }
 fn iter_repo_ebuild_paths(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.ebuilds().expect("Error reading ebuilds from repo");
-    for it in citer.filter_oks(Ebuild::is_legal) {
-        println!("{}", path_conv(&it.unwrap().path()))
+    for it in citer.filter_oks(Ebuild::is_legal).extract_errs(|e| panic!(e)) {
+        println!("{}", path_conv(&it.path()))
     }
 }
