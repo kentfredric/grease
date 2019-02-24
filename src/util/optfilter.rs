@@ -15,6 +15,13 @@ pub trait OptFilter: Iterator {
     {
         MapOks { iter: self, mapper: f }
     }
+    fn extract_errs<F, T, E>(self, f: F) -> ExtractErrs<Self, F>
+    where
+        Self: Iterator<Item = Result<T, E>> + Sized,
+        F: FnMut(&E) -> (),
+    {
+        ExtractErrs { iter: self, handler: f }
+    }
 }
 
 impl<T: ?Sized> OptFilter for T where T: Iterator {}
@@ -78,6 +85,37 @@ where
         }
         let rval = inner.unwrap();
         return Some((self.mapper)(&rval));
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
+}
+
+pub struct ExtractErrs<I, F> {
+    iter:    I,
+    handler: F,
+}
+impl<I, F, T, E> Iterator for ExtractErrs<I, F>
+where
+    I: Iterator<Item = Result<T, E>>,
+    F: FnMut(&E) -> (),
+    T: std::fmt::Debug,
+    E: std::fmt::Debug,
+{
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            let iterator_return = self.iter.next();
+            if iterator_return.is_none() {
+                return None;
+            }
+            let inner = iterator_return.unwrap();
+            if inner.is_err() {
+                (self.handler)(&inner.unwrap_err());
+                continue;
+            }
+            return Some(inner.unwrap());
+        }
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
