@@ -1,7 +1,9 @@
 #[macro_use]
 extern crate clap;
 
-use grease::repository::Repository;
+use grease::{
+    category::Category, ebuild::Ebuild, package::Package, repository::Repository, util::optfilter::OptFilter,
+};
 use std::{alloc::System, path::Path};
 
 #[global_allocator]
@@ -62,14 +64,14 @@ fn main() {
 fn iter_repo_categories(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.categories().expect("Error reading categories from repo");
-    for it in citer {
+    for it in OptFilter::filter_oks(citer, Category::is_legal) {
         println!("{}", it.unwrap().name());
     }
 }
 fn iter_repo_packages(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.packages().expect("Error reading ebuilds from repo");
-    for it in citer {
+    for it in citer.filter_oks(Package::is_legal) {
         println!("{}", it.unwrap().name());
     }
 }
@@ -85,14 +87,14 @@ fn path_conv(path: &Path) -> String { path.as_os_str().to_str().unwrap().to_stri
 fn iter_repo_category_paths(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.categories().expect("Error reading categories from repo");
-    for it in citer {
+    for it in citer.filter_oks(Category::is_legal) {
         println!("{}", path_conv(&it.unwrap().path()))
     }
 }
 fn iter_repo_package_paths(repo: &str) {
     let r = Repository::new(Path::new(repo));
     let citer = r.packages().expect("Error reading ebuilds from repo");
-    for it in citer {
+    for it in citer.filter_oks(Package::is_legal) {
         println!("{}", path_conv(&it.unwrap().path()))
     }
 }
