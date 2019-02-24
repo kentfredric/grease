@@ -1,30 +1,30 @@
 use std::{iter::Iterator, option::Option};
 
 pub trait OptFilter: Iterator {
-    fn filter_oks<F, T, E>(self, f: F) -> OptFilterIterator<Self, F>
+    fn filter_oks<F, T, E>(self, f: F) -> FilterOks<Self, F>
     where
         Self: Iterator<Item = Result<T, E>> + Sized,
         F: FnMut(&T) -> bool,
     {
-        OptFilterIterator { iter: self, filter: f }
+        FilterOks { iter: self, filter: f }
     }
-    fn map_oks<F, T, TT, E>(self, f: F) -> OptMapIterator<Self, F>
+    fn map_oks<F, T, TT, E>(self, f: F) -> MapOks<Self, F>
     where
         Self: Iterator<Item = Result<T, E>> + Sized,
         F: FnMut(&T) -> Result<TT, E>,
     {
-        OptMapIterator { iter: self, mapper: f }
+        MapOks { iter: self, mapper: f }
     }
 }
 
 impl<T: ?Sized> OptFilter for T where T: Iterator {}
 
-pub struct OptFilterIterator<I, F> {
+pub struct FilterOks<I, F> {
     iter:   I,
     filter: F,
 }
 
-impl<I, F, T, E> Iterator for OptFilterIterator<I, F>
+impl<I, F, T, E> Iterator for FilterOks<I, F>
 where
     I: Iterator<Item = Result<T, E>>,
     F: FnMut(&T) -> bool,
@@ -53,12 +53,12 @@ where
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
 
-pub struct OptMapIterator<I, F> {
+pub struct MapOks<I, F> {
     iter:   I,
     mapper: F,
 }
 
-impl<I, F, T, TT, E> Iterator for OptMapIterator<I, F>
+impl<I, F, T, TT, E> Iterator for MapOks<I, F>
 where
     I: Iterator<Item = Result<T, E>>,
     F: FnMut(&T) -> Result<TT, E>,
