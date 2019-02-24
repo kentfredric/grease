@@ -18,7 +18,7 @@ pub trait OptFilter: Iterator {
     fn extract_errs<F, T, E>(self, f: F) -> ExtractErrs<Self, F>
     where
         Self: Iterator<Item = Result<T, E>> + Sized,
-        F: FnMut(&E) -> (),
+        F: FnMut(E) -> (),
     {
         ExtractErrs { iter: self, handler: f }
     }
@@ -42,17 +42,14 @@ where
         loop {
             let iterator_return = self.iter.next();
             match &iterator_return {
-                None => return iterator_return,
-                Some(item_result) => match item_result {
-                    Ok(item) => {
-                        if (self.filter)(item) {
-                            return iterator_return;
-                        } else {
-                            continue;
-                        }
-                    },
-                    Err(_) => return iterator_return,
+                Some(Ok(item)) => {
+                    if (self.filter)(item) {
+                        return iterator_return;
+                    } else {
+                        continue;
+                    }
                 },
+                _ => return iterator_return,
             }
         }
     }
@@ -76,15 +73,11 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         let iterator_return = self.iter.next();
-        if iterator_return.is_none() {
-            return None;
+        match iterator_return {
+            None => None,
+            Some(Err(e)) => Some(Err(e)),
+            Some(Ok(i)) => Some((self.mapper)(&i)),
         }
-        let inner = iterator_return.unwrap();
-        if inner.is_err() {
-            return Some(Err(inner.unwrap_err()));
-        }
-        let rval = inner.unwrap();
-        return Some((self.mapper)(&rval));
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
@@ -97,7 +90,7 @@ pub struct ExtractErrs<I, F> {
 impl<I, F, T, E> Iterator for ExtractErrs<I, F>
 where
     I: Iterator<Item = Result<T, E>>,
-    F: FnMut(&E) -> (),
+    F: FnMut(E) -> (),
     T: std::fmt::Debug,
     E: std::fmt::Debug,
 {
@@ -106,15 +99,14 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         loop {
             let iterator_return = self.iter.next();
-            if iterator_return.is_none() {
-                return None;
+            match iterator_return {
+                None => return None,
+                Some(Ok(i)) => return Some(i),
+                Some(Err(e)) => {
+                    (self.handler)(e);
+                    continue;
+                },
             }
-            let inner = iterator_return.unwrap();
-            if inner.is_err() {
-                (self.handler)(&inner.unwrap_err());
-                continue;
-            }
-            return Some(inner.unwrap());
         }
     }
 
