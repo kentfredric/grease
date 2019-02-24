@@ -32,7 +32,7 @@ impl Category {
     /// Return an iterator over all ebuilds in this category
     pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
         self.packages().map(|pkg_it| {
-            Box::new(pkg_it.flat_map(|pkg_res| match pkg_res {
+            Box::new(pkg_it.filter_oks(Package::is_legal).flat_map(|pkg_res| match pkg_res {
                 Ok(pkg) => match pkg.ebuilds() {
                     Ok(ebuild_iter) => ebuild_iter,
                     Err(e) => Box::new(vec![Err(e)].into_iter()),
