@@ -36,19 +36,11 @@ impl Ebuild {
     pub fn pn(&self) -> String { self.package.to_owned() }
 
     /// Returns the ebuilds full package version similar to `PMS` variable `PF`
-    pub fn pf(&self) -> String {
-        String::from(
-            self.path()
-                .file_stem()
-                .expect("Could not extract file stem from file")
-                .to_str()
-                .expect("Could not decode UTF8"),
-        )
-    }
+    pub fn pf(&self) -> String { self.pn() + "-" + &self.pvr() }
 
     /// Returns the ebuilds version with revision similar to `PMS` variable
     /// `PVR`
-    pub fn pvr(&self) -> String { self.version().pvr() }
+    pub fn pvr(&self) -> &str { self.version().pvr() }
 
     /// Returns the ebuilds version without revision similar to `PMS` variable
     /// `PV`
@@ -90,6 +82,6 @@ impl crate::util::repoobject::RepoObject for Ebuild {
     fn ident(&self) -> String { self.category.to_owned() + "/" + &self.pf() }
 
     fn components(&self) -> String {
-        format!("cat={} package={} version={} revision={}", &self.category, &self.package, self.pv(), self.pr())
+        format!("cat={} package={} version={}", &self.category, &self.package, self.pvr())
     }
 }
