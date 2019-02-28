@@ -36,7 +36,7 @@ impl Ebuild {
     pub fn pn(&self) -> String { self.package.to_owned() }
 
     /// Returns the ebuilds full package version similar to `PMS` variable `PF`
-    pub fn pf(&self) -> String { self.pn() + "-" + &self.pvr() }
+    pub fn pf(&self) -> String { self.pn() + "-" + self.pvr() }
 
     /// Returns the ebuilds version with revision similar to `PMS` variable
     /// `PVR`
