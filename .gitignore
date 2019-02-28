@@ -1,2 +1,5 @@
-/target
+/target/debug
+/target/release
+/target/criterion
+/target/.*
 **/*.rs.bk
