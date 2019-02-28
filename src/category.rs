@@ -72,3 +72,13 @@ impl Category {
 impl std::fmt::Debug for Category {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { write!(f, "cat: {}", &self.category) }
 }
+
+impl crate::util::repoobject::RepoObject for Category {
+    fn name(&self) -> String { self.category.to_owned() }
+
+    fn path(&self) -> std::path::PathBuf { self.root.join(&self.category) }
+
+    fn ident(&self) -> String { (self.category.to_owned() + "/") }
+
+    fn components(&self) -> String { format!("cat={}", &self.category) }
+}

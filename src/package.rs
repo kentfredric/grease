@@ -51,3 +51,13 @@ impl std::fmt::Debug for Package {
         write!(f, "cat: {}, pn: {}", self.category(), self.pn())
     }
 }
+
+impl crate::util::repoobject::RepoObject for Package {
+    fn name(&self) -> String { self.package.to_owned() }
+
+    fn path(&self) -> std::path::PathBuf { self.root.join(&self.category).join(&self.package) }
+
+    fn ident(&self) -> String { self.category.to_owned() + "/" + &self.package }
+
+    fn components(&self) -> String { format!("cat={} package={}", &self.category, &self.package) }
+}

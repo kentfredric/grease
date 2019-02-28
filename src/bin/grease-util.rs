@@ -1,8 +1,16 @@
 #[macro_use]
 extern crate clap;
 
+use clap::ArgMatches;
 use grease::{
-    category::Category, ebuild::Ebuild, package::Package, repository::Repository, util::optfilter::OptFilter,
+    category::Category,
+    ebuild::Ebuild,
+    package::Package,
+    repository::Repository,
+    util::{
+        optfilter::OptFilter,
+        repoobject::{self, RepoObject},
+    },
 };
 use std::{alloc::System, path::Path};
 
@@ -19,89 +27,57 @@ fn main() {
         (@setting SubcommandRequired)
         (@subcommand iterate =>
             (about: "Traverse all kinds of a thing in a given repository")
-            (@arg REPOSITORY: -r --repository +required +takes_value "Specifies the repository to iterate")
+            (@arg REPOSITORY: -r --repository +required +takes_value visible_alias[repo]
+                "Specifies the repository to iterate"
+            )
             (@setting SubcommandRequired)
             (@subcommand categories =>
                 (about: "Iterate all categories in a repository")
+                (@arg FORMATTER: -f --formatter +takes_value possible_value[path ident components name] default_value[ident])
             )
-            (@subcommand category_paths =>
-                (name: "category-paths")
-                (about: "Iterate all categories in a repository by path")
-            )
-
             (@subcommand packages =>
                 (about: "Iterate all packages in a repository")
-            )
-            (@subcommand package_paths =>
-                (name: "package-paths")
-                (about: "Iterate all packages in a repository by path")
+                (@arg FORMATTER: -f --formatter +takes_value possible_value[path ident components name] default_value[ident])
             )
             (@subcommand ebuilds =>
                 (about: "Iterate all ebuilds in a repository")
-            )
-            (@subcommand ebuild_paths =>
-                (name: "ebuild-paths")
-                (about: "Iterate all ebuilds in a repository by path")
+                (@arg FORMATTER: -f --formatter +takes_value possible_value[path ident components name] default_value[ident])
             )
         )
     )
     .get_matches();
     match app_m.subcommand() {
         ("iterate", Some(sub_m)) => match sub_m.subcommand() {
-            ("categories", Some(_)) => iter_repo_categories(sub_m.value_of("REPOSITORY").unwrap()),
-            ("packages", Some(_)) => iter_repo_packages(sub_m.value_of("REPOSITORY").unwrap()),
-            ("ebuilds", Some(_)) => iter_repo_ebuilds(sub_m.value_of("REPOSITORY").unwrap()),
-            ("category-paths", Some(_)) => iter_repo_category_paths(sub_m.value_of("REPOSITORY").unwrap()),
-            ("package-paths", Some(_)) => iter_repo_package_paths(sub_m.value_of("REPOSITORY").unwrap()),
-            ("ebuild-paths", Some(_)) => iter_repo_ebuild_paths(sub_m.value_of("REPOSITORY").unwrap()),
-
+            ("categories", Some(c_opts)) => iter_repo_categories(sub_m.value_of("REPOSITORY").unwrap(), c_opts),
+            ("packages", Some(p_opts)) => iter_repo_packages(sub_m.value_of("REPOSITORY").unwrap(), p_opts),
+            ("ebuilds", Some(e_opts)) => iter_repo_ebuilds(sub_m.value_of("REPOSITORY").unwrap(), e_opts),
             _ => clap::Error::with_description(sub_m.usage(), clap::ErrorKind::MissingSubcommand).exit(),
         },
         _ => clap::Error::with_description(app_m.usage(), clap::ErrorKind::MissingSubcommand).exit(),
     }
 }
 
-fn iter_repo_categories(repo: &str) {
+fn iter_repo_categories(repo: &str, opts: &ArgMatches) {
     let r = Repository::new(Path::new(repo));
     let citer = r.categories().expect("Error reading categories from repo");
+    let formatter = repoobject::parse_formatter(opts.value_of("FORMATTER").unwrap()).unwrap();
     for it in citer.filter_oks(Category::is_legal).extract_errs(|e| panic!(e)) {
-        println!("{}", it.name());
+        println!("{}", it.render(&formatter));
     }
 }
-fn iter_repo_packages(repo: &str) {
+fn iter_repo_packages(repo: &str, opts: &ArgMatches) {
     let r = Repository::new(Path::new(repo));
     let citer = r.packages().expect("Error reading ebuilds from repo");
+    let formatter = repoobject::parse_formatter(opts.value_of("FORMATTER").unwrap()).unwrap();
     for it in citer.filter_oks(Package::is_legal).extract_errs(|e| panic!(e)) {
-        println!("{}", it.name());
+        println!("{}", it.render(&formatter));
     }
 }
-fn iter_repo_ebuilds(repo: &str) {
+fn iter_repo_ebuilds(repo: &str, opts: &ArgMatches) {
     let r = Repository::new(Path::new(repo));
     let citer = r.ebuilds().expect("Error reading ebuilds from repo");
+    let formatter = repoobject::parse_formatter(opts.value_of("FORMATTER").unwrap()).unwrap();
     for it in citer.filter_oks(Ebuild::is_legal).extract_errs(|e| panic!(e)) {
-        println!("{}", it.name());
-    }
-}
-
-fn path_conv(path: &Path) -> String { path.as_os_str().to_str().unwrap().to_string() }
-fn iter_repo_category_paths(repo: &str) {
-    let r = Repository::new(Path::new(repo));
-    let citer = r.categories().expect("Error reading categories from repo");
-    for it in citer.filter_oks(Category::is_legal).extract_errs(|e| panic!(e)) {
-        println!("{}", path_conv(&it.path()))
-    }
-}
-fn iter_repo_package_paths(repo: &str) {
-    let r = Repository::new(Path::new(repo));
-    let citer = r.packages().expect("Error reading ebuilds from repo");
-    for it in citer.filter_oks(Package::is_legal).extract_errs(|e| panic!(e)) {
-        println!("{}", path_conv(&it.path()))
-    }
-}
-fn iter_repo_ebuild_paths(repo: &str) {
-    let r = Repository::new(Path::new(repo));
-    let citer = r.ebuilds().expect("Error reading ebuilds from repo");
-    for it in citer.filter_oks(Ebuild::is_legal).extract_errs(|e| panic!(e)) {
-        println!("{}", path_conv(&it.path()))
+        println!("{}", it.render(&formatter));
     }
 }

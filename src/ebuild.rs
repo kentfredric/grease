@@ -81,3 +81,15 @@ impl std::fmt::Debug for Ebuild {
         )
     }
 }
+
+impl crate::util::repoobject::RepoObject for Ebuild {
+    fn name(&self) -> String { self.ebuild.to_owned() }
+
+    fn path(&self) -> std::path::PathBuf { self.root.join(&self.category).join(&self.package).join(&self.ebuild) }
+
+    fn ident(&self) -> String { self.category.to_owned() + "/" + &self.pf() }
+
+    fn components(&self) -> String {
+        format!("cat={} package={} version={} revision={}", &self.category, &self.package, self.pv(), self.pr())
+    }
+}
