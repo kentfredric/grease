@@ -13,3 +13,4 @@ pub mod repository;
 pub mod util;
 /// version objects and parsing
 pub mod version;
+pub mod atom;
