@@ -12,6 +12,7 @@ pub struct Ebuild {
 }
 
 impl Ebuild {
+    /// Construct a new ebuild explicitly
     pub fn new(root: PathBuf, category: String, package: String, ebuild: String) -> Ebuild {
         Ebuild { root, category, package, ebuild, version: OnceCell::INIT }
     }
@@ -19,6 +20,7 @@ impl Ebuild {
     /// Returns a path to the ebuild file
     pub fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package).join(&self.ebuild) }
 
+    /// Return a [`Version`] object for this ebuild
     pub fn version(&self) -> &Version {
         self.version.get_or_init(|| {
             version::parse(
@@ -27,6 +29,7 @@ impl Ebuild {
         })
     }
 
+    /// Returns the full name of this ebuild
     pub fn name(&self) -> String { self.category.to_owned() + "/" + &self.package + "/" + &self.ebuild }
 
     /// Returns the ebuilds category similar to `PMS` variable `CATEGORY`
@@ -53,6 +56,7 @@ impl Ebuild {
     /// variable `P`
     pub fn p(&self) -> String { self.pn() + self.pv() }
 
+    /// Returns if this is a legal ebuild
     pub fn is_legal(&self) -> bool {
         let p = self.path();
         p.exists() && !p.is_dir()
@@ -77,7 +81,7 @@ impl std::fmt::Debug for Ebuild {
 impl crate::util::repoobject::RepoObject for Ebuild {
     fn name(&self) -> String { self.ebuild.to_owned() }
 
-    fn path(&self) -> std::path::PathBuf { self.root.join(&self.category).join(&self.package).join(&self.ebuild) }
+    fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package).join(&self.ebuild) }
 
     fn ident(&self) -> String { self.category.to_owned() + "/" + &self.pf() }
 
