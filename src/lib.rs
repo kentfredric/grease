@@ -1,6 +1,7 @@
 /*! A Low Level utility kit for performing tasks with Gentoo Portage
 !*/
 
+pub mod atom;
 /// Representation of a category in a Gentoo repository
 pub mod category;
 /// Representation of an ebuild in a Gentoo repository
@@ -13,4 +14,3 @@ pub mod repository;
 pub mod util;
 /// version objects and parsing
 pub mod version;
-pub mod atom;
