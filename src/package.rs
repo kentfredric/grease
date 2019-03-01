@@ -7,6 +7,7 @@ pub struct Package {
     package:  String,
 }
 impl Package {
+    /// Construct a new Package Type Object
     pub fn new(root: PathBuf, category: String, package: String) -> Package { Package { root, category, package } }
 
     /// Return the path to a gentoo package
@@ -18,6 +19,7 @@ impl Package {
     /// Get the package name of the package
     pub fn pn(&self) -> String { self.package.to_owned() }
 
+    /// Get a full identifier of this package
     pub fn name(&self) -> String { self.category.to_owned() + "/" + &self.package }
 
     /// Iterate all ebuilds within the package
@@ -43,6 +45,7 @@ impl Package {
         Ebuild::new(self.root.to_owned(), self.category.to_owned(), self.package.to_owned(), name.to_string())
     }
 
+    /// Determine if this package is a legal package
     pub fn is_legal(&self) -> bool { self.path().is_dir() }
 }
 
@@ -55,7 +58,7 @@ impl std::fmt::Debug for Package {
 impl crate::util::repoobject::RepoObject for Package {
     fn name(&self) -> String { self.package.to_owned() }
 
-    fn path(&self) -> std::path::PathBuf { self.root.join(&self.category).join(&self.package) }
+    fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package) }
 
     fn ident(&self) -> String { self.category.to_owned() + "/" + &self.package }
 
