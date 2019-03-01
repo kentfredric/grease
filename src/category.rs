@@ -8,11 +8,13 @@ pub struct Category {
 }
 
 impl Category {
+    /// Construct a new [`Category`] explicitly
     pub fn new(root: PathBuf, category: String) -> Category { Category { root, category } }
 
     /// Return the path to the category
     pub fn path(&self) -> PathBuf { self.root.join(&self.category) }
 
+    /// Return the name of the category
     pub fn name(&self) -> String { self.category.to_owned() }
 
     /// Return an iterator over all packages in this category
@@ -76,7 +78,7 @@ impl std::fmt::Debug for Category {
 impl crate::util::repoobject::RepoObject for Category {
     fn name(&self) -> String { self.category.to_owned() }
 
-    fn path(&self) -> std::path::PathBuf { self.root.join(&self.category) }
+    fn path(&self) -> PathBuf { self.root.join(&self.category) }
 
     fn ident(&self) -> String { (self.category.to_owned() + "/") }
 
