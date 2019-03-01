@@ -1,6 +1,8 @@
 use std::{iter::Iterator, option::Option};
 
+/// Iterator adapter for Result<> iterators
 pub trait OptFilter: Iterator {
+    /// Return an iterator that includes/excludes given unwrapped Ok() values
     fn filter_oks<F, T, E>(self, f: F) -> FilterOks<Self, F>
     where
         Self: Iterator<Item = Result<T, E>> + Sized,
@@ -8,6 +10,9 @@ pub trait OptFilter: Iterator {
     {
         FilterOks { iter: self, filter: f }
     }
+
+    /// return an iterator when unwraps Ok values, and replaces them with arbitrary Result's
+    /// leaving Err() as-is
     fn map_oks<F, T, TT, E>(self, f: F) -> MapOks<Self, F>
     where
         Self: Iterator<Item = Result<T, E>> + Sized,
@@ -15,6 +20,9 @@ pub trait OptFilter: Iterator {
     {
         MapOks { iter: self, mapper: f }
     }
+
+    /// return an iterator which sends Err results to callback, and passes through Ok results
+    /// unwrapped
     fn extract_errs<F, T, E>(self, f: F) -> ExtractErrs<Self, F>
     where
         Self: Iterator<Item = Result<T, E>> + Sized,
@@ -26,6 +34,7 @@ pub trait OptFilter: Iterator {
 
 impl<T: ?Sized> OptFilter for T where T: Iterator {}
 
+/// Include/Exclude given Ok() values from an iterator, leaving Err() as-is
 pub struct FilterOks<I, F> {
     iter:   I,
     filter: F,
@@ -57,6 +66,7 @@ where
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
 
+/// Translate one kind of Ok() into some other kind of Result<>, leaving existing Err() as-is
 pub struct MapOks<I, F> {
     iter:   I,
     mapper: F,
@@ -83,6 +93,7 @@ where
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
 
+/// Send all error results through a callback, yeild unwrapped Ok values to iterator
 pub struct ExtractErrs<I, F> {
     iter:    I,
     handler: F,
