@@ -71,10 +71,7 @@ Emits the thing in question as a space-delimited key=value string
 
 !*/
 
-#[macro_use]
-extern crate clap;
-
-use clap::ArgMatches;
+use clap::{clap_app, crate_authors, crate_version, ArgMatches};
 use grease::{
     category::Category,
     ebuild::Ebuild,
