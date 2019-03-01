@@ -12,6 +12,7 @@ pub struct Repository {
 }
 
 impl Repository {
+    /// Construct a new Repository trait object
     pub fn new(root: &Path) -> Repository { Repository { root: root.to_path_buf() } }
 
     /// Returns the path to this repository
