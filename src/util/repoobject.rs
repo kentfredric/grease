@@ -42,7 +42,7 @@ pub enum RepoObjectFormatter {
     /// Format as the objects name
     Name,
     /// Format via custom callback
-    Callback(fn(&RepoObject) -> String),
+    Callback(fn(&dyn RepoObject) -> String),
 }
 
 impl std::fmt::Debug for RepoObjectFormatter {
