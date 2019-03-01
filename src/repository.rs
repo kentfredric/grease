@@ -7,6 +7,7 @@ use std::{
 };
 
 /// Represents a gentoo repository
+#[derive(Debug)]
 pub struct Repository {
     root: PathBuf,
 }
