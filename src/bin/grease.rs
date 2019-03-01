@@ -1,3 +1,9 @@
+/*! Work in progress
+
+This is mostly a place-holder at present for testing purposes, but will eventually
+be a general portage tool if I ever work out how
+
+!*/
 use grease::repository::Repository;
 use std::{io::Error, path::Path, result::Result};
 
