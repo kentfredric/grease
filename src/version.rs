@@ -1,4 +1,4 @@
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 /// A container for aspects of a Portage Version
 pub struct Version {
     pv:  String,

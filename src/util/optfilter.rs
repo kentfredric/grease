@@ -35,6 +35,7 @@ pub trait OptFilter: Iterator {
 impl<T: ?Sized> OptFilter for T where T: Iterator {}
 
 /// Include/Exclude given Ok() values from an iterator, leaving Err() as-is
+#[derive(Debug)]
 pub struct FilterOks<I, F> {
     iter:   I,
     filter: F,
@@ -67,6 +68,7 @@ where
 }
 
 /// Translate one kind of Ok() into some other kind of Result<>, leaving existing Err() as-is
+#[derive(Debug)]
 pub struct MapOks<I, F> {
     iter:   I,
     mapper: F,
@@ -94,6 +96,7 @@ where
 }
 
 /// Send all error results through a callback, yeild unwrapped Ok values to iterator
+#[derive(Debug)]
 pub struct ExtractErrs<I, F> {
     iter:    I,
     handler: F,
