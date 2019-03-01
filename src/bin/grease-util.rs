@@ -30,6 +30,7 @@ fn main() {
             (@arg REPOSITORY: -r --repository
                 +required +takes_value
                 visible_alias[repo]
+                env[GREASE_REPOSITORY]
                 "Specifies the repository to iterate"
             )
             (@setting SubcommandRequired)
