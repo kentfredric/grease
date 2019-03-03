@@ -4,6 +4,7 @@
 mod regex;
 mod rule;
 pub mod validate;
+pub mod parse;
 
 /** A container for aspects of a Portage Atom
 
@@ -12,7 +13,8 @@ A portage [`Atom`] is a unique qualifier that identifies a specfic, unique packa
 It does not support dependency range or equality specifiers
 */
 
-struct Atom {
+#[derive(Debug)]
+pub struct Atom {
     category:     String,
     package_name: String,
 }
@@ -21,7 +23,9 @@ struct Atom {
 
 A portage [`Package`] is a unique qualifier, but without a version, and does not support range or equality specifiers
 */
-struct Package {
+
+#[derive(Debug)]
+pub struct Package {
     category:     String,
     package_name: String,
 }
@@ -31,6 +35,8 @@ struct Package {
 A portage [`Category`] is a unique qualifier of a *class* of [`Package`]'s,
 but without an actual package name or version and does not support range or requality specifiers
 */
-struct Category {
+
+#[derive(Debug)]
+pub struct Category {
     category: String,
 }
