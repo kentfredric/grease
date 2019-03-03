@@ -158,7 +158,7 @@ fn main() {
     }
 }
 
-fn iter_repo_categories(repo: &str, opts: &ArgMatches) {
+fn iter_repo_categories(repo: &str, opts: &ArgMatches<'_>) {
     let r = Repository::new(Path::new(repo));
     let citer = r.categories().expect("Error reading categories from repo");
     let formatter = repoobject::parse_formatter(opts.value_of("FORMATTER").unwrap()).unwrap();
@@ -166,7 +166,7 @@ fn iter_repo_categories(repo: &str, opts: &ArgMatches) {
         println!("{}", it.render(&formatter));
     }
 }
-fn iter_repo_packages(repo: &str, opts: &ArgMatches) {
+fn iter_repo_packages(repo: &str, opts: &ArgMatches<'_>) {
     let r = Repository::new(Path::new(repo));
     let formatter = repoobject::parse_formatter(opts.value_of("FORMATTER").unwrap()).unwrap();
     if opts.is_present("CATEGORY") {
@@ -188,7 +188,7 @@ fn iter_repo_packages(repo: &str, opts: &ArgMatches) {
         }
     }
 }
-fn iter_repo_ebuilds(repo: &str, opts: &ArgMatches) {
+fn iter_repo_ebuilds(repo: &str, opts: &ArgMatches<'_>) {
     let r = Repository::new(Path::new(repo));
     let formatter = repoobject::parse_formatter(opts.value_of("FORMATTER").unwrap()).unwrap();
 
