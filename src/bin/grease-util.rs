@@ -19,7 +19,7 @@
 
 The iterate command is for iterating "kinds" of things in a given repository
 
-```
+```bash
   grease-util iterate --repository PATH_TO_REPO <subcommand>
 ```
 
