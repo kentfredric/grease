@@ -1,10 +1,10 @@
 /*! An atom type for Gentoo packages and parsing tools
 !*/
 
+pub mod parse;
 mod regex;
 mod rule;
 pub mod validate;
-pub mod parse;
 
 /** A container for aspects of a Portage Atom
 
