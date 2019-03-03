@@ -1,4 +1,3 @@
-extern crate grease;
 use grease::version;
 
 #[test]
