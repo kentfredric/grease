@@ -1,8 +1,5 @@
-extern crate criterion;
-extern crate grease;
-
 use criterion::{BatchSize, Criterion};
-use grease::{repository::Repository, version};
+use grease::{atom, repository::Repository, version};
 use std::{path::Path, time::Duration};
 
 fn criterion_benchmark(c: &mut Criterion) {
@@ -39,7 +36,14 @@ fn criterion_benchmark(c: &mut Criterion) {
         },
         &["1", "1-r1", "10", "10-r1", "1234", "12345-r1"],
     );
+
     c.bench_function("repo.new", move |b| b.iter(|| Repository::new(&p)));
+    c.bench_function_over_inputs("atom::valid_category_name", |b, &inp| b.iter(|| atom::valid_category_name(inp)), &[
+        "", "virtual", "dev-perl", "-invalid",
+    ]);
+    c.bench_function_over_inputs("atom::valid_package_name", |b, &inp| b.iter(|| atom::valid_package_name(inp)), &[
+        "", "perl", "g++", "-invalid",
+    ]);
 }
 
 fn main() {
