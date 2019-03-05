@@ -15,8 +15,8 @@ It does not support dependency range or equality specifiers
 
 #[derive(Debug)]
 pub struct Atom {
-    category:     String,
-    package_name: String,
+    category: String,
+    package:  String,
 }
 
 /** A container for aspects of a Portage Package
@@ -26,8 +26,8 @@ A portage [`Package`] is a unique qualifier, but without a version, and does not
 
 #[derive(Debug)]
 pub struct Package {
-    category:     String,
-    package_name: String,
+    category: String,
+    package:  String,
 }
 
 /** A container for aspects of a Portage Category
