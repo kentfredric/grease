@@ -17,6 +17,8 @@ It does not support dependency range or equality specifiers
 pub struct Atom {
     category: String,
     package:  String,
+    version:  String,
+    revision: Option<String>,
 }
 
 /** A container for aspects of a Portage Package
