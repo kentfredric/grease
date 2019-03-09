@@ -24,16 +24,16 @@ pub(crate) const VERSION_PART: &str = concat!(
 );
 pub(crate) const VERSION_REVISION_SUFFIX: &str = "(?:-r[0-9]+)";
 
-pub(crate) const CATEGORY: Lazy<String> = sync_lazy! { format!("^{}$", CATEGORY_PART) };
-pub(crate) const PACKAGE: Lazy<String> = sync_lazy! {  format!("^{}$", PACKAGE_PART)  };
-pub(crate) const SLOT: Lazy<String> = sync_lazy! {     format!("^{}$", SLOT_PART)     };
-pub(crate) const USE_FLAG: Lazy<String> = sync_lazy! { format!("^{}$", USE_FLAG_PART) };
-pub(crate) const VERSION: Lazy<String> = sync_lazy! {  format!("^{}{}?$", VERSION_PART, VERSION_REVISION_SUFFIX )};
-pub(crate) const VERSION_SUFFIX: Lazy<String> = sync_lazy! {
+pub(crate) static CATEGORY: Lazy<String> = sync_lazy! { format!("^{}$", CATEGORY_PART) };
+pub(crate) static PACKAGE: Lazy<String> = sync_lazy! {  format!("^{}$", PACKAGE_PART)  };
+pub(crate) static SLOT: Lazy<String> = sync_lazy! {     format!("^{}$", SLOT_PART)     };
+pub(crate) static USE_FLAG: Lazy<String> = sync_lazy! { format!("^{}$", USE_FLAG_PART) };
+pub(crate) static VERSION: Lazy<String> = sync_lazy! {  format!("^{}{}?$", VERSION_PART, VERSION_REVISION_SUFFIX )};
+pub(crate) static VERSION_SUFFIX: Lazy<String> = sync_lazy! {
     format!("-{}{}?$", VERSION_PART, VERSION_REVISION_SUFFIX )
 };
 
-pub(crate) const ATOM_PARSE: Lazy<String> = sync_lazy! {
+pub(crate) static ATOM_PARSE: Lazy<String> = sync_lazy! {
     format!(
         "^=?(?P<category>{category})/(?P<package>{package})-(?P<version>{version})(?:-r(?P<revision>[0-9]+))?$",
         category = &CATEGORY_PART,
