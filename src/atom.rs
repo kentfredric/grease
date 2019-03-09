@@ -1,7 +1,6 @@
 /*! An atom type for Gentoo packages and parsing tools
 !*/
 
-pub mod nomparse;
 pub mod parse;
 mod regex;
 mod rule;
