@@ -2,7 +2,7 @@
 !*/
 
 use crate::{
-    atom::{validate, Category, Package},
+    atom::{regex, validate, Atom, Category, Package},
     err::AtomParseError,
 };
 
@@ -82,5 +82,67 @@ pub fn package(c: &str) -> Result<Package, AtomParseError> {
         Err(AtomParseError::BadPackage(parts[1].to_owned()))
     } else {
         Ok(Package { category: parts[0].to_owned(), package: parts[1].to_owned() })
+    }
+}
+
+#[test]
+fn parse_atom() {
+    match atom("dev-perl") {
+        Err(AtomParseError::BadAtomPair(e)) => assert_eq!(e, "dev-perl"),
+        e => panic!("{:?}", e),
+    }
+    match atom("virtual") {
+        Err(AtomParseError::BadAtomPair(e)) => assert_eq!(e, "virtual"),
+        e => panic!("{:?}", e),
+    }
+    match atom("-invalid") {
+        Err(AtomParseError::BadAtomPair(e)) => assert_eq!(e, "-invalid"),
+        e => panic!("{:?}", e),
+    }
+    match atom("-invalid/name") {
+        Err(AtomParseError::BadCategory(e)) => assert_eq!(e, "-invalid"),
+        e => panic!("{:?}", e),
+    }
+    match atom("virtual/-invalid") {
+        Err(AtomParseError::BadPackageVersion(e)) => assert_eq!(e, "-invalid"),
+        e => panic!("{:?}", e),
+    }
+    match atom("virtual/valid-1") {
+        Ok(Atom { category: c, package: p, version: v, revision: r }) => {
+            assert_eq!(c, "virtual");
+            assert_eq!(p, "valid");
+            assert_eq!(v, "1");
+            assert_eq!(r, None);
+        },
+        e => panic!("{:?}", e),
+    }
+    match atom("virtual/valid-1-r1") {
+        Ok(Atom { category: c, package: p, version: v, revision: r }) => {
+            assert_eq!(c, "virtual");
+            assert_eq!(p, "valid");
+            assert_eq!(v, "1");
+            assert_eq!(r, Some("1".to_owned()));
+        },
+        e => panic!("{:?}", e),
+    }
+}
+/** Decode a string containing category, package name, and version, into an [`Atom`]
+ **
+ **/
+pub fn atom(c: &str) -> Result<Atom, AtomParseError> {
+    let parts: Vec<&str> = c.splitn(2, '/').collect();
+    if parts.len() != 2 {
+        return Err(AtomParseError::BadAtomPair(c.to_owned()));
+    } else if !validate::category_name(parts[0]) {
+        return Err(AtomParseError::BadCategory(parts[0].to_owned()));
+    }
+    match regex::ATOM.captures(c) {
+        None => Err(AtomParseError::BadPackageVersion(parts[1].to_owned())),
+        Some(rparts) => Ok(Atom {
+            category: rparts.name("category").map(|i| i.as_str().to_owned()).unwrap(),
+            package:  rparts.name("package").map(|i| i.as_str().to_owned()).unwrap(),
+            version:  rparts.name("version").map(|i| i.as_str().to_owned()).unwrap(),
+            revision: rparts.name("revision").map(|i| i.as_str().to_owned()),
+        }),
     }
 }

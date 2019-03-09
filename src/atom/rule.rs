@@ -1,16 +1,43 @@
-pub(crate) static CATEGORY_CHARS: &str = "[A-Za-z0-9+_.-]";
-pub(crate) static CATEGORY_FIRST_CHAR: &str = "[A-Za-z0-9_]";
-pub(crate) static PACKAGE_CHARS: &str = "[A-Za-z0-9+_-]";
-pub(crate) static PACKAGE_FIRST_CHAR: &str = "[A-Za-z0-9_]";
-pub(crate) static SLOT_CHARS: &str = "[A-Za-z0-9+_.-]";
-pub(crate) static SLOT_FIRST_CHAR: &str = "[A-Za-z0-9_]";
-pub(crate) static USE_FLAG_NAME_CHARS: &str = "[A-Za-z0-9+_@-]";
-pub(crate) static USE_FLAG_NAME_FIRST_CHAR: &str = "[A-Za-z0-9]";
-pub(crate) static VERSION_DOTTED_NUM: &str = r##"[0-9]+(?:\.[0-9]+)*"##;
-pub(crate) static VERSION_LETTER: &str = "[a-zA-Z]";
-pub(crate) static VERSION_SUFFIX: &str = "(?:_(?:alpha|beta|pre|rc|p)[0-9]*)";
-pub(crate) static VERSION_REVISION_SUFFIX: &str = "(?:-r[0-9]+)";
+use once_cell::{sync::Lazy, sync_lazy};
 
-pub(crate) fn zero_or_more<S: AsRef<str>>(subject: S) -> String { String::new() + subject.as_ref() + "*" }
-pub(crate) fn fixed_match<S: AsRef<str>>(subject: S) -> String { String::new() + "^" + subject.as_ref() + "$" }
-pub(crate) fn optional<S: AsRef<str>>(subject: S) -> String { String::new() + subject.as_ref() + "?" }
+pub(crate) const CATEGORY_PART: &str = concat!(
+    "[A-Za-z0-9_]",     // Leading
+    "[A-Za-z0-9+_.-]*", // Rest
+);
+pub(crate) const PACKAGE_PART: &str = concat!(
+    "[A-Za-z0-9_]",    // Leading
+    "[A-Za-z0-9+_-]*"  // Rest
+);
+pub(crate) const SLOT_PART: &str = concat!(
+    "[A-Za-z0-9_]",     // Leading
+    "[A-Za-z0-9+_.-]*"  // Rest
+);
+pub(crate) const USE_FLAG_PART: &str = concat!(
+    "[A-Za-z0-9]",      // Leading
+    "[A-Za-z0-9+_@-]*"  // Rest
+);
+pub(crate) const VERSION_PART: &str = concat!(
+    "[0-9]+",                              // Leading digit
+    "(?:[.][0-9]+)*",                      // dotted digits
+    "[a-zA-Z]?",                           // optional tailing letter
+    "(?:_(?:alpha|beta|pre|rc|p)[0-9]*)*"  // optional multiple suffixes
+);
+pub(crate) const VERSION_REVISION_SUFFIX: &str = "(?:-r[0-9]+)";
+
+pub(crate) const CATEGORY: Lazy<String> = sync_lazy! { format!("^{}$", CATEGORY_PART) };
+pub(crate) const PACKAGE: Lazy<String> = sync_lazy! {  format!("^{}$", PACKAGE_PART)  };
+pub(crate) const SLOT: Lazy<String> = sync_lazy! {     format!("^{}$", SLOT_PART)     };
+pub(crate) const USE_FLAG: Lazy<String> = sync_lazy! { format!("^{}$", USE_FLAG_PART) };
+pub(crate) const VERSION: Lazy<String> = sync_lazy! {  format!("^{}{}?$", VERSION_PART, VERSION_REVISION_SUFFIX )};
+pub(crate) const VERSION_SUFFIX: Lazy<String> = sync_lazy! {
+    format!("-{}{}?$", VERSION_PART, VERSION_REVISION_SUFFIX )
+};
+
+pub(crate) const ATOM_PARSE: Lazy<String> = sync_lazy! {
+    format!(
+        "^=?(?P<category>{category})/(?P<package>{package})-(?P<version>{version})(?:-r(?P<revision>[0-9]+))?$",
+        category = &CATEGORY_PART,
+        package  = &PACKAGE_PART,
+        version  = &VERSION_PART,
+    )
+};

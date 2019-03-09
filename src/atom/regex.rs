@@ -9,10 +9,8 @@ use ::regex::{Regex, RegexBuilder};
 
 */
 pub(crate) static CATEGORY_NAME: Lazy<Regex> = sync_lazy! {
-    use super::rule::*;
-    Regex::new(&fixed_match(
-        CATEGORY_FIRST_CHAR.to_owned() + &zero_or_more(CATEGORY_CHARS)
-    )).unwrap()
+    use super::rule::CATEGORY;
+    Regex::new(&CATEGORY).unwrap()
 };
 
 /** A regex rule for matching Package Names as [mandated in PMS](https://projects.gentoo.org/pms/6/pms.html#x1-210003.1.2)
@@ -24,10 +22,8 @@ pub(crate) static CATEGORY_NAME: Lazy<Regex> = sync_lazy! {
 */
 
 pub(crate) static PACKAGE_NAME: Lazy<Regex> = sync_lazy! {
-    use super::rule::*;
-    Regex::new(&fixed_match(
-        PACKAGE_FIRST_CHAR.to_owned() + &zero_or_more(PACKAGE_CHARS)
-    )).unwrap()
+    use super::rule::PACKAGE;
+    Regex::new(&PACKAGE).unwrap()
 };
 
 /** A regex rule for matching Slot names as [mandated in PMS](https://projects.gentoo.org/pms/6/pms.html#x1-230003.1.3)
@@ -36,10 +32,8 @@ pub(crate) static PACKAGE_NAME: Lazy<Regex> = sync_lazy! {
 */
 
 pub(crate) static SLOT_NAME: Lazy<Regex> = sync_lazy! {
-    use super::rule::*;
-    Regex::new(&fixed_match(
-            SLOT_FIRST_CHAR.to_owned() + &zero_or_more(SLOT_CHARS)
-    )).unwrap()
+    use super::rule::SLOT;
+    Regex::new(&SLOT).unwrap()
 };
 
 /** A regex rule for matching USE flag names as [mandated in PMS](https://projects.gentoo.org/pms/6/pms.html#x1-240003.1.4)
@@ -50,10 +44,8 @@ pub(crate) static SLOT_NAME: Lazy<Regex> = sync_lazy! {
 */
 
 pub(crate) static USE_FLAG_NAME: Lazy<Regex> = sync_lazy! {
-    use super::rule::*;
-    Regex::new(&fixed_match(
-            USE_FLAG_NAME_FIRST_CHAR.to_owned() + &zero_or_more(USE_FLAG_NAME_CHARS)
-    )).unwrap()
+    use super::rule::USE_FLAG;
+    Regex::new(&USE_FLAG).unwrap()
 };
 
 /** A regex rule for matching against an Atom Version
@@ -61,23 +53,16 @@ pub(crate) static USE_FLAG_NAME: Lazy<Regex> = sync_lazy! {
 */
 
 pub(crate) static VERSION: Lazy<Regex> = sync_lazy! {
-    use super::rule::*;
-    RegexBuilder::new(&fixed_match(
-        VERSION_DOTTED_NUM.to_owned()
-        + &optional(VERSION_LETTER)
-        + &zero_or_more(VERSION_SUFFIX)
-        + &optional(VERSION_REVISION_SUFFIX)
-    )).ignore_whitespace(true).build().unwrap()
+    use super::rule::VERSION;
+    RegexBuilder::new(&VERSION).ignore_whitespace(true).build().unwrap()
 };
 
 pub(crate) static VERSION_SUFFIX: Lazy<Regex> = sync_lazy! {
-    use super::rule::*;
-    RegexBuilder::new(&(
-        "-".to_owned()
-        + VERSION_DOTTED_NUM
-        + &optional(VERSION_LETTER)
-        + &zero_or_more(VERSION_SUFFIX)
-        + &optional(VERSION_REVISION_SUFFIX)
-        + "$"
-    )).ignore_whitespace(true).build().unwrap()
+    use super::rule::VERSION_SUFFIX;
+    RegexBuilder::new(&VERSION_SUFFIX).ignore_whitespace(true).build().unwrap()
+};
+
+pub(crate) static ATOM: Lazy<Regex> = sync_lazy! {
+    use super::rule::ATOM_PARSE;
+    RegexBuilder::new(&ATOM_PARSE).ignore_whitespace(true).build().unwrap()
 };

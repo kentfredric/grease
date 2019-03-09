@@ -14,6 +14,8 @@ pub enum AtomParseError {
     /// The package atom string didn't have sufficient "/" to be a valid
     /// atom
     BadAtomPair(String),
+    /// The package atom string didn't satisfy the category/pn-pv regex
+    BadPackageVersion(String),
 }
 
 impl fmt::Display for AtomParseError {
@@ -23,6 +25,9 @@ impl fmt::Display for AtomParseError {
             AtomParseError::BadPackage(input) => write!(f, "Given package <{}> is invalid", input),
             AtomParseError::BadAtomPair(input) => {
                 write!(f, "Given string <{}> does not have both package and category parts", input)
+            },
+            AtomParseError::BadPackageVersion(input) => {
+                write!(f, "Given string <{}> does not have a valid package name and version", input)
             },
         }
     }
