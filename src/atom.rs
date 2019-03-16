@@ -1,4 +1,21 @@
-/*! An atom type for Gentoo packages and parsing tools
+/*! An abstract atom type for Gentoo packages and parsing tools
+
+The set of atom types permits and facilliates working with portage dependency tokens in an abstract manner
+independent of direct, legal, filesystem representation.
+
+This is an adjunct to its peers in [`repository`]
+
+### Usage
+```rust
+use grease::atom::{Atom, Category, Package};
+
+// Parse an atom string and return a structured representation
+// or throw a parse error
+let a: Atom = "dev-lang/perl-5.26.0-r1".parse().unwrap();
+
+// Duplicate the Atom struct and convert it into a Category object
+let c: Category = a.to_owned().into();
+
 !*/
 
 mod regex;
@@ -10,6 +27,14 @@ use std::{cmp::Ordering, convert::From, str::FromStr};
 
 A portage [`Category`] is a unique qualifier of a *class* of [`Package`]'s,
 but without an actual package name or version and does not support range or requality specifiers
+
+### Usage
+```rust
+use grease::atom::Category;
+
+let c: Category = "dev-perl".parse().unwrap();
+
+```
 */
 
 #[derive(Debug, Clone)]
@@ -48,6 +73,15 @@ impl PartialOrd for Category {
 /** A container for aspects of a Portage Package
 
 A portage [`Package`] is a unique qualifier, but without a version, and does not support range or equality specifiers
+
+### Usage
+```rust
+use grease::atom::{Category,Package};
+
+let p: Package = "dev-lang/perl".parse().unwrap();
+let c: Category = p.into();
+
+```
 */
 
 #[derive(Debug, Clone)]
@@ -110,6 +144,17 @@ impl PartialOrd for Package {
 A portage [`Atom`] is a unique qualifier that identifies a specfic, unique package, with a specific exact version
 
 It does not support dependency range or equality specifiers
+
+### Usage
+```rust
+use grease::atom::{Atom,Category,Package};
+
+let a: Atom = "dev-lang/perl-5.22.0-r1".parse().unwrap();
+let p: Package = a.to_owned().into();
+let c: Category = p.into();
+let oc: Category = a.into();
+
+```
 */
 
 #[derive(Debug, Clone)]
