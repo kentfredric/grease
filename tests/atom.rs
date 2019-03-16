@@ -96,6 +96,43 @@ macro_rules! atom_ne {
         }
     }};
 }
+macro_rules! atom_cmp {
+    ($x:expr, gt $y:expr) => {{
+        use grease::atom::Atom;
+        use std::cmp::Ordering;
+        match $x.parse::<Atom>() {
+            Ok(left) => match $y.parse::<Atom>() {
+                Ok(right) => match left.partial_cmp(&right) {
+                    Some(Ordering::Greater) => assert!(true),
+                    e => panic!("{:?} {:?} {:?}" , left, e, right),
+                }
+                e => panic!("{:?}", e),
+            },
+            e => panic!("{:?}", e),
+        }
+    }};
+    ($x:expr, lt $y:expr) => {{
+        use grease::atom::Atom;
+        use std::cmp::Ordering;
+        match $x.parse::<Atom>() {
+            Ok(left) => match $y.parse::<Atom>() {
+                Ok(right) => match left.partial_cmp(&right) {
+                    Some(Ordering::Less) => assert!(true),
+                    e => panic!("{:?} {:?} {:?}" , left, e, right),
+                }
+                e => panic!("{:?}", e),
+            },
+            e => panic!("{:?}", e),
+        }
+    }};
+    ($x:expr, > $y:expr) => {{
+        atom_cmp!( $x, gt $y )
+    }};
+    ($x:expr, < $y:expr) => {{
+        atom_cmp!( $x, lt $y )
+    }}
+
+}
 
 #[test]
 fn parse_category() {
@@ -156,4 +193,12 @@ fn parse_atom() {
 fn atom_cmp() {
     atom_eq!("dev-lang/perl-5.21.0", "dev-lang/perl-5.21.0");
     atom_ne!("dev-lang/perl-5.21.0", "dev-lang/perl-5.21.1");
+    atom_ne!("dev-lang/perl-5.21.0", "virtual/perl-5.21.0");
+    atom_ne!("dev-lang/perl-5.21.0", "dev-lang/rust-5.21.0");
+    atom_ne!("dev-lang/perl-5.21.0", "dev-lang/perl-5.21.0-r1");
+    atom_cmp!("dev-lang/perl-5.21.0", < "dev-lang/perl-5.21.0-r1");
+    atom_cmp!("dev-lang/perl-5.21.0", < "dev-lang/perl-5.21.1");
+    atom_cmp!("dev-lang/perl-5.21.1", < "dev-lang/perl-5.21.10");
+    atom_cmp!("dev-lang/perl-5.21.10", < "dev-lang/perl-5.21.100");
+    atom_cmp!("dev-lang/perl-5.21.0", < "dev-lang/perl-5.21.0_pre1");
 }
