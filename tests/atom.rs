@@ -71,6 +71,32 @@ macro_rules! bad_atom {
         }
     }};
 }
+
+macro_rules! atom_eq {
+    ($x:expr, $y:expr) => {{
+        use grease::atom::Atom;
+        match $x.parse::<Atom>() {
+            Ok(left) => match $y.parse::<Atom>() {
+                Ok(right) => assert_eq!(left, right),
+                e => panic!("{:?}", e),
+            },
+            e => panic!("{:?}", e),
+        }
+    }};
+}
+macro_rules! atom_ne {
+    ($x:expr, $y:expr) => {{
+        use grease::atom::Atom;
+        match $x.parse::<Atom>() {
+            Ok(left) => match $y.parse::<Atom>() {
+                Ok(right) => assert_ne!(left, right),
+                e => panic!("{:?}", e),
+            },
+            e => panic!("{:?}", e),
+        }
+    }};
+}
+
 #[test]
 fn parse_category() {
     good_category!("dev-perl");
@@ -124,4 +150,10 @@ fn parse_atom() {
     bad_atom!("virtual/valid-1.0_r", BadPackageVersion, "valid-1.0_r");
     bad_atom!("virtual/valid-1.0_r1", BadPackageVersion, "valid-1.0_r1");
     bad_atom!("virtual/valid-1.1-r", BadPackageVersion, "valid-1.1-r");
+}
+
+#[test]
+fn atom_cmp() {
+    atom_eq!("dev-lang/perl-5.21.0", "dev-lang/perl-5.21.0");
+    atom_ne!("dev-lang/perl-5.21.0", "dev-lang/perl-5.21.1");
 }

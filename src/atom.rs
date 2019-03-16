@@ -224,7 +224,12 @@ impl FromStr for Atom {
 }
 
 impl PartialEq for Atom {
-    fn eq(&self, other: &Atom) -> bool { self.category == other.category && self.package == other.package }
+    fn eq(&self, other: &Atom) -> bool {
+        self.category == other.category
+            && self.package == other.package
+            && self.version == other.version
+            && self.revision == other.revision
+    }
 }
 
 impl PartialOrd for Atom {
