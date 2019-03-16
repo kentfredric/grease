@@ -1,6 +1,9 @@
+#![allow(missing_docs)]
 use criterion::{BatchSize, Criterion};
-use grease::{atom, repository::Repository, version};
+use grease::{repository::Repository, version};
 use std::{path::Path, time::Duration};
+
+#[allow(unused_results)]
 
 fn criterion_benchmark(c: &mut Criterion) {
     let p = Path::new("/usr/local/gentoo");
@@ -38,12 +41,6 @@ fn criterion_benchmark(c: &mut Criterion) {
     );
 
     c.bench_function("repo.new", move |b| b.iter(|| Repository::new(&p)));
-    c.bench_function_over_inputs("atom::valid_category_name", |b, &inp| b.iter(|| atom::valid_category_name(inp)), &[
-        "", "virtual", "dev-perl", "-invalid",
-    ]);
-    c.bench_function_over_inputs("atom::valid_package_name", |b, &inp| b.iter(|| atom::valid_package_name(inp)), &[
-        "", "perl", "g++", "-invalid",
-    ]);
 }
 
 fn main() {
