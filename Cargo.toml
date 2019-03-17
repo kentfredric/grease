@@ -16,8 +16,12 @@ features = ["suggestions", "color", "vec_map"]
 [dependencies.once_cell]
 version = "~0.1"
 default-features = false
-
 features = []
+
+[dependencies.failure]
+version = "~0.1"
+default-features = false
+features = ["std","derive","failure_derive","backtrace"]
 
 [dev-dependencies]
 criterion = "~0.2, >=0.2.10"
