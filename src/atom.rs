@@ -67,8 +67,28 @@ impl PartialEq for Category {
     fn eq(&self, other: &Category) -> bool { self.category == other.category }
 }
 
+macro_rules! chain_cmp {
+    ($cmp:expr) => {
+        $cmp
+    };
+    ($cmp:expr, $res:expr) => {
+        match $cmp {
+            Some(Ordering::Equal) => $res,
+            e => e,
+        }
+    };
+    ($cmp:expr, $res:expr, $resb:expr) => {
+        chain_cmp!($cmp, chain_cmp!($res, $resb))
+    };
+    ($cmp:expr, $res:expr, $resb:expr, $resc:expr) => {
+        chain_cmp!($cmp, $res, chain_cmp!($resb, $resc))
+    };
+}
+
 impl PartialOrd for Category {
-    fn partial_cmp(&self, other: &Category) -> Option<Ordering> { self.category.partial_cmp(&other.category) }
+    fn partial_cmp(&self, other: &Category) -> Option<Ordering> {
+        chain_cmp!(self.category.partial_cmp(&other.category))
+    }
 }
 /** A container for aspects of a Portage Package
 
@@ -127,16 +147,31 @@ impl FromStr for Package {
     }
 }
 
+impl PartialEq<Category> for Package {
+    fn eq(&self, _other: &Category) -> bool { false }
+}
+impl PartialEq<Package> for Category {
+    fn eq(&self, _other: &Package) -> bool { false }
+}
+
+impl PartialOrd<Category> for Package {
+    fn partial_cmp(&self, other: &Category) -> Option<Ordering> {
+        chain_cmp!(self.category.partial_cmp(&other.category), Some(Ordering::Greater))
+    }
+}
+impl PartialOrd<Package> for Category {
+    fn partial_cmp(&self, other: &Package) -> Option<Ordering> {
+        chain_cmp!(other.category.partial_cmp(&self.category), Some(Ordering::Less))
+    }
+}
+
 impl PartialEq for Package {
     fn eq(&self, other: &Package) -> bool { self.category == other.category && self.package == other.package }
 }
 
 impl PartialOrd for Package {
     fn partial_cmp(&self, other: &Package) -> Option<Ordering> {
-        match self.category.partial_cmp(&other.category) {
-            Some(Ordering::Equal) => self.package.partial_cmp(&other.package),
-            e => e,
-        }
+        chain_cmp!(self.category.partial_cmp(&other.category), self.package.partial_cmp(&other.package))
     }
 }
 /** A container for aspects of a Portage Atom
@@ -223,6 +258,21 @@ impl FromStr for Atom {
     }
 }
 
+impl PartialEq<Category> for Atom {
+    fn eq(&self, _other: &Category) -> bool { false }
+}
+
+impl PartialEq<Package> for Atom {
+    fn eq(&self, _other: &Package) -> bool { false }
+}
+
+impl PartialEq<Atom> for Category {
+    fn eq(&self, _other: &Atom) -> bool { false }
+}
+
+impl PartialEq<Atom> for Package {
+    fn eq(&self, _other: &Atom) -> bool { false }
+}
 impl PartialEq for Atom {
     fn eq(&self, other: &Atom) -> bool {
         self.category == other.category
@@ -232,17 +282,41 @@ impl PartialEq for Atom {
     }
 }
 
+impl PartialOrd<Category> for Atom {
+    fn partial_cmp(&self, other: &Category) -> Option<Ordering> {
+        chain_cmp!(self.category.partial_cmp(&other.category), Some(Ordering::Greater))
+    }
+}
+
+impl PartialOrd<Package> for Atom {
+    fn partial_cmp(&self, other: &Package) -> Option<Ordering> {
+        chain_cmp!(
+            self.category.partial_cmp(&other.category),
+            self.package.partial_cmp(&other.package),
+            Some(Ordering::Greater)
+        )
+    }
+}
+
+impl PartialOrd<Atom> for Category {
+    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> {
+        chain_cmp!(other.category.partial_cmp(&self.category), Some(Ordering::Less))
+    }
+}
+
+impl PartialOrd<Atom> for Package {
+    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> {
+        chain_cmp!(other.category.partial_cmp(&self.category), Some(Ordering::Less))
+    }
+}
+
 impl PartialOrd for Atom {
     fn partial_cmp(&self, other: &Atom) -> Option<Ordering> {
-        match self.category.partial_cmp(&other.category) {
-            Some(Ordering::Equal) => match self.package.partial_cmp(&other.package) {
-                Some(Ordering::Equal) => match self.version.partial_cmp(&other.version) {
-                    Some(Ordering::Equal) => self.revision.partial_cmp(&other.revision),
-                    e => e,
-                },
-                e => e,
-            },
-            e => e,
-        }
+        chain_cmp!(
+            self.category.partial_cmp(&other.category),
+            self.package.partial_cmp(&other.package),
+            self.version.partial_cmp(&other.version),
+            self.revision.partial_cmp(&other.revision)
+        )
     }
 }

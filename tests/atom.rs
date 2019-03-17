@@ -131,7 +131,36 @@ macro_rules! atom_cmp {
     ($x:expr, < $y:expr) => {{
         atom_cmp!( $x, lt $y )
     }}
+}
 
+macro_rules! assert_cmp {
+    ($x:expr, < $y:expr) => {{
+        let rx = $x.unwrap();
+        let ry = $y.unwrap();
+        if rx < ry {
+            assert!(true)
+        } else {
+            panic!("{:?} !< {:?}", rx, ry)
+        }
+    }};
+    ($x:expr, > $y:expr) => {{
+        let rx = $x.unwrap();
+        let ry = $y.unwrap();
+        if rx > ry {
+            assert!(true)
+        } else {
+            panic!("{:?} !> {:?}", rx, ry)
+        }
+    }};
+    ($x:expr, == $y:expr) => {{
+        let rx = $x.unwrap();
+        let ry = $y.unwrap();
+        if rx == ry {
+            assert!(true)
+        } else {
+            panic!("{:?} !== {:?}", rx, ry)
+        }
+    }};
 }
 
 #[test]
@@ -201,4 +230,10 @@ fn atom_cmp() {
     atom_cmp!("dev-lang/perl-5.21.1", < "dev-lang/perl-5.21.10");
     atom_cmp!("dev-lang/perl-5.21.10", < "dev-lang/perl-5.21.100");
     atom_cmp!("dev-lang/perl-5.21.0", < "dev-lang/perl-5.21.0_pre1");
+
+    use grease::atom::{Atom, Category, Package};
+
+    assert_cmp!("dev-lang/perl-5.20".parse::<Atom>(), < "dev-lang/perl-5.21".parse::<Atom>());
+    assert_cmp!("dev-lang/perl".parse::<Package>(), < "dev-lang/perl-5.21".parse::<Atom>());
+    assert_cmp!("dev-lang".parse::<Category>(), < "dev-lang/perl-5.21".parse::<Atom>());
 }
