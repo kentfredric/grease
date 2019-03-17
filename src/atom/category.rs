@@ -48,24 +48,6 @@ impl PartialEq for Category {
     fn eq(&self, other: &Category) -> bool { self.category == other.category }
 }
 
-macro_rules! chain_cmp {
-    ($cmp:expr) => {
-        $cmp
-    };
-    ($cmp:expr, $res:expr) => {
-        match $cmp {
-            Some(Ordering::Equal) => $res,
-            e => e,
-        }
-    };
-    ($cmp:expr, $res:expr, $resb:expr) => {
-        chain_cmp!($cmp, chain_cmp!($res, $resb))
-    };
-    ($cmp:expr, $res:expr, $resb:expr, $resc:expr) => {
-        chain_cmp!($cmp, $res, chain_cmp!($resb, $resc))
-    };
-}
-
 impl PartialOrd for Category {
     fn partial_cmp(&self, other: &Category) -> Option<Ordering> {
         chain_cmp!(self.category.partial_cmp(&other.category))

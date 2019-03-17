@@ -24,24 +24,6 @@ use crate::{
 };
 use std::{cmp::Ordering, convert::From, str::FromStr};
 
-macro_rules! chain_cmp {
-    ($cmp:expr) => {
-        $cmp
-    };
-    ($cmp:expr, $res:expr) => {
-        match $cmp {
-            Some(Ordering::Equal) => $res,
-            e => e,
-        }
-    };
-    ($cmp:expr, $res:expr, $resb:expr) => {
-        chain_cmp!($cmp, chain_cmp!($res, $resb))
-    };
-    ($cmp:expr, $res:expr, $resb:expr, $resc:expr) => {
-        chain_cmp!($cmp, $res, chain_cmp!($resb, $resc))
-    };
-}
-
 impl Package {
     /** A getter for this instances category
 

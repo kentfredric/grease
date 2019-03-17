@@ -1,6 +1,9 @@
 /*! A Low Level utility kit for performing tasks with Gentoo Portage
 !*/
 
+#[macro_use]
+mod macros;
+
 pub mod atom;
 pub mod err;
 
