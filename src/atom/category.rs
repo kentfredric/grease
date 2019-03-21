@@ -1,6 +1,6 @@
 /** A container for aspects of a Portage Category
 
-A portage [`Category`] is a unique qualifier of a *class* of [`Package`]'s,
+A portage [`Category`](crate::atom::Category) is a unique qualifier of a *class* of [`Package`](crate::atom::Package)'s,
 but without an actual package name or version and does not support range or requality specifiers
 
 ### Usage
@@ -17,10 +17,7 @@ pub struct Category {
     pub(crate) category: String,
 }
 
-use crate::{
-    atom::{regex, Package},
-    err,
-};
+use crate::{atom::regex, err};
 use std::{cmp::Ordering, str::FromStr};
 
 impl Category {
