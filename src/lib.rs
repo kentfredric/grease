@@ -7,8 +7,6 @@ mod macros;
 pub mod atom;
 pub mod err;
 
-/// Representation of a category in a Gentoo repository
-pub mod category;
 /// Representation of an ebuild in a Gentoo repository
 pub mod ebuild;
 /// Representation of a package in a Gentoo repository

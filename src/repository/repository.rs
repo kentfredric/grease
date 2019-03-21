@@ -1,4 +1,4 @@
-use crate::{category::Category, ebuild::Ebuild, package::Package, util::optfilter::OptFilter};
+use crate::{ebuild::Ebuild, package::Package, repository::Category, util::optfilter::OptFilter};
 use std::{
     fs::File,
     io::{BufRead, BufReader, Error},
