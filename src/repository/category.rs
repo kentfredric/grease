@@ -1,6 +1,6 @@
 //! Representation of a category in a Gentoo repository
 
-use crate::{ebuild::Ebuild, package::Package, util::optfilter::OptFilter};
+use crate::{ebuild::Ebuild, repository::Package, util::optfilter::OptFilter};
 use std::{io::Error, path::PathBuf, result::Result};
 
 /// Represents a discrete Gentoo category

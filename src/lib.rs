@@ -9,8 +9,6 @@ pub mod err;
 
 /// Representation of an ebuild in a Gentoo repository
 pub mod ebuild;
-/// Representation of a package in a Gentoo repository
-pub mod package;
 /// Representation of a Gentoo repository
 pub mod repository;
 /// Common utilities

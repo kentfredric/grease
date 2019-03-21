@@ -74,8 +74,7 @@ Emits the thing in question as a space-delimited key=value string
 use clap::{clap_app, crate_authors, crate_version, ArgMatches};
 use grease::{
     ebuild::Ebuild,
-    package::Package,
-    repository::{Category, Repository},
+    repository::{Category, Package, Repository},
     util::{
         optfilter::OptFilter,
         repoobject::{self, RepoObject},
