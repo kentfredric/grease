@@ -20,14 +20,64 @@ let c: Category = p.into();
 let oc: Category = a.into();
 
 ```
-*/
 
+### Construction
+Creating an [`Atom`] involves parsing an input string, eg:
+```rust
+use grease::atom::Atom;
+let a: Atom = "dev-lang/perl-5.22.0-r1".parse().unwrap();
+```
+
+This includes error handling for the parse as parse() returns a [`Result`] as per [`FromStr`]
+
+### Conversion
+[`Atom`]'s can be converted to [`Category`]'s and [`Package`]'s using the [`From`] trait, each
+resulting in a loss of some data in the conversion.
+```rust
+use grease::atom::{Atom,Category,Package};
+let a: Atom = "dev-lang/perl-5.24.1-r1".parse().unwrap();
+let c: Category = a.to_owned().into();
+let p: Package  = a.into();
+```
+
+### Comparison
+[`Atom`]'s can be compared with other [`Atom`]'s, and even vs [`Category`] and [`Package`]'s due
+to implementing [`PartialEq`] and [`PartialOrd`]
+
+```rust
+use grease::atom::{Atom,Category,Package};
+assert!(   "dev-lang/perl-5.24.1-r1".parse::<Atom>().unwrap()
+         < "dev-lang/perl-5.24.1-r2".parse::<Atom>().unwrap() );
+assert!(   "dev-lang/perl-5.24.1".parse::<Atom>().unwrap()
+         < "dev-lang/perl-5.24.1-r2".parse::<Atom>().unwrap() );
+assert!(   "dev-lang/perl-5.24".parse::<Atom>().unwrap()
+         < "dev-lang/perl-5.24.1-r2".parse::<Atom>().unwrap() );
+assert!(   "dev-lang/perl-5".parse::<Atom>().unwrap()
+         < "dev-lang/perl-5.24.1-r2".parse::<Atom>().unwrap() );
+assert!(   "dev-lang/perl".parse::<Package>().unwrap()
+         < "dev-lang/perl-5.24.1-r2".parse::<Atom>().unwrap() );
+assert!(   "dev-lang".parse::<Category>().unwrap()
+         < "dev-lang/perl-5.24.1-r2".parse::<Atom>().unwrap() );
+```
+
+Collective types (eg: [`Category`] and [`Package`]) sort "lesser" than all members of their collective, eg:
+```text
+c: dev-lang
+p: dev-lang/perl
+a: dev-lang/perl-5.21.1
+```
+
+This does **NOT** yet implement the full specification for Gentoo version sorting, however,
+the naive native string sorting is apparently 90% equivalent!
+
+
+*/
 #[derive(Debug, Clone)]
 pub struct Atom {
-    category: String,
-    package:  String,
-    version:  String,
-    revision: Option<String>,
+    pub(crate) category: String,
+    pub(crate) package:  String,
+    pub(crate) version:  String,
+    pub(crate) revision: Option<String>,
 }
 
 impl Atom {

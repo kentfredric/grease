@@ -1,5 +1,6 @@
 use crate::{
-    repository::{Category, Ebuild, Package},
+    atom::{category::Category as CategoryAtom, Atom, Package as PackageAtom},
+    repository::{Category, DeriveAtom, Ebuild, Package},
     util::optfilter::OptFilter,
 };
 use std::{
@@ -72,4 +73,22 @@ impl Repository {
 
     /// Fetch a category by name in this repository
     pub fn get_category(&self, name: &str) -> Category { Category::new(self.root.to_owned(), name.to_string()) }
+}
+impl DeriveAtom<CategoryAtom, Category> for Repository {
+    fn derive(&self, cat: CategoryAtom) -> Category { self.get_category(&cat.category) }
+}
+impl DeriveAtom<PackageAtom, Package> for Repository {
+    fn derive(&self, package: PackageAtom) -> Package {
+        self.get_category(&package.category).get_package(&package.package)
+    }
+}
+impl DeriveAtom<Atom, Ebuild> for Repository {
+    fn derive(&self, atom: Atom) -> Ebuild {
+        let p = self.get_category(&atom.category).get_package(&atom.package);
+        if let Some(ref i) = atom.revision {
+            p.get_ebuild(&(atom.version + "-r" + i + ".ebuild"))
+        } else {
+            p.get_ebuild(&(atom.version + ".ebuild"))
+        }
+    }
 }
