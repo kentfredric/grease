@@ -1,5 +1,5 @@
 //! Representation of a package in a Gentoo repository
-use crate::{ebuild::Ebuild, util::optfilter::OptFilter};
+use crate::{repository::Ebuild, util::optfilter::OptFilter};
 use std::{io::Error, path::PathBuf, result::Result};
 /// Represent a discrete gentoo package
 pub struct Package {

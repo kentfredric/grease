@@ -7,8 +7,6 @@ mod macros;
 pub mod atom;
 pub mod err;
 
-/// Representation of an ebuild in a Gentoo repository
-pub mod ebuild;
 /// Representation of a Gentoo repository
 pub mod repository;
 /// Common utilities

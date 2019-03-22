@@ -73,8 +73,7 @@ Emits the thing in question as a space-delimited key=value string
 
 use clap::{clap_app, crate_authors, crate_version, ArgMatches};
 use grease::{
-    ebuild::Ebuild,
-    repository::{Category, Package, Repository},
+    repository::{Category, Ebuild, Package, Repository},
     util::{
         optfilter::OptFilter,
         repoobject::{self, RepoObject},

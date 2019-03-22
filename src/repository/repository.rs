@@ -1,6 +1,5 @@
 use crate::{
-    ebuild::Ebuild,
-    repository::{Category, Package},
+    repository::{Category, Ebuild, Package},
     util::optfilter::OptFilter,
 };
 use std::{

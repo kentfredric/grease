@@ -1,4 +1,5 @@
-use super::version::{self, Version};
+//! Representation of an ebuild in a Gentoo repository
+use crate::version::{self, Version};
 use once_cell::sync::OnceCell;
 use std::path::PathBuf;
 
