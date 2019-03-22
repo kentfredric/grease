@@ -19,11 +19,13 @@ let c: Category = a.to_owned().into();
 !*/
 
 pub(crate) mod atom;
+pub(crate) mod atomspec;
 pub(crate) mod category;
 pub(crate) mod package;
 pub(crate) mod regex;
 pub(crate) mod rule;
 
 pub use atom::Atom;
+pub use atomspec::{AtomSpec, UseSpec};
 pub use category::Category;
 pub use package::Package;
