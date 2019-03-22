@@ -74,9 +74,7 @@ impl PartialOrd<Category> for Package {
     }
 }
 impl PartialOrd<Package> for Category {
-    fn partial_cmp(&self, other: &Package) -> Option<Ordering> {
-        chain_cmp!(other.category.partial_cmp(&self.category), Some(Ordering::Less))
-    }
+    fn partial_cmp(&self, other: &Package) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
 }
 
 impl PartialEq for Package {

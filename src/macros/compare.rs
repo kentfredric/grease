@@ -16,4 +16,7 @@ macro_rules! chain_cmp {
     ($cmp:expr, $res:expr, $resb:expr, $resc:expr) => {
         chain_cmp!($cmp, $res, chain_cmp!($resb, $resc))
     };
+    ($cmp:expr, $res:expr, $resb:expr, $resc:expr, $resd:expr) => {
+        chain_cmp!($cmp, $res, chain_cmp!($resb, $resc, $resd))
+    };
 }

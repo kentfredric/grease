@@ -179,19 +179,11 @@ impl PartialOrd<Package> for Atom {
 }
 
 impl PartialOrd<Atom> for Category {
-    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> {
-        chain_cmp!(self.category.partial_cmp(&other.category), Some(Ordering::Less))
-    }
+    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
 }
 
 impl PartialOrd<Atom> for Package {
-    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> {
-        chain_cmp!(
-            self.category.partial_cmp(&other.category),
-            self.package.partial_cmp(&other.package),
-            Some(Ordering::Less)
-        )
-    }
+    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
 }
 
 impl PartialOrd for Atom {

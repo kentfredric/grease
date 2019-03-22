@@ -176,34 +176,36 @@ impl PartialOrd<Atom> for AtomSpec {
         chain_cmp!(
             self.category.partial_cmp(&other.category),
             self.package.partial_cmp(&other.package),
+            // Atoms with greater versions sort after this
+            // but otherwise, Atoms all sort before this
+            // Atoms with equal versions continue comparing
+            match &self.version {
+                Some(v) => v.partial_cmp(&other.version),
+                None => Some(Ordering::Less),
+            },
+            // If versions are equal, then revision compare
+            // if one has a revision, the one with the revision is greater
+            // if both lack revisions, the AtomSpec comes last
+            match (&self.revision, &other.revision) {
+                (Some(rv), Some(orv)) => rv.partial_cmp(&orv),
+                (Some(rv), None) => Some(Ordering::Greater),
+                (None, Some(orv)) => Some(Ordering::Less),
+                _ => Some(Ordering::Greater),
+            },
             Some(Ordering::Greater)
         )
     }
 }
 
 impl PartialOrd<AtomSpec> for Category {
-    fn partial_cmp(&self, other: &AtomSpec) -> Option<Ordering> {
-        chain_cmp!(self.category.partial_cmp(&other.category), Some(Ordering::Less))
-    }
+    fn partial_cmp(&self, other: &AtomSpec) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
 }
 
 impl PartialOrd<AtomSpec> for Package {
-    fn partial_cmp(&self, other: &AtomSpec) -> Option<Ordering> {
-        chain_cmp!(
-            self.category.partial_cmp(&other.category),
-            self.package.partial_cmp(&other.package),
-            Some(Ordering::Less)
-        )
-    }
+    fn partial_cmp(&self, other: &AtomSpec) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
 }
 impl PartialOrd<AtomSpec> for Atom {
-    fn partial_cmp(&self, other: &AtomSpec) -> Option<Ordering> {
-        chain_cmp!(
-            self.category.partial_cmp(&other.category),
-            self.package.partial_cmp(&other.package),
-            Some(Ordering::Less)
-        )
-    }
+    fn partial_cmp(&self, other: &AtomSpec) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
 }
 
 impl PartialOrd for AtomSpec {
