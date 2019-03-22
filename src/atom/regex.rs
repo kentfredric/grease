@@ -66,3 +66,21 @@ pub(crate) static ATOM: Lazy<Regex> = sync_lazy! {
     use super::rule::ATOM_PARSE;
     RegexBuilder::new(&ATOM_PARSE).ignore_whitespace(true).build().unwrap()
 };
+
+pub(crate) static ATOM_SPEC: Lazy<Regex> = sync_lazy! {
+    use super::rule::ATOM_SPEC_PARSE;
+    RegexBuilder::new(&ATOM_SPEC_PARSE).ignore_whitespace(true).build().unwrap()
+};
+
+pub(crate) static USE_FLAG_SPEC: Lazy<Regex> = sync_lazy! {
+    use super::rule::USE_FLAG_PARSE;
+    RegexBuilder::new(&USE_FLAG_PARSE).ignore_whitespace(true).build().unwrap()
+};
+pub(crate) static ATOM_SPEC_CATEGORY: Lazy<Regex> = sync_lazy! {
+    use super::rule::ATOM_SPEC_PARSE_CATEGORY;
+    RegexBuilder::new(&ATOM_SPEC_PARSE_CATEGORY).ignore_whitespace(true).build().unwrap()
+};
+pub(crate) static ATOM_SPEC_PNV: Lazy<Regex> = sync_lazy! {
+    use super::rule::ATOM_SPEC_PARSE_PNV;
+    RegexBuilder::new(&ATOM_SPEC_PARSE_PNV).ignore_whitespace(true).build().unwrap()
+};

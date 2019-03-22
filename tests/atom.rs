@@ -62,6 +62,22 @@ macro_rules! good_atom {
     };
 }
 
+macro_rules! good_atom_spec {
+    ($x:expr) => {{
+        use failure::Error;
+        use grease::atom::AtomSpec;
+        match $x.parse::<AtomSpec>() {
+            Ok(cc) => {
+                println!(":) {:?}", cc);
+            },
+            Err(f) => {
+                let e: Error = f.into();
+                panic!("{:?}", e)
+            },
+        }
+    }};
+}
+
 macro_rules! bad_atom {
     ($x:expr, $y:ident, $z:expr) => {{
         use grease::{atom::Atom, err::AtomParseError};
@@ -72,6 +88,40 @@ macro_rules! bad_atom {
     }};
 }
 
+macro_rules! bad_atom_spec {
+    ($x:expr, $y:ident, $aa:expr) => {{
+        use grease::{atom::AtomSpec, err::AtomParseError};
+        match $x.parse::<AtomSpec>() {
+            Err(AtomParseError::$y(a)) => {
+                assert_eq!(a, $aa);
+            },
+            e => panic!("{:?}", e),
+        }
+    }};
+
+    ($x:expr, $y:ident, $aa:expr, $bb:expr) => {{
+        use grease::{atom::AtomSpec, err::AtomParseError};
+        match $x.parse::<AtomSpec>() {
+            Err(AtomParseError::$y(a, b)) => {
+                assert_eq!(a, $aa);
+                assert_eq!(b, $bb);
+            },
+            e => panic!("{:?}", e),
+        }
+    }};
+
+    ($x:expr, $y:ident, $aa:expr, $bb:expr, $cc:expr) => {{
+        use grease::{atom::AtomSpec, err::AtomParseError};
+        match $x.parse::<AtomSpec>() {
+            Err(AtomParseError::$y(a, b, c)) => {
+                assert_eq!(a, $aa);
+                assert_eq!(b, $bb);
+                assert_eq!(c, $cc);
+            },
+            e => panic!("{:?}", e),
+        }
+    }};
+}
 macro_rules! atom_eq {
     ($x:expr, $y:expr) => {{
         use grease::atom::Atom;
@@ -216,6 +266,21 @@ fn parse_atom() {
     bad_atom!("virtual/valid-1.0_r", BadPackageVersion, "valid-1.0_r");
     bad_atom!("virtual/valid-1.0_r1", BadPackageVersion, "valid-1.0_r1");
     bad_atom!("virtual/valid-1.1-r", BadPackageVersion, "valid-1.1-r");
+}
+
+#[test]
+fn parse_atom_spec() {
+    good_atom_spec!("dev-lang/perl");
+    good_atom_spec!("=dev-lang/perl-5.21.0");
+    good_atom_spec!("=dev-lang/perl-5.21.0:0");
+    good_atom_spec!("=dev-lang/perl-5.21.0:0=");
+    good_atom_spec!("=dev-lang/perl-5.21.0:0=[ithreads]");
+    good_atom_spec!("=dev-lang/perl-5.21.0:0=[!ithreads]");
+    good_atom_spec!("=dev-lang/perl-5.21.0:0=[!ithreads?]");
+    good_atom_spec!("=dev-lang/perl-5.21.0:0=[-ithreads?]");
+    good_atom_spec!("=dev-lang/perl-5.21.0:0=[-ithreads?,debug]");
+    bad_atom_spec!("=dev-lang/perl", IllegalOperator, "=", "=dev-lang", "=dev-lang/perl");
+    bad_atom_spec!("dev-lang/perl-5.21.0", IllegalVersion, "5.21.0", "perl-5.21.0", "dev-lang/perl-5.21.0");
 }
 
 #[test]
