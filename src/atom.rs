@@ -31,4 +31,3 @@ pub use atomspec::{AtomSpec, UseSpec};
 pub use atomspecgroup::AtomSpecGroup;
 pub use category::Category;
 pub use package::Package;
-

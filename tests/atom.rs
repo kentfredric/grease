@@ -153,7 +153,7 @@ macro_rules! atom_cmp {
         match $x.parse::<Atom>() {
             Ok(left) => match $y.parse::<Atom>() {
                 Ok(right) => match left.partial_cmp(&right) {
-                    Some(Ordering::Greater) => assert!(true),
+                    Some(Ordering::Greater) => (),
                     e => panic!("{:?} {:?} {:?}" , left, e, right),
                 }
                 e => panic!("{:?}", e),
@@ -167,7 +167,7 @@ macro_rules! atom_cmp {
         match $x.parse::<Atom>() {
             Ok(left) => match $y.parse::<Atom>() {
                 Ok(right) => match left.partial_cmp(&right) {
-                    Some(Ordering::Less) => assert!(true),
+                    Some(Ordering::Less) => (),
                     e => panic!("{:?} {:?} {:?}" , left, e, right),
                 }
                 e => panic!("{:?}", e),
@@ -184,52 +184,38 @@ macro_rules! atom_cmp {
 }
 
 macro_rules! assert_cmp {
-    ($x:expr, < $y:expr) => {{
-        let rx = $x.unwrap();
-        let ry = $y.unwrap();
-        if rx < ry {
-            assert!(true)
+    (== $x:expr, $op:tt $y:expr) => {{
+        if $x $op $y {
+            ()
         } else {
-            panic!("{:?} !< {:?}", rx, ry)
+            panic!("{:?} !{} {:?}", $x, stringify!($op), $y)
         }
     }};
-    ($x:expr, > $y:expr) => {{
-        let rx = $x.unwrap();
-        let ry = $y.unwrap();
-        if rx > ry {
-            assert!(true)
+    (literal $x:expr, $op:tt literal $y:expr) => {{
+        if $x $op $y {
+            ()
         } else {
-            panic!("{:?} !> {:?}", rx, ry)
+            panic!("{:?} !{} {:?}", $x, stringify!($op), $y)
         }
     }};
-    ($x:expr, == $y:expr) => {{
-        let rx = $x.unwrap();
-        let ry = $y.unwrap();
-        if rx == ry {
-            assert!(true)
-        } else {
-            panic!("{:?} !== {:?}", rx, ry)
-        }
+    (+ $x:expr, $op:tt $y:expr) => {{
+        assert_cmp!(== $x, $op $y)
     }};
-    ($x:expr, <= $y:expr) => {{
-        let rx = $x.unwrap();
-        let ry = $y.unwrap();
-        if rx <= ry {
-            assert!(true)
-        } else {
-            panic!("{:?} !<= {:?}", rx, ry)
-        }
+    (+ $x:expr, $op:tt $y:expr => $ytype:ty) => {{
+        assert_cmp!(== $x, $op format!("{}", $y.parse::<$ytype>().unwrap()))
     }};
-    ($x:expr, >= $y:expr) => {{
-        let rx = $x.unwrap();
-        let ry = $y.unwrap();
-        if rx >= ry {
-            assert!(true)
-        } else {
-            panic!("{:?} !>= {:?}", rx, ry)
-        }
+    (literal $x:expr, $op:tt $y:expr) => {{
+        assert_cmp!(== $x, $op $y.unwrap())
     }};
-
+    ($x:expr, $op:tt literal $y:expr) => {{
+        assert_cmp!(== $x.unwrap(), $op $y)
+    }};
+    ($x:expr, $op:tt $y:expr) => {{
+        assert_cmp!(== $x.unwrap(), $op $y.unwrap())
+    }};
+    ($x:expr => $xtype:ty, $op:tt $yexpr:expr => $ytype:ty) => {{
+        assert_cmp!(== $x.parse::<$xtype>().unwrap(), $op $y.parse::<$ytype>().unwrap())
+    }};
 }
 
 #[test]
@@ -300,6 +286,7 @@ fn parse_atom_spec() {
     good_atom_spec!("=dev-lang/perl-5.21.0:0=[-ithreads?,debug]");
     bad_atom_spec!("=dev-lang/perl", IllegalOperator, "=", "=dev-lang", "=dev-lang/perl");
     bad_atom_spec!("dev-lang/perl-5.21.0", IllegalVersion, "5.21.0", "perl-5.21.0", "dev-lang/perl-5.21.0");
+    bad_atom_spec!("dev-perl/Moose-5-r0", IllegalVersion, "5", "Moose-5-r0", "dev-perl/Moose-5-r0");
 }
 
 #[test]
@@ -328,4 +315,41 @@ fn atom_cmp() {
     assert_cmp!("dev-lang/perl-5.20".parse::<Atom>(), < "dev-lang/perl-5.21".parse::<Atom>());
     assert_cmp!("dev-lang/perl".parse::<Package>(), < "dev-lang/perl-5.21".parse::<Atom>());
     assert_cmp!("dev-lang".parse::<Category>(), < "dev-lang/perl-5.21".parse::<Atom>());
+}
+
+#[test]
+fn atom_display() {
+    use grease::atom::{Atom, AtomSpec, Category, Package};
+    assert_cmp!(+ "dev-perl", != "dev-lang" => Category);
+    assert_cmp!(+ "dev-perl", == "dev-perl" => Category);
+
+    assert_cmp!(+ "dev-perl/perl",  != "dev-lang/Moose" => Package);
+    assert_cmp!(+ "dev-perl/Moose", == "dev-perl/Moose" => Package);
+
+    assert_cmp!(+ "dev-perl/perl-5",  != "dev-lang/Moose-5" => Atom);
+    assert_cmp!(+ "dev-perl/Moose-5", == "dev-perl/Moose-5" => Atom);
+    // Leading = is supported for Atoms but stripped in output
+    assert_cmp!(+ "dev-perl/Moose-5", == "=dev-perl/Moose-5" => Atom);
+    // -r0 should not == no -r
+    assert_cmp!(+ "dev-perl/Moose-5",    != "dev-perl/Moose-5-r0" => Atom);
+    assert_cmp!(+ "dev-perl/Moose-5-r0", != "dev-perl/Moose-5-r1" => Atom);
+    assert_cmp!(+ "dev-perl/Moose-5-r0", == "dev-perl/Moose-5-r0" => Atom);
+
+    assert_cmp!(+ "dev-perl/Moose-5",    != "=dev-perl/Moose-5-r0" => AtomSpec);
+    assert_cmp!(+ "dev-perl/Moose-5-r0", != "=dev-perl/Moose-5-r1" => AtomSpec);
+    assert_cmp!(+ "=dev-perl/Moose-5-r0", == "=dev-perl/Moose-5-r0" => AtomSpec);
+
+    assert_cmp!(+ "=dev-perl/Moose-5-r0:0",  == "=dev-perl/Moose-5-r0:0"  => AtomSpec);
+    assert_cmp!(+ "=dev-perl/Moose-5-r0:0*", == "=dev-perl/Moose-5-r0:0*" => AtomSpec);
+    assert_cmp!(+ "dev-perl/Moose:0*",       == "dev-perl/Moose:0*"       => AtomSpec);
+    assert_cmp!(+ "dev-perl/Moose:0*[foo]",  == "dev-perl/Moose:0*[foo]"  => AtomSpec);
+
+    assert_cmp!(+ "dev-perl/Moose:0*[foo,-bar]",
+                == "dev-perl/Moose:0*[foo,-bar]"                => AtomSpec);
+
+    assert_cmp!(+ "dev-perl/Moose:0*[foo,-bar,!baz?]",
+                == "dev-perl/Moose:0*[foo,-bar,!baz?]"          => AtomSpec);
+
+    assert_cmp!(+ "dev-perl/Moose:0*[foo,-bar,!baz?,quux?]",
+                == "dev-perl/Moose:0*[foo,-bar,!baz?,quux?]"    => AtomSpec);
 }

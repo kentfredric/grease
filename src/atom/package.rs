@@ -22,7 +22,12 @@ use crate::{
     atom::{regex, Category},
     err,
 };
-use std::{cmp::Ordering, convert::From, str::FromStr};
+use std::{
+    cmp::Ordering,
+    convert::From,
+    fmt::{self, Display},
+    str::FromStr,
+};
 
 impl Package {
     /** A getter for this instances category
@@ -34,6 +39,10 @@ impl Package {
 
     */
     pub fn package(&self) -> &str { &self.package }
+}
+
+impl Display for Package {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result { write!(f, "{}/{}", self.category, self.package) }
 }
 
 impl From<Package> for Category {

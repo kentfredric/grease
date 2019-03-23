@@ -5,8 +5,8 @@ pub(crate) const CATEGORY_PART: &str = concat!(
     "[A-Za-z0-9+_.-]*", // Rest
 );
 pub(crate) const PACKAGE_PART: &str = concat!(
-    "[A-Za-z0-9_]",    // Leading
-    "[A-Za-z0-9+_-]*"  // Rest
+    "[A-Za-z0-9_]",     // Leading
+    "[A-Za-z0-9+_-]*?"  // Rest
 );
 pub(crate) const SLOT_PART: &str = concat!(
     "[A-Za-z0-9_]",     // Leading

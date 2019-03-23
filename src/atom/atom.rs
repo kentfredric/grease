@@ -2,7 +2,12 @@ use crate::{
     atom::{regex, Category, Package},
     err,
 };
-use std::{cmp::Ordering, convert::From, str::FromStr};
+use std::{
+    cmp::Ordering,
+    convert::From,
+    fmt::{self, Display},
+    str::FromStr,
+};
 
 /** A container for aspects of a Portage Atom
 
@@ -106,6 +111,15 @@ impl Atom {
     pub fn revision(&self) -> Option<String> { self.revision.to_owned() }
 }
 
+impl Display for Atom {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}/{}-{}", self.category, self.package, self.version).and_then(|_| match &self.revision {
+            Some(rv) => write!(f, "-r{}", rv),
+            None => Ok(()),
+        })
+    }
+}
+
 impl From<Atom> for Category {
     fn from(a: Atom) -> Self { Category { category: a.category } }
 }
@@ -123,8 +137,22 @@ impl FromStr for Atom {
         let parts: Vec<&str> = s.splitn(2, '/').collect();
         if parts.len() != 2 {
             return Err(AtomParseError::BadAtomPair(s.to_owned()));
-        } else if !regex::CATEGORY_NAME.is_match(parts[0]) {
-            return Err(AtomParseError::BadCategory(parts[0].to_owned()));
+        }
+        let (operator, category) = match regex::ATOM_SPEC_CATEGORY.captures(parts[0]) {
+            None => {
+                return Err(AtomParseError::BadCategory(parts[0].to_owned()));
+            },
+            Some(rparts) => (
+                rparts.name("operator").map(|i| i.as_str().to_owned()),
+                rparts.name("category").map(|i| i.as_str().to_owned()),
+            ),
+        };
+        match operator {
+            None => (),
+            Some(other) => match other.as_str() {
+                "=" => (),
+                _ => return Err(AtomParseError::BadCategory(parts[0].to_owned())),
+            },
         }
         match regex::ATOM.captures(s) {
             None => Err(AtomParseError::BadPackageVersion(parts[1].to_owned())),

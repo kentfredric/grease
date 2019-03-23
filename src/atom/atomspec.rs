@@ -26,8 +26,52 @@ use crate::{
     atom::{Atom, Category, Package},
     err,
 };
-use std::{cmp::Ordering, str::FromStr};
+use std::{
+    cmp::Ordering,
+    fmt::{self, Display},
+    str::FromStr,
+};
 
+impl Display for UseSpec {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}{}{}",
+            self.modifier.to_owned().unwrap_or("".to_owned()),
+            self.flag,
+            self.suffix.to_owned().unwrap_or("".to_owned())
+        )
+    }
+}
+impl Display for AtomSpec {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{operator}{category}/{package}{version}{slot}{useflags}",
+            operator = self.operator.to_owned().unwrap_or("".to_owned()),
+            category = self.category,
+            package = self.package,
+            version = self.version.to_owned().map_or_else(
+                || "".to_owned(),
+                |v| { self.revision.to_owned().map_or_else(|| format!("-{}", &v), |rv| format!("-{}-r{}", &v, &rv)) }
+            ),
+            slot = self.slot.to_owned().map_or_else(
+                || "".to_owned(),
+                |s| { self.slot_op.to_owned().map_or_else(|| format!(":{}", s), |op| { format!(":{}{}", s, op) }) }
+            ),
+            useflags = self.required_use.to_owned().map_or_else(
+                || "".to_owned(),
+                |uf| {
+                    if uf.is_empty() {
+                        "".to_owned()
+                    } else {
+                        format!("[{}]", uf.iter().map(|i| format!("{}", i)).collect::<Vec<String>>().join(","))
+                    }
+                }
+            )
+        )
+    }
+}
 impl FromStr for UseSpec {
     type Err = err::AtomParseError;
 
@@ -35,14 +79,11 @@ impl FromStr for UseSpec {
         use crate::atom::regex;
         match regex::USE_FLAG_SPEC.captures(s) {
             None => unimplemented!(),
-            Some(rparts) => {
-                println!("{:?}", rparts);
-                Ok(UseSpec {
-                    modifier: rparts.name("prefix").map(|i| i.as_str().to_owned()),
-                    flag:     rparts.name("flag").map(|i| i.as_str().to_owned()).unwrap(),
-                    suffix:   rparts.name("suffix").map(|i| i.as_str().to_owned()),
-                })
-            },
+            Some(rparts) => Ok(UseSpec {
+                modifier: rparts.name("prefix").map(|i| i.as_str().to_owned()),
+                flag:     rparts.name("flag").map(|i| i.as_str().to_owned()).unwrap(),
+                suffix:   rparts.name("suffix").map(|i| i.as_str().to_owned()),
+            }),
         }
     }
 }
@@ -61,20 +102,16 @@ impl FromStr for AtomSpec {
             None => {
                 return Err(AtomParseError::BadCategory(parts[0].to_owned()));
             },
-            Some(rparts) => {
-                println!("{:?}", rparts);
-                (
-                    rparts.name("operator").map(|i| i.as_str().to_owned()),
-                    rparts.name("category").map(|i| i.as_str().to_owned()),
-                )
-            },
+            Some(rparts) => (
+                rparts.name("operator").map(|i| i.as_str().to_owned()),
+                rparts.name("category").map(|i| i.as_str().to_owned()),
+            ),
         };
         let (package, version, revision, slot, slot_op, required_use) = match regex::ATOM_SPEC_PNV.captures(parts[1]) {
             None => {
                 return Err(AtomParseError::BadPackageVersion(parts[1].to_owned()));
             },
             Some(rparts) => {
-                println!("{:?}", rparts);
                 let req_use = match rparts.name("use_flags") {
                     Some(i) => {
                         let iparts: Vec<&str> = i.as_str().split(',').collect();

@@ -18,13 +18,21 @@ pub struct Category {
 }
 
 use crate::{atom::regex, err};
-use std::{cmp::Ordering, str::FromStr};
+use std::{
+    cmp::Ordering,
+    fmt::{self, Display},
+    str::FromStr,
+};
 
 impl Category {
     /** a getter for this instances category
 
     */
     pub fn category(&self) -> &str { &self.category }
+}
+
+impl Display for Category {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result { write!(f, "{}", self.category) }
 }
 
 impl FromStr for Category {
