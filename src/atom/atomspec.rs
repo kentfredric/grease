@@ -188,8 +188,8 @@ impl PartialOrd<Atom> for AtomSpec {
             // if both lack revisions, the AtomSpec comes last
             match (&self.revision, &other.revision) {
                 (Some(rv), Some(orv)) => rv.partial_cmp(&orv),
-                (Some(rv), None) => Some(Ordering::Greater),
-                (None, Some(orv)) => Some(Ordering::Less),
+                (Some(_), None) => Some(Ordering::Greater),
+                (None, Some(_)) => Some(Ordering::Less),
                 _ => Some(Ordering::Greater),
             },
             Some(Ordering::Greater)
