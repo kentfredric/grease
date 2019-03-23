@@ -30,6 +30,7 @@ use std::{
     cmp::Ordering,
     fmt::{self, Display},
     str::FromStr,
+    string::ToString,
 };
 
 impl Display for UseSpec {
@@ -65,7 +66,7 @@ impl Display for AtomSpec {
                     if uf.is_empty() {
                         "".to_owned()
                     } else {
-                        format!("[{}]", uf.iter().map(|i| format!("{}", i)).collect::<Vec<String>>().join(","))
+                        format!("[{}]", uf.iter().map(ToString::to_string).collect::<Vec<String>>().join(","))
                     }
                 }
             )

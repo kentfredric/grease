@@ -202,7 +202,7 @@ macro_rules! assert_cmp {
         assert_cmp!(== $x, $op $y)
     }};
     (+ $x:expr, $op:tt $y:expr => $ytype:ty) => {{
-        assert_cmp!(== $x, $op format!("{}", $y.parse::<$ytype>().unwrap()))
+        assert_cmp!(== $x, $op $y.parse::<$ytype>().unwrap().to_string())
     }};
     (literal $x:expr, $op:tt $y:expr) => {{
         assert_cmp!(== $x, $op $y.unwrap())
