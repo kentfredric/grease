@@ -138,14 +138,11 @@ impl FromStr for Atom {
         if parts.len() != 2 {
             return Err(AtomParseError::BadAtomPair(s.to_owned()));
         }
-        let (operator, category) = match regex::ATOM_SPEC_CATEGORY.captures(parts[0]) {
+        let operator = match regex::ATOM_SPEC_CATEGORY.captures(parts[0]) {
             None => {
                 return Err(AtomParseError::BadCategory(parts[0].to_owned()));
             },
-            Some(rparts) => (
-                rparts.name("operator").map(|i| i.as_str().to_owned()),
-                rparts.name("category").map(|i| i.as_str().to_owned()),
-            ),
+            Some(rparts) => rparts.name("operator").map(|i| i.as_str().to_owned()),
         };
         match operator {
             None => (),

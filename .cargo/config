@@ -1,5 +1,9 @@
 [alias]
-mydoc = ["doc","--no-deps","--document-private-items"]
+mydoc = [
+  "doc",
+  "--no-deps",
+# "--document-private-items"
+]
 
 [build]
 rustdocflags = ["-Z","unstable-options","--disable-minification","--enable-index-page"]
