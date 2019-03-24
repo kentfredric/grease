@@ -15,10 +15,7 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
                 .short("f")
                 .long("formatter")
                 .takes_value(true)
-                .possible_value("path")
-                .possible_value("ident")
-                .possible_value("components")
-                .possible_value("name")
+                .possible_values(&["path", "ident", "components", "name"])
                 .default_value("ident")
                 .visible_alias("format")
                 .help("Controls the presentation of output"),
