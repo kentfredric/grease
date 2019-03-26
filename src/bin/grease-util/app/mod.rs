@@ -13,9 +13,9 @@ pub(crate) fn app<'x, 'y>() -> App<'x, 'y> {
         .subcommand(parse_atom::subcommand())
 }
 
-pub(crate) fn run(command: &ArgMatches<'_>) {
+pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
     match command.subcommand() {
         ("iterate", Some(sub_m)) => iterate::run(sub_m),
-        _ => Error::with_description(command.usage(), ErrorKind::MissingSubcommand).exit(),
+        _ => Err(Error::with_description(command.usage(), ErrorKind::MissingSubcommand)),
     }
 }

@@ -1,4 +1,4 @@
-use clap::{App, Arg, ArgMatches, SubCommand};
+use clap::{App, Arg, ArgMatches, Error, SubCommand};
 use grease::{
     repository::{Category, Repository},
     util::{
@@ -20,11 +20,12 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
     )
 }
 
-pub(crate) fn run(repo: &str, command: &ArgMatches<'_>) {
+pub(crate) fn run(repo: &str, command: &ArgMatches<'_>) -> Result<(), Error> {
     let r = Repository::new(Path::new(repo));
     let citer = r.categories().expect("Error reading categories from repo");
     let formatter = repoobject::parse_formatter(command.value_of("FORMATTER").unwrap()).unwrap();
     for it in citer.filter_oks(Category::is_legal).extract_errs(|e| panic!(e)) {
         println!("{}", it.render(&formatter));
     }
+    Ok(())
 }

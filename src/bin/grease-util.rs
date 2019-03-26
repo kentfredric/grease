@@ -79,4 +79,9 @@ mod app;
 #[global_allocator]
 static GLOBAL: System = System;
 
-fn main() { app::run(&app::app().get_matches()) }
+fn main() {
+    match app::run(&app::app().get_matches()) {
+        Err(e) => e.exit(),
+        _ => (),
+    }
+}

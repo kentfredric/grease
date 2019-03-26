@@ -22,11 +22,11 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
         .subcommand(ebuilds::subcommand())
 }
 
-pub(crate) fn run(command: &ArgMatches<'_>) {
+pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
     match command.subcommand() {
         ("categories", Some(c_opts)) => categories::run(command.value_of("REPOSITORY").unwrap(), c_opts),
         ("packages", Some(p_opts)) => packages::run(command.value_of("REPOSITORY").unwrap(), p_opts),
         ("ebuilds", Some(e_opts)) => ebuilds::run(command.value_of("REPOSITORY").unwrap(), e_opts),
-        _ => Error::with_description(command.usage(), ErrorKind::MissingSubcommand).exit(),
+        _ => Err(Error::with_description(command.usage(), ErrorKind::MissingSubcommand)),
     }
 }

@@ -2,11 +2,17 @@
 mydoc = [
   "doc",
   "--no-deps",
-# "--document-private-items"
+# "--document-private-items",
 ]
 
 [build]
-rustdocflags = ["-Z","unstable-options","--disable-minification","--enable-index-page"]
+rustdocflags = [
+  "-Z","unstable-options",
+  "--disable-minification",
+  "--enable-index-page",
+  "--persist-doctests", "target/doctests/",
+  "--show-coverage"
+]
 rustflags = [
   "-C","relocation-model=pic",
   "-W","absolute-paths-not-starting-with-crate",

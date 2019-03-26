@@ -1,5 +1,6 @@
 /target/debug
 /target/release
 /target/criterion
+/target/doctests
 /target/.*
 **/*.rs.bk
