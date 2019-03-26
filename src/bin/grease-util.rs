@@ -80,8 +80,7 @@ mod app;
 static GLOBAL: System = System;
 
 fn main() {
-    match app::run(&app::app().get_matches()) {
-        Err(e) => e.exit(),
-        _ => (),
+    if let Err(e) = app::run(&app::app().get_matches()) {
+        e.exit()
     }
 }

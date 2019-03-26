@@ -9,13 +9,15 @@ pub(crate) fn app<'x, 'y>() -> App<'x, 'y> {
         .author(crate_authors!())
         .about("Low level utility portage multi-tool")
         .setting(AppSettings::SubcommandRequired)
+        .setting(AppSettings::VersionlessSubcommands)
         .subcommand(iterate::subcommand())
         .subcommand(parse_atom::subcommand())
 }
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
     match command.subcommand() {
-        ("iterate", Some(sub_m)) => iterate::run(sub_m),
+        ("iterate", Some(sub_c)) => iterate::run(sub_c),
+        ("parse_atom", Some(sub_c)) => parse_atom::run(sub_c),
         _ => Err(Error::with_description(command.usage(), ErrorKind::MissingSubcommand)),
     }
 }
