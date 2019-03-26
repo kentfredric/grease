@@ -71,7 +71,6 @@ Emits the thing in question as a space-delimited key=value string
 
 !*/
 
-use clap::{crate_authors, crate_version, App, AppSettings};
 use std::alloc::System;
 
 #[path = "grease-util/app/mod.rs"]
@@ -80,21 +79,4 @@ mod app;
 #[global_allocator]
 static GLOBAL: System = System;
 
-fn app<'x, 'y>() -> App<'x, 'y> {
-    App::new("grease-util")
-        .version(crate_version!())
-        .author(crate_authors!())
-        .about("Low level utility portage multi-tool")
-        .setting(AppSettings::SubcommandRequired)
-        .subcommand(app::iterate::subcommand())
-        .subcommand(app::parse_atom::subcommand())
-}
-
-fn main() {
-    let app_m = app().get_matches();
-
-    match app_m.subcommand() {
-        ("iterate", Some(sub_m)) => app::iterate::run(sub_m),
-        _ => clap::Error::with_description(app_m.usage(), clap::ErrorKind::MissingSubcommand).exit(),
-    }
-}
+fn main() { app::run(&app::app().get_matches()) }
