@@ -1,7 +1,10 @@
 use clap::{App, Arg, ArgMatches, Error, ErrorKind, SubCommand};
 
+pub(crate) const NAME: &str = "package";
+pub(crate) const ABOUT: &str = "Validate/Parse a package(with category)";
+
 pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
-    SubCommand::with_name("package").about("Validate/Parse a package(with category)").arg(
+    SubCommand::with_name(NAME).about(ABOUT).arg(
         Arg::with_name("PACKAGE")
             .help("The name of a package to parse")
             .required(true)

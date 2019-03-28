@@ -7,9 +7,12 @@ use grease::{
     },
 };
 use std::path::Path;
+pub(crate) const NAME: &str = "packages";
+pub(crate) const ABOUT: &str = "Iterate all packages in a repository";
+
 pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
-    SubCommand::with_name("packages")
-        .about("Iterate all packages in a repository")
+    SubCommand::with_name(NAME)
+        .about(ABOUT)
         .arg(
             Arg::with_name("FORMATTER")
                 .short("f")

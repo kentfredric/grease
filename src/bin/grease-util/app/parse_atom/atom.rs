@@ -1,7 +1,10 @@
 use clap::{App, Arg, ArgMatches, Error, ErrorKind, SubCommand};
 
+pub(crate) const NAME: &str = "atom";
+pub(crate) const ABOUT: &str = "Validate/Parse a category/package-version set";
+
 pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
-    SubCommand::with_name("atom").about("Validate/Parse a category/package-version set").arg(
+    SubCommand::with_name(NAME).about(ABOUT).arg(
         Arg::with_name("ATOM")
             .help("The name of a category/package-version set to parse")
             .required(true)

@@ -4,8 +4,12 @@ mod categories;
 mod ebuilds;
 mod packages;
 
+pub(crate) const NAME: &str = "iterate";
+pub(crate) const ABOUT: &str = "Iterate various kinds of things in Gentoo Repositories";
+
 pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
-    SubCommand::with_name("iterate")
+    SubCommand::with_name(NAME)
+        .about(ABOUT)
         .setting(AppSettings::SubcommandRequired)
         .arg(
             Arg::with_name("REPOSITORY")
@@ -24,9 +28,9 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
     match command.subcommand() {
-        ("categories", Some(c_opts)) => categories::run(command.value_of("REPOSITORY").unwrap(), c_opts),
-        ("packages", Some(p_opts)) => packages::run(command.value_of("REPOSITORY").unwrap(), p_opts),
-        ("ebuilds", Some(e_opts)) => ebuilds::run(command.value_of("REPOSITORY").unwrap(), e_opts),
+        (categories::NAME, Some(c_opts)) => categories::run(command.value_of("REPOSITORY").unwrap(), c_opts),
+        (packages::NAME, Some(p_opts)) => packages::run(command.value_of("REPOSITORY").unwrap(), p_opts),
+        (ebuilds::NAME, Some(e_opts)) => ebuilds::run(command.value_of("REPOSITORY").unwrap(), e_opts),
         _ => Err(Error::with_description(command.usage(), ErrorKind::MissingSubcommand)),
     }
 }

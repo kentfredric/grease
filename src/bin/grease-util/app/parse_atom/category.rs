@@ -1,7 +1,11 @@
-use clap::{App, Arg, ArgMatches, Error, ErrorKind, SubCommand};
+use clap::{App, Arg, ArgMatches, Error, SubCommand};
+use grease::atom::Category;
+
+pub(crate) const NAME: &str = "category";
+pub(crate) const ABOUT: &str = "Validate/Parse a category name";
 
 pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
-    SubCommand::with_name("category").about("Validate/Parse a category name").arg(
+    SubCommand::with_name(NAME).about(ABOUT).arg(
         Arg::with_name("CATEGORY")
             .help("The name of a category to parse")
             .required(true)
@@ -12,5 +16,9 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
 }
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
-    Err(Error::with_description(command.usage(), ErrorKind::MissingSubcommand))
+    let categories: Vec<&str> = command.values_of("CATEGORY").unwrap().collect();
+    for i in categories {
+        println!("{}", i.parse::<Category>().unwrap().category())
+    }
+    Ok(())
 }
