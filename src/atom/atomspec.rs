@@ -38,9 +38,9 @@ impl Display for UseSpec {
         write!(
             f,
             "{}{}{}",
-            self.modifier.to_owned().unwrap_or("".to_owned()),
+            self.modifier.to_owned().unwrap_or_else(|| "".to_owned()),
             self.flag,
-            self.suffix.to_owned().unwrap_or("".to_owned())
+            self.suffix.to_owned().unwrap_or_else(|| "".to_owned())
         )
     }
 }
@@ -49,7 +49,8 @@ impl Display for AtomSpec {
         write!(
             f,
             "{operator}{category}/{package}{version}{slot}{useflags}",
-            operator = self.operator.to_owned().unwrap_or("".to_owned()),
+            operator =
+                self.operator.to_owned().unwrap_or_else(|| "".to_owned()),
             category = self.category,
             package = self.package,
             version = self.version.to_owned().map_or_else(
