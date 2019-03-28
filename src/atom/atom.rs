@@ -113,10 +113,11 @@ impl Atom {
 
 impl Display for Atom {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}/{}-{}", self.category, self.package, self.version).and_then(|_| match &self.revision {
-            Some(rv) => write!(f, "-r{}", rv),
-            None => Ok(()),
-        })
+        write!(f, "{}/{}-{}", self.category, self.package, self.version)
+            .and_then(|_| match &self.revision {
+                Some(rv) => write!(f, "-r{}", rv),
+                None => Ok(()),
+            })
     }
 }
 
@@ -125,7 +126,9 @@ impl From<Atom> for Category {
 }
 
 impl From<Atom> for Package {
-    fn from(a: Atom) -> Self { Package { category: a.category, package: a.package } }
+    fn from(a: Atom) -> Self {
+        Package { category: a.category, package: a.package }
+    }
 }
 
 impl FromStr for Atom {
@@ -142,22 +145,41 @@ impl FromStr for Atom {
             None => {
                 return Err(AtomParseError::BadCategory(parts[0].to_owned()));
             },
-            Some(rparts) => rparts.name("operator").map(|i| i.as_str().to_owned()),
+            Some(rparts) => {
+                rparts.name("operator").map(|i| i.as_str().to_owned())
+            },
         };
         match operator {
             None => (),
             Some(other) => match other.as_str() {
                 "=" => (),
-                _ => return Err(AtomParseError::BadCategory(parts[0].to_owned())),
+                _ => {
+                    return Err(AtomParseError::BadCategory(
+                        parts[0].to_owned(),
+                    ))
+                },
             },
         }
         match regex::ATOM.captures(s) {
-            None => Err(AtomParseError::BadPackageVersion(parts[1].to_owned())),
+            None => {
+                Err(AtomParseError::BadPackageVersion(parts[1].to_owned()))
+            },
             Some(rparts) => Ok(Atom {
-                category: rparts.name("category").map(|i| i.as_str().to_owned()).unwrap(),
-                package:  rparts.name("package").map(|i| i.as_str().to_owned()).unwrap(),
-                version:  rparts.name("version").map(|i| i.as_str().to_owned()).unwrap(),
-                revision: rparts.name("revision").map(|i| i.as_str().to_owned()),
+                category: rparts
+                    .name("category")
+                    .map(|i| i.as_str().to_owned())
+                    .unwrap(),
+                package:  rparts
+                    .name("package")
+                    .map(|i| i.as_str().to_owned())
+                    .unwrap(),
+                version:  rparts
+                    .name("version")
+                    .map(|i| i.as_str().to_owned())
+                    .unwrap(),
+                revision: rparts
+                    .name("revision")
+                    .map(|i| i.as_str().to_owned()),
             }),
         }
     }
@@ -189,7 +211,10 @@ impl PartialEq for Atom {
 
 impl PartialOrd<Category> for Atom {
     fn partial_cmp(&self, other: &Category) -> Option<Ordering> {
-        chain_cmp!(self.category.partial_cmp(&other.category), Some(Ordering::Greater))
+        chain_cmp!(
+            self.category.partial_cmp(&other.category),
+            Some(Ordering::Greater)
+        )
     }
 }
 
@@ -204,11 +229,15 @@ impl PartialOrd<Package> for Atom {
 }
 
 impl PartialOrd<Atom> for Category {
-    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
+    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> {
+        other.partial_cmp(self).map(Ordering::reverse)
+    }
 }
 
 impl PartialOrd<Atom> for Package {
-    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
+    fn partial_cmp(&self, other: &Atom) -> Option<Ordering> {
+        other.partial_cmp(self).map(Ordering::reverse)
+    }
 }
 
 impl PartialOrd for Atom {

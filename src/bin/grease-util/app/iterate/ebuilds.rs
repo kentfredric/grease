@@ -42,12 +42,16 @@ pub(crate) fn run(repo: &str, command: &ArgMatches<'_>) -> Result<(), Error> {
                 panic!("{:?} is not legal in the given repository", c);
             }
             let citer = c.ebuilds().expect("Error reading ebuilds from repo");
-            for it in citer.filter_oks(Ebuild::is_legal).extract_errs(|e| panic!(e)) {
+            for it in
+                citer.filter_oks(Ebuild::is_legal).extract_errs(|e| panic!(e))
+            {
                 println!("{}", it.render(&formatter));
             }
         }
     } else {
-        for it in citer.filter_oks(Ebuild::is_legal).extract_errs(|e| panic!(e)) {
+        for it in
+            citer.filter_oks(Ebuild::is_legal).extract_errs(|e| panic!(e))
+        {
             println!("{}", it.render(&formatter));
         }
     }

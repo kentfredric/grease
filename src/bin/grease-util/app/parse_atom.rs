@@ -21,6 +21,9 @@ pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
         (category::NAME, Some(args)) => category::run(args),
         (package::NAME, Some(args)) => package::run(args),
         (atom::NAME, Some(args)) => atom::run(args),
-        _ => Err(Error::with_description(command.usage(), ErrorKind::MissingSubcommand)),
+        _ => Err(Error::with_description(
+            command.usage(),
+            ErrorKind::MissingSubcommand,
+        )),
     }
 }

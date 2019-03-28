@@ -11,8 +11,8 @@ pub trait OptFilter: Iterator {
         FilterOks { iter: self, filter: f }
     }
 
-    /// return an iterator when unwraps Ok values, and replaces them with arbitrary Result's
-    /// leaving Err() as-is
+    /// return an iterator when unwraps Ok values, and replaces them with
+    /// arbitrary Result's leaving Err() as-is
     fn map_oks<F, T, TT, E>(self, f: F) -> MapOks<Self, F>
     where
         Self: Iterator<Item = Result<T, E>> + Sized,
@@ -21,8 +21,8 @@ pub trait OptFilter: Iterator {
         MapOks { iter: self, mapper: f }
     }
 
-    /// return an iterator which sends Err results to callback, and passes through Ok results
-    /// unwrapped
+    /// return an iterator which sends Err results to callback, and passes
+    /// through Ok results unwrapped
     fn extract_errs<F, T, E>(self, f: F) -> ExtractErrs<Self, F>
     where
         Self: Iterator<Item = Result<T, E>> + Sized,
@@ -67,7 +67,8 @@ where
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
 
-/// Translate one kind of Ok() into some other kind of Result<>, leaving existing Err() as-is
+/// Translate one kind of Ok() into some other kind of Result<>, leaving
+/// existing Err() as-is
 #[derive(Debug)]
 pub struct MapOks<I, F> {
     iter:   I,
@@ -95,7 +96,8 @@ where
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
 
-/// Send all error results through a callback, yeild unwrapped Ok values to iterator
+/// Send all error results through a callback, yeild unwrapped Ok values to
+/// iterator
 #[derive(Debug)]
 pub struct ExtractErrs<I, F> {
     iter:    I,

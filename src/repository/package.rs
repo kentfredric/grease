@@ -9,10 +9,14 @@ pub struct Package {
 }
 impl Package {
     /// Construct a new Package Type Object
-    pub fn new(root: PathBuf, category: String, package: String) -> Package { Package { root, category, package } }
+    pub fn new(root: PathBuf, category: String, package: String) -> Package {
+        Package { root, category, package }
+    }
 
     /// Return the path to a gentoo package
-    pub fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package) }
+    pub fn path(&self) -> PathBuf {
+        self.root.join(&self.category).join(&self.package)
+    }
 
     /// Get the category name of the package
     pub fn category(&self) -> String { self.category.to_owned() }
@@ -21,10 +25,14 @@ impl Package {
     pub fn pn(&self) -> String { self.package.to_owned() }
 
     /// Get a full identifier of this package
-    pub fn name(&self) -> String { self.category.to_owned() + "/" + &self.package }
+    pub fn name(&self) -> String {
+        self.category.to_owned() + "/" + &self.package
+    }
 
     /// Iterate all ebuilds within the package
-    pub fn ebuilds(&self) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
+    pub fn ebuilds(
+        &self,
+    ) -> Result<Box<dyn Iterator<Item = Result<Ebuild, Error>>>, Error> {
         let root = self.root.to_owned();
         let category = self.category.to_owned();
         let package = self.package.to_owned();
@@ -32,18 +40,36 @@ impl Package {
             root.join(&category)
                 .join(&package)
                 .read_dir()?
-                .filter_oks(|entry| if let Some(ext) = entry.path().extension() { ext.eq("ebuild") } else { false })
+                .filter_oks(|entry| {
+                    if let Some(ext) = entry.path().extension() {
+                        ext.eq("ebuild")
+                    } else {
+                        false
+                    }
+                })
                 .map_oks(move |entry| {
                     let e_fn = entry.file_name();
-                    let e = e_fn.to_str().expect("Could not decode filename to UTF8");
-                    Ok(Ebuild::new(root.to_owned(), category.to_owned(), package.to_owned(), e.to_owned()))
+                    let e = e_fn
+                        .to_str()
+                        .expect("Could not decode filename to UTF8");
+                    Ok(Ebuild::new(
+                        root.to_owned(),
+                        category.to_owned(),
+                        package.to_owned(),
+                        e.to_owned(),
+                    ))
                 }),
         ))
     }
 
     /// Get an ebuild within this category
     pub fn get_ebuild(&self, name: &str) -> Ebuild {
-        Ebuild::new(self.root.to_owned(), self.category.to_owned(), self.package.to_owned(), name.to_string())
+        Ebuild::new(
+            self.root.to_owned(),
+            self.category.to_owned(),
+            self.package.to_owned(),
+            name.to_string(),
+        )
     }
 
     /// Determine if this package is a legal package
@@ -59,9 +85,15 @@ impl std::fmt::Debug for Package {
 impl crate::util::repoobject::RepoObject for Package {
     fn name(&self) -> String { self.package.to_owned() }
 
-    fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package) }
+    fn path(&self) -> PathBuf {
+        self.root.join(&self.category).join(&self.package)
+    }
 
-    fn ident(&self) -> String { self.category.to_owned() + "/" + &self.package }
+    fn ident(&self) -> String {
+        self.category.to_owned() + "/" + &self.package
+    }
 
-    fn components(&self) -> String { format!("cat={} package={}", &self.category, &self.package) }
+    fn components(&self) -> String {
+        format!("cat={} package={}", &self.category, &self.package)
+    }
 }

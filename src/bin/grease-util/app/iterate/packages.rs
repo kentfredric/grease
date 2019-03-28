@@ -38,14 +38,20 @@ pub(crate) fn run(repo: &str, command: &ArgMatches<'_>) -> Result<(), Error> {
             if !c.is_legal() {
                 panic!("{:?} is not legal in the given repository", c);
             }
-            let citer = c.packages().expect("Error reading packages from repo");
-            for it in citer.filter_oks(Package::is_legal).extract_errs(|e| panic!(e)) {
+            let citer =
+                c.packages().expect("Error reading packages from repo");
+            for it in citer
+                .filter_oks(Package::is_legal)
+                .extract_errs(|e| panic!(e))
+            {
                 println!("{}", it.render(&formatter));
             }
         }
     } else {
         let citer = r.packages().expect("Error reading ebuilds from repo");
-        for it in citer.filter_oks(Package::is_legal).extract_errs(|e| panic!(e)) {
+        for it in
+            citer.filter_oks(Package::is_legal).extract_errs(|e| panic!(e))
+        {
             println!("{}", it.render(&formatter));
         }
     }

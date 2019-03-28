@@ -1,7 +1,8 @@
 use clap::{App, Arg, ArgMatches, Error, ErrorKind, SubCommand};
 
 pub(crate) const NAME: &str = "atom";
-pub(crate) const ABOUT: &str = "Validate/Parse a category/package-version set";
+pub(crate) const ABOUT: &str =
+    "Validate/Parse a category/package-version set";
 
 pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
     SubCommand::with_name(NAME).about(ABOUT).arg(
@@ -15,5 +16,8 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
 }
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
-    Err(Error::with_description(command.usage(), ErrorKind::MissingSubcommand))
+    Err(Error::with_description(
+        command.usage(),
+        ErrorKind::MissingSubcommand,
+    ))
 }

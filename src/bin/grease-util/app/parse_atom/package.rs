@@ -15,5 +15,8 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
 }
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
-    Err(Error::with_description(command.usage(), ErrorKind::MissingSubcommand))
+    Err(Error::with_description(
+        command.usage(),
+        ErrorKind::MissingSubcommand,
+    ))
 }

@@ -263,8 +263,18 @@ fn parse_atom() {
     good_atom!("virtual/valid-1.1-r1", "virtual", "valid", "1.1", revision "1");
     good_atom!("virtual/valid-1.1-r0", "virtual", "valid", "1.1", revision "0");
     good_atom!("virtual/valid-1.1_pre", "virtual", "valid", "1.1_pre");
-    good_atom!("virtual/valid-1.1_pre2012", "virtual", "valid", "1.1_pre2012");
-    good_atom!("virtual/valid-1.1b_pre2012", "virtual", "valid", "1.1b_pre2012");
+    good_atom!(
+        "virtual/valid-1.1_pre2012",
+        "virtual",
+        "valid",
+        "1.1_pre2012"
+    );
+    good_atom!(
+        "virtual/valid-1.1b_pre2012",
+        "virtual",
+        "valid",
+        "1.1b_pre2012"
+    );
     good_atom!("virtual/valid-1-r1", "virtual", "valid", "1", revision "1");
     bad_atom!("virtual/valid-1-", BadPackageVersion, "valid-1-");
     bad_atom!("virtual/valid-1.0-", BadPackageVersion, "valid-1.0-");
@@ -284,9 +294,27 @@ fn parse_atom_spec() {
     good_atom_spec!("=dev-lang/perl-5.21.0:0=[!ithreads?]");
     good_atom_spec!("=dev-lang/perl-5.21.0:0=[-ithreads?]");
     good_atom_spec!("=dev-lang/perl-5.21.0:0=[-ithreads?,debug]");
-    bad_atom_spec!("=dev-lang/perl", IllegalOperator, "=", "=dev-lang", "=dev-lang/perl");
-    bad_atom_spec!("dev-lang/perl-5.21.0", IllegalVersion, "5.21.0", "perl-5.21.0", "dev-lang/perl-5.21.0");
-    bad_atom_spec!("dev-perl/Moose-5-r0", IllegalVersion, "5", "Moose-5-r0", "dev-perl/Moose-5-r0");
+    bad_atom_spec!(
+        "=dev-lang/perl",
+        IllegalOperator,
+        "=",
+        "=dev-lang",
+        "=dev-lang/perl"
+    );
+    bad_atom_spec!(
+        "dev-lang/perl-5.21.0",
+        IllegalVersion,
+        "5.21.0",
+        "perl-5.21.0",
+        "dev-lang/perl-5.21.0"
+    );
+    bad_atom_spec!(
+        "dev-perl/Moose-5-r0",
+        IllegalVersion,
+        "5",
+        "Moose-5-r0",
+        "dev-perl/Moose-5-r0"
+    );
 }
 
 #[test]

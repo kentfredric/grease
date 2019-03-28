@@ -16,23 +16,43 @@ pub enum AtomParseError {
     #[fail(display = "Given package <{}> is invalid", _0)]
     BadPackage(String),
     /// The package name in question looks almost valid as per PMS regex,
-    /// but fails being valid due to it having a version suffix, when version suffixes
-    /// are illegal in the "package" part of an atom
-    #[fail(display = "Given package <{}> is invalid due to having a verison suffix", _0)]
+    /// but fails being valid due to it having a version suffix, when version
+    /// suffixes are illegal in the "package" part of an atom
+    #[fail(
+        display = "Given package <{}> is invalid due to having a verison \
+                   suffix",
+        _0
+    )]
     BadPackageWithPV(String),
     /// The package atom string didn't have sufficient "/" to be a valid
     /// atom
-    #[fail(display = "Given string <{}> does not have both package and category parts", _0)]
+    #[fail(
+        display = "Given string <{}> does not have both package and \
+                   category parts",
+        _0
+    )]
     BadAtomPair(String),
     /// The package atom string didn't satisfy the category/pn-pv regex
-    #[fail(display = "Given string <{}> does not have a valid package name and version", _0)]
+    #[fail(
+        display = "Given string <{}> does not have a valid package name and \
+                   version",
+        _0
+    )]
     BadPackageVersion(String),
-    /// The Cat/Package pair parsed OK, but an operator ( `>=`, `~`, etc ) was specified and no
-    /// version qualifier was given
-    #[fail(display = "Given AtomSpec <{}> has illegal operator <{}> without version in <{}>", _2, _0, _1)]
+    /// The Cat/Package pair parsed OK, but an operator ( `>=`, `~`, etc )
+    /// was specified and no version qualifier was given
+    #[fail(
+        display = "Given AtomSpec <{}> has illegal operator <{}> without \
+                   version in <{}>",
+        _2, _0, _1
+    )]
     IllegalOperator(String, String, String),
-    /// The Cat/Package pair parsed OK, but a version qualifier was specified and no operator was
-    /// specified.
-    #[fail(display = "Given AtomSpec <{}> has illegal version <{}> without operator in <{}>", _2, _0, _1)]
+    /// The Cat/Package pair parsed OK, but a version qualifier was specified
+    /// and no operator was specified.
+    #[fail(
+        display = "Given AtomSpec <{}> has illegal version <{}> without \
+                   operator in <{}>",
+        _2, _0, _1
+    )]
     IllegalVersion(String, String, String),
 }

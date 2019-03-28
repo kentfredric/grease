@@ -32,7 +32,9 @@ impl Category {
 }
 
 impl Display for Category {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result { write!(f, "{}", self.category) }
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.category)
+    }
 }
 
 impl FromStr for Category {

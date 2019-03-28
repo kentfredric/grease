@@ -30,10 +30,14 @@ impl AtomSpecGroup {
     fn push(&mut self, i: MemberType) { self.members.push(i) }
 
     /// Add an [`AtomSpec`] to the group
-    pub(crate) fn push_atomspec(&mut self, i: AtomSpec) { self.push(MemberType::Item(Box::new(i))) }
+    pub(crate) fn push_atomspec(&mut self, i: AtomSpec) {
+        self.push(MemberType::Item(Box::new(i)))
+    }
 
     /// Add a child [`AtomSpecGroup`] to the group
-    pub(crate) fn push_group(&mut self, i: AtomSpecGroup) { self.push(MemberType::Group(Box::new(i))) }
+    pub(crate) fn push_group(&mut self, i: AtomSpecGroup) {
+        self.push(MemberType::Group(Box::new(i)))
+    }
 }
 
 impl Display for OperatorKind {
@@ -81,7 +85,11 @@ impl Display for AtomSpecGroup {
 
 #[test]
 fn test_atom_spec_group() {
-    assert_eq!("", AtomSpecGroup { operator: OperatorKind::None, members: Vec::new() }.to_string());
+    assert_eq!(
+        "",
+        AtomSpecGroup { operator: OperatorKind::None, members: Vec::new() }
+            .to_string()
+    );
     assert_eq!(
         "( dev-lang/perl )",
         AtomSpecGroup {

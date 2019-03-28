@@ -8,7 +8,9 @@ pub struct Version {
 
 impl Version {
     /// Construct a new Version struct
-    pub fn new(pv: String, pr: String, pvr: String) -> Version { Version { pv, pr, pvr } }
+    pub fn new(pv: String, pr: String, pvr: String) -> Version {
+        Version { pv, pr, pvr }
+    }
 
     /// Return the packages version as per PMS' PV
     pub fn pv(&self) -> &str { &self.pv }
@@ -27,11 +29,18 @@ pub fn parse(version: &str) -> Version {
     let tail = v_chunks.pop();
     if !v_chunks.is_empty()
         && tail.is_some()
-        && tail.expect("no value returned from string iterator").parse::<u32>().is_ok()
+        && tail
+            .expect("no value returned from string iterator")
+            .parse::<u32>()
+            .is_ok()
     {
         let prefix = v_chunks.join("-");
         let suffix = "r".to_owned() + tail.unwrap();
-        Version::new(prefix.to_owned(), suffix.to_owned(), prefix + "-" + &suffix)
+        Version::new(
+            prefix.to_owned(),
+            suffix.to_owned(),
+            prefix + "-" + &suffix,
+        )
     } else {
         Version::new(vx.to_owned(), String::from("r0"), vx.to_owned())
     }

@@ -42,7 +42,9 @@ impl Package {
 }
 
 impl Display for Package {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result { write!(f, "{}/{}", self.category, self.package) }
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}/{}", self.category, self.package)
+    }
 }
 
 impl From<Package> for Category {
@@ -65,7 +67,10 @@ impl FromStr for Package {
         } else if regex::VERSION_SUFFIX.is_match(parts[1]) {
             Err(AtomParseError::BadPackageWithPV(parts[1].to_owned()))
         } else {
-            Ok(Package { category: parts[0].to_owned(), package: parts[1].to_owned() })
+            Ok(Package {
+                category: parts[0].to_owned(),
+                package:  parts[1].to_owned(),
+            })
         }
     }
 }
@@ -79,19 +84,29 @@ impl PartialEq<Package> for Category {
 
 impl PartialOrd<Category> for Package {
     fn partial_cmp(&self, other: &Category) -> Option<Ordering> {
-        chain_cmp!(self.category.partial_cmp(&other.category), Some(Ordering::Greater))
+        chain_cmp!(
+            self.category.partial_cmp(&other.category),
+            Some(Ordering::Greater)
+        )
     }
 }
 impl PartialOrd<Package> for Category {
-    fn partial_cmp(&self, other: &Package) -> Option<Ordering> { other.partial_cmp(self).map(Ordering::reverse) }
+    fn partial_cmp(&self, other: &Package) -> Option<Ordering> {
+        other.partial_cmp(self).map(Ordering::reverse)
+    }
 }
 
 impl PartialEq for Package {
-    fn eq(&self, other: &Package) -> bool { self.category == other.category && self.package == other.package }
+    fn eq(&self, other: &Package) -> bool {
+        self.category == other.category && self.package == other.package
+    }
 }
 
 impl PartialOrd for Package {
     fn partial_cmp(&self, other: &Package) -> Option<Ordering> {
-        chain_cmp!(self.category.partial_cmp(&other.category), self.package.partial_cmp(&other.package))
+        chain_cmp!(
+            self.category.partial_cmp(&other.category),
+            self.package.partial_cmp(&other.package)
+        )
     }
 }

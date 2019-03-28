@@ -16,7 +16,8 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
 }
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
-    let categories: Vec<&str> = command.values_of("CATEGORY").unwrap().collect();
+    let categories: Vec<&str> =
+        command.values_of("CATEGORY").unwrap().collect();
     for i in categories {
         println!("{}", i.parse::<Category>().unwrap().category())
     }

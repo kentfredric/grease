@@ -20,7 +20,9 @@ pub trait RepoObject {
         Self: Sized,
     {
         match f {
-            RepoObjectFormatter::Path => self.path().to_str().unwrap().to_owned(),
+            RepoObjectFormatter::Path => {
+                self.path().to_str().unwrap().to_owned()
+            },
             RepoObjectFormatter::Ident => self.ident(),
             RepoObjectFormatter::Components => self.components(),
             RepoObjectFormatter::Name => self.name(),
@@ -46,13 +48,25 @@ pub enum RepoObjectFormatter {
 }
 
 impl std::fmt::Debug for RepoObjectFormatter {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+    fn fmt(
+        &self, f: &mut std::fmt::Formatter<'_>,
+    ) -> Result<(), std::fmt::Error> {
         match self {
-            RepoObjectFormatter::Path => write!(f, "RepoObjectFormatter<Path>"),
-            RepoObjectFormatter::Ident => write!(f, "RepoObjectFormatter<Ident>"),
-            RepoObjectFormatter::Components => write!(f, "RepoObjectFormatter<Components>"),
-            RepoObjectFormatter::Name => write!(f, "RepoObjectFormatter<Name>"),
-            RepoObjectFormatter::Callback(_) => write!(f, "RepoObjectFormatter<Callback(fn)>"),
+            RepoObjectFormatter::Path => {
+                write!(f, "RepoObjectFormatter<Path>")
+            },
+            RepoObjectFormatter::Ident => {
+                write!(f, "RepoObjectFormatter<Ident>")
+            },
+            RepoObjectFormatter::Components => {
+                write!(f, "RepoObjectFormatter<Components>")
+            },
+            RepoObjectFormatter::Name => {
+                write!(f, "RepoObjectFormatter<Name>")
+            },
+            RepoObjectFormatter::Callback(_) => {
+                write!(f, "RepoObjectFormatter<Callback(fn)>")
+            },
         }
     }
 }

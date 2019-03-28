@@ -14,24 +14,32 @@ pub struct Ebuild {
 
 impl Ebuild {
     /// Construct a new ebuild explicitly
-    pub fn new(root: PathBuf, category: String, package: String, ebuild: String) -> Ebuild {
+    pub fn new(
+        root: PathBuf, category: String, package: String, ebuild: String,
+    ) -> Ebuild {
         Ebuild { root, category, package, ebuild, version: OnceCell::INIT }
     }
 
     /// Returns a path to the ebuild file
-    pub fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package).join(&self.ebuild) }
+    pub fn path(&self) -> PathBuf {
+        self.root.join(&self.category).join(&self.package).join(&self.ebuild)
+    }
 
     /// Return a [`Version`] object for this ebuild
     pub fn version(&self) -> &Version {
         self.version.get_or_init(|| {
             version::parse(
-                self.ebuild.trim_end_matches(".ebuild").trim_start_matches((self.package.to_owned() + "-").as_str()),
+                self.ebuild.trim_end_matches(".ebuild").trim_start_matches(
+                    (self.package.to_owned() + "-").as_str(),
+                ),
             )
         })
     }
 
     /// Returns the full name of this ebuild
-    pub fn name(&self) -> String { self.category.to_owned() + "/" + &self.package + "/" + &self.ebuild }
+    pub fn name(&self) -> String {
+        self.category.to_owned() + "/" + &self.package + "/" + &self.ebuild
+    }
 
     /// Returns the ebuilds category similar to `PMS` variable `CATEGORY`
     pub fn category(&self) -> String { self.category.to_owned() }
@@ -39,7 +47,8 @@ impl Ebuild {
     /// Returns the ebuilds package name similar to `PMS` variable `PN`
     pub fn pn(&self) -> String { self.package.to_owned() }
 
-    /// Returns the ebuilds full package version similar to `PMS` variable `PF`
+    /// Returns the ebuilds full package version similar to `PMS` variable
+    /// `PF`
     pub fn pf(&self) -> String { self.pn() + "-" + self.pvr() }
 
     /// Returns the ebuilds version with revision similar to `PMS` variable
@@ -82,11 +91,18 @@ impl std::fmt::Debug for Ebuild {
 impl crate::util::repoobject::RepoObject for Ebuild {
     fn name(&self) -> String { self.ebuild.to_owned() }
 
-    fn path(&self) -> PathBuf { self.root.join(&self.category).join(&self.package).join(&self.ebuild) }
+    fn path(&self) -> PathBuf {
+        self.root.join(&self.category).join(&self.package).join(&self.ebuild)
+    }
 
     fn ident(&self) -> String { self.category.to_owned() + "/" + &self.pf() }
 
     fn components(&self) -> String {
-        format!("cat={} package={} version={}", &self.category, &self.package, self.pvr())
+        format!(
+            "cat={} package={} version={}",
+            &self.category,
+            &self.package,
+            self.pvr()
+        )
     }
 }
