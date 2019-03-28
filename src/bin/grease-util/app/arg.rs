@@ -50,3 +50,25 @@ pub(crate) mod category {
         }
     }
 }
+pub(crate) mod repository {
+    use clap::{Arg, ArgMatches};
+    pub(crate) const ENV: &str = "GREASE_REPOSITORY";
+    pub(crate) const HELP: &str = "Specifies the repository to iterate";
+    pub(crate) const LONG: &str = "repository";
+    pub(crate) const NAME: &str = "REPOSITORY";
+    pub(crate) const SHORT: &str = "r";
+    pub(crate) const VISIBLE_ALIAS: &str = "repo";
+    pub(crate) fn arg<'x, 'y>() -> Arg<'x, 'y> {
+        Arg::with_name(NAME)
+            .env(ENV)
+            .help(HELP)
+            .long(LONG)
+            .short(SHORT)
+            .visible_alias(VISIBLE_ALIAS)
+            .required(true)
+            .takes_value(true)
+    }
+    pub(crate) fn get<'x>(command: &'x ArgMatches<'_>) -> &'x str {
+        command.value_of(NAME).unwrap()
+    }
+}

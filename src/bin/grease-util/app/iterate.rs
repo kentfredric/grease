@@ -1,4 +1,5 @@
-use clap::{App, AppSettings, Arg, ArgMatches, Error, ErrorKind, SubCommand};
+use crate::app::arg::repository;
+use clap::{App, AppSettings, ArgMatches, Error, ErrorKind, SubCommand};
 
 mod categories;
 mod ebuilds;
@@ -12,16 +13,7 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
     SubCommand::with_name(NAME)
         .about(ABOUT)
         .setting(AppSettings::SubcommandRequired)
-        .arg(
-            Arg::with_name("REPOSITORY")
-                .short("r")
-                .long("repository")
-                .required(true)
-                .takes_value(true)
-                .visible_alias("repo")
-                .env("GREASE_REPOSITORY")
-                .help("Specifies the repository to iterate"),
-        )
+        .arg(repository::arg())
         .subcommand(categories::subcommand())
         .subcommand(packages::subcommand())
         .subcommand(ebuilds::subcommand())
@@ -30,13 +22,13 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
     match command.subcommand() {
         (categories::NAME, Some(c_opts)) => {
-            categories::run(command.value_of("REPOSITORY").unwrap(), c_opts)
+            categories::run(repository::get(command), c_opts)
         },
         (packages::NAME, Some(p_opts)) => {
-            packages::run(command.value_of("REPOSITORY").unwrap(), p_opts)
+            packages::run(repository::get(command), p_opts)
         },
         (ebuilds::NAME, Some(e_opts)) => {
-            ebuilds::run(command.value_of("REPOSITORY").unwrap(), e_opts)
+            ebuilds::run(repository::get(command), e_opts)
         },
         _ => Err(Error::with_description(
             command.usage(),
