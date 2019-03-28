@@ -1,3 +1,4 @@
+use crate::app::arg::formatter;
 use clap::{App, Arg, ArgMatches, Error, SubCommand};
 use grease::{
     repository::{Package, Repository},
@@ -11,37 +12,25 @@ pub(crate) const NAME: &str = "packages";
 pub(crate) const ABOUT: &str = "Iterate all packages in a repository";
 
 pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
-    SubCommand::with_name(NAME)
-        .about(ABOUT)
-        .arg(
-            Arg::with_name("FORMATTER")
-                .short("f")
-                .long("formatter")
-                .takes_value(true)
-                .possible_values(&["path", "ident", "components", "name"])
-                .default_value("ident")
-                .visible_alias("format")
-                .help("Controls the presentation of output"),
-        )
-        .arg(
-            Arg::with_name("CATEGORY")
-                .short("c")
-                .long("category")
-                .value_name("CATEGORY_NAME")
-                .takes_value(true)
-                .multiple(true)
-                .takes_value(true)
-                .min_values(1)
-                .max_values(100)
-                .require_delimiter(true)
-                .visible_alias("cat")
-                .help("Restrict categories to a list provided"),
-        )
+    SubCommand::with_name(NAME).about(ABOUT).arg(formatter::arg()).arg(
+        Arg::with_name("CATEGORY")
+            .short("c")
+            .long("category")
+            .value_name("CATEGORY_NAME")
+            .takes_value(true)
+            .multiple(true)
+            .takes_value(true)
+            .min_values(1)
+            .max_values(100)
+            .require_delimiter(true)
+            .visible_alias("cat")
+            .help("Restrict categories to a list provided"),
+    )
 }
 
 pub(crate) fn run(repo: &str, command: &ArgMatches<'_>) -> Result<(), Error> {
     let r = Repository::new(Path::new(repo));
-    let formatter = repoobject::parse_formatter(command.value_of("FORMATTER").unwrap()).unwrap();
+    let formatter = formatter::get(command);
     if command.is_present("CATEGORY") {
         let values_iter = command.values_of("CATEGORY").unwrap();
         for cat in values_iter {
