@@ -1,4 +1,5 @@
-use clap::{App, Arg, ArgMatches, Error, ErrorKind, SubCommand};
+use clap::{App, Arg, ArgMatches, Error, SubCommand};
+use grease::atom::Package;
 
 pub(crate) const NAME: &str = "package";
 pub(crate) const ABOUT: &str = "Validate/Parse a package(with category)";
@@ -15,8 +16,10 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
 }
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
-    Err(Error::with_description(
-        command.usage(),
-        ErrorKind::MissingSubcommand,
-    ))
+    let packages: Vec<&str> = command.values_of("PACKAGE").unwrap().collect();
+    for i in packages {
+        let p = i.parse::<Package>().unwrap();
+        println!("{} {}", p.category(), p.package());
+    }
+    Ok(())
 }
