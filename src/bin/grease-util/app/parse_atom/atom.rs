@@ -1,4 +1,5 @@
-use clap::{App, Arg, ArgMatches, Error, ErrorKind, SubCommand};
+use clap::{App, Arg, ArgMatches, Error, SubCommand};
+use grease::atom::Atom;
 
 pub(crate) const NAME: &str = "atom";
 pub(crate) const ABOUT: &str =
@@ -16,8 +17,21 @@ pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {
 }
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
-    Err(Error::with_description(
-        command.usage(),
-        ErrorKind::MissingSubcommand,
-    ))
+    let atoms: Vec<&str> = command.values_of("ATOM").unwrap().collect();
+    for i in atoms {
+        let p = i.parse::<Atom>().unwrap();
+        match p.revision() {
+            Some(r) => println!(
+                "{} {} {} {}",
+                p.category(),
+                p.package(),
+                p.version(),
+                r
+            ),
+            None => {
+                println!("{} {} {}", p.category(), p.package(), p.version())
+            },
+        }
+    }
+    Ok(())
 }
