@@ -1,6 +1,7 @@
 pub(crate) mod arg;
 pub(crate) mod iterate;
 pub(crate) mod parse_atom;
+pub(crate) mod print_cache;
 
 use clap::{
     crate_authors, crate_version, App, AppSettings, ArgMatches, Error,
@@ -19,12 +20,14 @@ pub(crate) fn app<'x, 'y>() -> App<'x, 'y> {
         .setting(AppSettings::VersionlessSubcommands)
         .subcommand(iterate::subcommand())
         .subcommand(parse_atom::subcommand())
+        .subcommand(print_cache::subcommand())
 }
 
 pub(crate) fn run(command: &ArgMatches<'_>) -> Result<(), Error> {
     match command.subcommand() {
         (iterate::NAME, Some(sub_c)) => iterate::run(sub_c),
         (parse_atom::NAME, Some(sub_c)) => parse_atom::run(sub_c),
+        (print_cache::NAME, Some(sub_c)) => print_cache::run(sub_c),
         _ => Err(Error::with_description(
             command.usage(),
             ErrorKind::MissingSubcommand,
