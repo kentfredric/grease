@@ -1,12 +1,13 @@
 //! An API for auto-generating and obtaining copies of metadata cache
 use crate::repository::Repository;
+use crypto::{digest::Digest, md5::Md5};
 use directories::ProjectDirs;
 use lru::LruCache;
 use std::{
     collections::HashMap,
     fmt::{self, Display},
     fs::{self, File},
-    io::{self, BufRead, BufReader, ErrorKind},
+    io::{self, BufRead, BufReader, ErrorKind, Read},
     path::{Path, PathBuf},
     str,
 };
@@ -108,7 +109,7 @@ impl Display for CacheEntry {
 }
 
 impl fmt::Debug for MetaDataCache {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Foo")
             .field("r", &self.r)
             .field("cache_dir", &self.cache_dir)
@@ -157,4 +158,36 @@ impl MetaDataCache {
             },
         }
     }
+
+    fn md5_file(&self, path: &Path) -> String {
+        let mut f = File::open(path).unwrap();
+        let mut buf = [0; 8 * 1024];
+        let mut md5 = Md5::new();
+        while let Ok(len) = f.read(&mut buf[..]) {
+            if len == 0 {
+                break;
+            }
+            md5.input(&buf[..len]);
+        }
+        md5.result_str()
+    }
+
+    fn get_eclass_md5(&mut self, name: &str) -> &String {
+        let my_name = name.to_owned();
+        if !self.eclass_md5_cache.contains(&my_name) {
+            let p = self.r.eclass_path(&my_name).unwrap();
+            self.eclass_md5_cache.put(my_name.to_owned(), self.md5_file(&p));
+        }
+        self.eclass_md5_cache.get(&my_name).unwrap()
+    }
+}
+
+#[test]
+fn test_get_md5() {
+    let r = Repository::new(Path::new("/usr/portage"));
+    let mut mc = MetaDataCache::new(r);
+    for i in 1..10 {
+        println!("{}", mc.get_eclass_md5("perl-module"));
+    }
+    panic!("done");
 }

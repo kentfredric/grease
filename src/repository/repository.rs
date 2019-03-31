@@ -140,6 +140,59 @@ impl Repository {
             },
         }
     }
+
+    fn eclass_dir(&self) -> Result<PathBuf, ()> {
+        let edir = self.root.join("eclass");
+        match edir.metadata() {
+            Err(e) => match e.kind() {
+                ErrorKind::NotFound => unimplemented!(),
+                _ => unimplemented!(),
+            },
+            Ok(meta) => {
+                if meta.is_dir() {
+                    Ok(edir)
+                } else {
+                    unimplemented!()
+                }
+            },
+        }
+    }
+
+    fn metadata_dir(&self) -> Result<PathBuf, ()> {
+        let m = self.root.join("metadata");
+        match m.metadata() {
+            Err(e) => match e.kind() {
+                ErrorKind::NotFound => unimplemented!(),
+                _ => unimplemented!(),
+            },
+            Ok(meta) => {
+                if meta.is_dir() {
+                    Ok(m)
+                } else {
+                    unimplemented!()
+                }
+            },
+        }
+    }
+
+    pub(crate) fn eclass_path(&self, name: &str) -> Result<PathBuf, ()> {
+        self.eclass_dir().and_then(|d| {
+            let p = d.join(format!("{}.eclass", name));
+            match p.metadata() {
+                Err(e) => match e.kind() {
+                    ErrorKind::NotFound => unimplemented!(),
+                    _ => unimplemented!(),
+                },
+                Ok(meta) => {
+                    if !meta.is_dir() {
+                        Ok(p)
+                    } else {
+                        unimplemented!()
+                    }
+                },
+            }
+        })
+    }
 }
 impl DeriveAtom<CategoryAtom, Category> for Repository {
     fn derive(&self, cat: CategoryAtom) -> Category {
