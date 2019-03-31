@@ -7,13 +7,13 @@ use crate::{
 };
 use std::{
     fs::File,
-    io::{BufRead, BufReader, Error},
+    io::{BufRead, BufReader, Error, ErrorKind},
     path::{Path, PathBuf},
     result::Result,
 };
 
 /// Represents a gentoo repository
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Repository {
     root: PathBuf,
 }
@@ -95,6 +95,50 @@ impl Repository {
     /// Fetch a category by name in this repository
     pub fn get_category(&self, name: &str) -> Category {
         Category::new(self.root.to_owned(), name.to_string())
+    }
+
+    /// Extract this repositories name from its profiles dir
+    pub fn name(&self) -> Result<String, ()> {
+        self.profile_dir()
+            .and_then(|p| {
+                let repofile = p.join("repo_name");
+                match repofile.metadata() {
+                    Err(e) => match e.kind() {
+                        ErrorKind::NotFound => Err(()),
+                        _ => Err(()),
+                    },
+                    Ok(m) => {
+                        if !m.is_dir() {
+                            let contents: String =
+                                std::fs::read_to_string(repofile)
+                                    .unwrap()
+                                    .trim_end()
+                                    .to_owned();
+                            Ok(contents)
+                        } else {
+                            Err(())
+                        }
+                    },
+                }
+            })
+            .or_else(|()| Err(()))
+    }
+
+    fn profile_dir(&self) -> Result<PathBuf, ()> {
+        let p = self.root.join("profiles");
+        match p.metadata() {
+            Err(e) => match e.kind() {
+                ErrorKind::NotFound => Err(()),
+                _ => Err(()),
+            },
+            Ok(m) => {
+                if m.is_dir() {
+                    Ok(p)
+                } else {
+                    Err(())
+                }
+            },
+        }
     }
 }
 impl DeriveAtom<CategoryAtom, Category> for Repository {

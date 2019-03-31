@@ -7,6 +7,8 @@ edition = "2018"
 [dependencies]
 regex = "~1.1"
 directories = "~1.0"
+tempfile = "~3"
+lru = "~0.1"
 
 [dependencies.clap]
 version = "~2.32"
