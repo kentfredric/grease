@@ -1,0 +1,74 @@
+#![allow(dead_code)]
+use ::std::{
+    boxed::Box,
+    io::ErrorKind,
+    iter::Extend,
+    option::Option::{self, None, Some},
+    path::PathBuf,
+    result::Result::{self, Err, Ok},
+    str, unimplemented,
+    vec::Vec,
+};
+
+pub(super) struct Md5CacheDir {
+    root:  PathBuf,
+    child: Option<Box<Md5CacheDir>>,
+}
+
+impl Md5CacheDir {
+    fn new(root: PathBuf, fallbacks: Option<Vec<PathBuf>>) -> Self {
+        let mut i = Self { root, child: None };
+        if let Some(fb) = fallbacks {
+            for fallback in fb {
+                i.add_child(fallback);
+            }
+        }
+        i
+    }
+
+    fn add_child(&mut self, root: PathBuf) {
+        match &mut self.child {
+            None => self.child = Some(Box::new(Self { root, child: None })),
+            Some(c) => c.add_child(root),
+        }
+    }
+
+    fn get(&self, path: &str) -> Result<Option<PathBuf>, ()> {
+        let fpath = self.root.join(path);
+        match fpath.metadata() {
+            Err(e) => match e.kind() {
+                ErrorKind::NotFound => Ok(None),
+                _ => unimplemented!(),
+            },
+            Ok(m) => {
+                if m.is_dir() {
+                    unimplemented!()
+                } else {
+                    Ok(Some(fpath))
+                }
+            },
+        }
+    }
+
+    fn get_all(&self, path: &str) -> Result<Option<Vec<PathBuf>>, ()> {
+        let mut out: Vec<PathBuf> = Vec::new();
+        match self.get(path) {
+            Err(_) => unimplemented!(),
+            Ok(Some(p)) => out.push(p),
+            Ok(None) => (),
+        };
+        if let Some(c) = &self.child {
+            match c.get_all(path) {
+                Err(_) => unimplemented!(),
+                Ok(Some(p)) => {
+                    out.extend(p);
+                },
+                Ok(None) => (),
+            }
+        }
+        if out.is_empty() {
+            return Ok(None);
+        }
+        Ok(Some(out))
+    }
+}
