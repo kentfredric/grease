@@ -16,7 +16,9 @@ pub(super) struct Md5CacheDir {
 }
 
 impl Md5CacheDir {
-    fn new(root: PathBuf, fallbacks: Option<Vec<PathBuf>>) -> Self {
+    pub(super) fn new(
+        root: PathBuf, fallbacks: Option<Vec<PathBuf>>,
+    ) -> Self {
         let mut i = Self { root, child: None };
         if let Some(fb) = fallbacks {
             for fallback in fb {

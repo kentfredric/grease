@@ -23,12 +23,13 @@ use cacheentry::CacheEntry;
 use md5cachedir::Md5CacheDir;
 
 pub struct MetaDataCache {
-    r:                Repository,
-    ebuild_md5_cache: LruCache<String, String>,
-    eclass_md5_cache: LruCache<String, String>,
-    ebuild_cache:     LruCache<String, CacheEntry>,
-    cache_dir:        PathBuf,
-    temp_dir:         TempDir,
+    r:                    Repository,
+    ebuild_md5_cache:     LruCache<String, String>,
+    eclass_md5_cache:     LruCache<String, String>,
+    ebuild_cache:         LruCache<String, CacheEntry>,
+    ebuild_md5_cache_dir: Md5CacheDir,
+    cache_dir:            PathBuf,
+    temp_dir:             TempDir,
 }
 
 impl MetaDataCache {
@@ -38,12 +39,16 @@ impl MetaDataCache {
                 .unwrap();
 
         let c = MetaDataCache {
-            r:                r.to_owned(),
-            ebuild_md5_cache: LruCache::new(500),
-            eclass_md5_cache: LruCache::new(500),
-            ebuild_cache:     LruCache::new(100),
-            cache_dir:        pd.cache_dir().join(r.name().unwrap()),
-            temp_dir:         Builder::new()
+            r:                    r.to_owned(),
+            ebuild_md5_cache:     LruCache::new(500),
+            eclass_md5_cache:     LruCache::new(500),
+            ebuild_cache:         LruCache::new(100),
+            ebuild_md5_cache_dir: Md5CacheDir::new(
+                r.get_dir("metadata/md5-cache").unwrap(),
+                None,
+            ),
+            cache_dir:            pd.cache_dir().join(r.name().unwrap()),
+            temp_dir:             Builder::new()
                 .prefix("grease-util-")
                 .rand_bytes(7)
                 .tempdir()

@@ -6,7 +6,7 @@ use crate::{
     util::optfilter::OptFilter,
 };
 use std::{
-    fs::File,
+    fs::{self, File},
     io::{BufRead, BufReader, Error, ErrorKind},
     path::{Path, PathBuf},
     result::Result,
@@ -99,58 +99,39 @@ impl Repository {
 
     /// Extract this repositories name from its profiles dir
     pub fn name(&self) -> Result<String, ()> {
-        self.profile_dir()
-            .and_then(|p| {
-                let repofile = p.join("repo_name");
-                match repofile.metadata() {
-                    Err(e) => match e.kind() {
-                        ErrorKind::NotFound => Err(()),
-                        _ => Err(()),
-                    },
-                    Ok(m) => {
-                        if !m.is_dir() {
-                            let contents: String =
-                                std::fs::read_to_string(repofile)
-                                    .unwrap()
-                                    .trim_end()
-                                    .to_owned();
-                            Ok(contents)
-                        } else {
-                            Err(())
-                        }
-                    },
-                }
-            })
-            .or_else(|()| Err(()))
-    }
-
-    fn profile_dir(&self) -> Result<PathBuf, ()> {
-        let p = self.root.join("profiles");
-        match p.metadata() {
-            Err(e) => match e.kind() {
-                ErrorKind::NotFound => Err(()),
-                _ => Err(()),
+        match self.get_file("profiles/repo_name") {
+            Ok(p) => {
+                Ok(std::fs::read_to_string(p).unwrap().trim_end().to_owned())
             },
-            Ok(m) => {
-                if m.is_dir() {
-                    Ok(p)
-                } else {
-                    Err(())
-                }
-            },
+            Err(_) => unimplemented!(),
         }
     }
 
-    fn eclass_dir(&self) -> Result<PathBuf, ()> {
-        let edir = self.root.join("eclass");
-        match edir.metadata() {
+    fn profile_dir(&self) -> Result<PathBuf, ()> { self.get_dir("profiles") }
+
+    fn eclass_dir(&self) -> Result<PathBuf, ()> { self.get_dir("eclass") }
+
+    fn metadata_dir(&self) -> Result<PathBuf, ()> { self.get_dir("metadata") }
+
+    pub(super) fn get_path<P: AsRef<Path>>(&self, name: P) -> PathBuf {
+        self.root.join(name)
+    }
+
+    pub(super) fn get_or_create_dir<P: AsRef<Path>>(
+        &self, name: P,
+    ) -> Result<PathBuf, ()> {
+        let p = self.get_path(name);
+        match p.metadata() {
             Err(e) => match e.kind() {
-                ErrorKind::NotFound => unimplemented!(),
+                ErrorKind::NotFound => match fs::create_dir_all(&p) {
+                    Ok(_) => Ok(p),
+                    _ => unimplemented!(),
+                },
                 _ => unimplemented!(),
             },
             Ok(meta) => {
                 if meta.is_dir() {
-                    Ok(edir)
+                    Ok(p)
                 } else {
                     unimplemented!()
                 }
@@ -158,16 +139,37 @@ impl Repository {
         }
     }
 
-    fn metadata_dir(&self) -> Result<PathBuf, ()> {
-        let m = self.root.join("metadata");
-        match m.metadata() {
+    pub(super) fn get_dir<P: AsRef<Path>>(
+        &self, name: P,
+    ) -> Result<PathBuf, ()> {
+        let p = self.get_path(name);
+        match p.metadata() {
             Err(e) => match e.kind() {
                 ErrorKind::NotFound => unimplemented!(),
                 _ => unimplemented!(),
             },
             Ok(meta) => {
                 if meta.is_dir() {
-                    Ok(m)
+                    Ok(p)
+                } else {
+                    unimplemented!()
+                }
+            },
+        }
+    }
+
+    pub(super) fn get_file<P: AsRef<Path>>(
+        &self, name: P,
+    ) -> Result<PathBuf, ()> {
+        let p = self.root.join(name.as_ref());
+        match p.metadata() {
+            Err(e) => match e.kind() {
+                ErrorKind::NotFound => unimplemented!(),
+                _ => unimplemented!(),
+            },
+            Ok(meta) => {
+                if !meta.is_dir() {
+                    Ok(p)
                 } else {
                     unimplemented!()
                 }
@@ -176,22 +178,7 @@ impl Repository {
     }
 
     pub(crate) fn eclass_path(&self, name: &str) -> Result<PathBuf, ()> {
-        self.eclass_dir().and_then(|d| {
-            let p = d.join(format!("{}.eclass", name));
-            match p.metadata() {
-                Err(e) => match e.kind() {
-                    ErrorKind::NotFound => unimplemented!(),
-                    _ => unimplemented!(),
-                },
-                Ok(meta) => {
-                    if !meta.is_dir() {
-                        Ok(p)
-                    } else {
-                        unimplemented!()
-                    }
-                },
-            }
-        })
+        self.get_file(format!("eclass/{}.eclass", name))
     }
 }
 impl DeriveAtom<CategoryAtom, Category> for Repository {
