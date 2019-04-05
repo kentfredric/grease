@@ -21,9 +21,7 @@ impl Md5CacheDir {
     ) -> Self {
         let mut i = Self { root, child: None };
         if let Some(fb) = fallbacks {
-            for fallback in fb {
-                i.add_child(fallback);
-            }
+            i.add_children(fb);
         }
         i
     }
@@ -32,6 +30,12 @@ impl Md5CacheDir {
         match &mut self.child {
             None => self.child = Some(Box::new(Self { root, child: None })),
             Some(c) => c.add_child(root),
+        }
+    }
+
+    fn add_children(&mut self, roots: Vec<PathBuf>) {
+        for root in roots {
+            self.add_child(root)
         }
     }
 
