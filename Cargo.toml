@@ -34,6 +34,7 @@ criterion = "~0.2, >=0.2.10"
 lto = true
 opt-level = 'z'
 codegen-units = 1
+panic = 'abort'
 
 [[bin]]
 name = "grease-bin"
