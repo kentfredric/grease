@@ -1,5 +1,5 @@
 //! An API for auto-generating and obtaining copies of metadata cache
-use crate::repository::Repository;
+use crate::repository::{Ebuild, Repository};
 use ::crypto::{digest::Digest, md5::Md5};
 use ::directories::ProjectDirs;
 use ::lru::LruCache;
@@ -118,6 +118,24 @@ impl MetaDataCache {
         )
     }
 
+    fn get_disk_cache_for(&mut self, ebuild: Ebuild) -> Option<CacheEntry> {
+        let cache_key = format!("{}/{}", ebuild.category(), ebuild.pf());
+        let cache_leaves = self.ebuild_md5_cache_dir.get_iter(&cache_key);
+        'leaf: for leaf in cache_leaves {
+            let cache_entry = CacheEntry::read_from(&leaf);
+            let md5 = self.md5_file(&ebuild.path());
+            if md5 != cache_entry.md5() {
+                continue;
+            }
+            for (eclass, emd5) in cache_entry.eclasses() {
+                if md5 != *self.get_eclass_md5(&eclass) {
+                    continue 'leaf;
+                }
+            }
+            return Some(cache_entry);
+        }
+        return None;
+    }
 }
 impl fmt::Debug for MetaDataCache {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
