@@ -8,8 +8,10 @@ use ::std::{
     fmt,
     fs::{self, File},
     io::{ErrorKind, Read},
+    os::unix::process::ExitStatusExt,
     panic,
     path::{Path, PathBuf},
+    process::Command,
     result::Result::{Err, Ok},
     str,
     string::String,
@@ -116,6 +118,41 @@ impl MetaDataCache {
             name = name,
             repo = repo,
         )
+    }
+
+    fn generate_cache_for(&mut self, ebuild: Ebuild) -> () {
+        let repo_name = self.r.name().unwrap();
+        let target = format!(
+            "{category}/{package}",
+            category = ebuild.category(),
+            package = ebuild.pn()
+        );
+        let mut job = Command::new("egencache")
+            .args(&[
+                "--repo",
+                &repo_name,
+                "--repositories-configuration",
+                &self.cache_config(
+                    &repo_name,
+                    self.r.path().to_str().unwrap(),
+                ),
+                "--cache-dir",
+            ])
+            .arg(self.cache_dir.as_os_str())
+            .args(&["--tolerant", "--jobs", "3", "--update", &target])
+            .spawn()
+            .expect("Can't start egencache");
+
+        let exit = job.wait().expect("Failed to wait for egencache");
+        match exit.code() {
+            Some(130) => panic!("egencache exited by sigint"),
+            Some(0) => (),
+            Some(s) => panic!("egencache exited with value {}", s),
+            None => match exit.signal() {
+                None => panic!("egencache killed by unknown signal"),
+                Some(s) => panic!("egencache killed by signal {}", s),
+            },
+        }
     }
 
     fn get_disk_cache_for(&mut self, ebuild: Ebuild) -> Option<CacheEntry> {
