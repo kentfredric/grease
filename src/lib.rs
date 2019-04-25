@@ -7,6 +7,8 @@ mod macros;
 pub mod atom;
 pub mod err;
 
+/// The Grease applications
+pub mod app;
 /// Representation of a Gentoo repository
 pub mod repository;
 /// Common utilities

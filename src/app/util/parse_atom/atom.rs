@@ -1,5 +1,5 @@
+use crate::atom::Atom;
 use clap::{App, Arg, ArgMatches, Error, SubCommand};
-use grease::atom::Atom;
 
 pub(crate) const NAME: &str = "atom";
 pub(crate) const ABOUT: &str =

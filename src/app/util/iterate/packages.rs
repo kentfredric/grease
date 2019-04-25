@@ -1,9 +1,9 @@
-use crate::app::arg::{category, formatter};
-use clap::{App, ArgMatches, Error, SubCommand};
-use grease::{
+use crate::{
+    app::util::arg::{category, formatter},
     repository::{Package, Repository},
     util::{optfilter::OptFilter, repoobject::RepoObject},
 };
+use clap::{App, ArgMatches, Error, SubCommand};
 use std::path::Path;
 pub(crate) const NAME: &str = "packages";
 pub(crate) const ABOUT: &str = "Iterate all packages in a repository";

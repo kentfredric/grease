@@ -1,5 +1,5 @@
+use crate::atom::Category;
 use clap::{App, Arg, ArgMatches, Error, SubCommand};
-use grease::atom::Category;
 
 pub(crate) const NAME: &str = "category";
 pub(crate) const ABOUT: &str = "Validate/Parse a category name";

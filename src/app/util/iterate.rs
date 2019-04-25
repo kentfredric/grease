@@ -1,4 +1,4 @@
-use crate::app::arg::repository;
+use crate::app::util::arg::repository;
 use clap::{App, AppSettings, ArgMatches, Error, ErrorKind, SubCommand};
 
 mod categories;

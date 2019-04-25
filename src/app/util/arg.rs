@@ -15,7 +15,7 @@ pub(crate) mod formatter {
             .default_value("ident")
             .visible_alias("format")
     }
-    use grease::util::repoobject;
+    use crate::util::repoobject;
     pub(crate) fn get(c: &ArgMatches<'_>) -> repoobject::RepoObjectFormatter {
         repoobject::parse_formatter(c.value_of(NAME).unwrap()).unwrap()
     }

@@ -71,10 +71,8 @@ Emits the thing in question as a space-delimited key=value string
 
 !*/
 
+use grease::app::util as app;
 use std::alloc::System;
-
-#[path = "grease-util/app/mod.rs"]
-mod app;
 
 #[global_allocator]
 static GLOBAL: System = System;

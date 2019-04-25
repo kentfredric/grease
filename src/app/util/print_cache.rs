@@ -1,9 +1,11 @@
 pub(crate) const ABOUT: &str = "Print a computed cache for a given atom";
 pub(crate) const NAME: &str = "print-cache";
 
-use crate::app::arg::repository;
+use crate::{
+    app::util::arg::repository,
+    repository::{MetaDataCache, Repository},
+};
 use clap::{App, Arg, ArgMatches, Error, SubCommand};
-use grease::repository::{MetaDataCache, Repository};
 use std::path::Path;
 
 pub(crate) fn subcommand<'x, 'y>() -> App<'x, 'y> {

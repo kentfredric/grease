@@ -1,9 +1,9 @@
-use crate::app::arg::formatter;
-use clap::{App, ArgMatches, Error, SubCommand};
-use grease::{
+use crate::{
+    app::util::arg::formatter,
     repository::{Category, Repository},
     util::{optfilter::OptFilter, repoobject::RepoObject},
 };
+use clap::{App, ArgMatches, Error, SubCommand};
 use std::path::Path;
 
 pub(crate) const NAME: &str = "categories";

@@ -1,5 +1,5 @@
+use crate::atom::Package;
 use clap::{App, Arg, ArgMatches, Error, SubCommand};
-use grease::atom::Package;
 
 pub(crate) const NAME: &str = "package";
 pub(crate) const ABOUT: &str = "Validate/Parse a package(with category)";
