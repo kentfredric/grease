@@ -58,6 +58,10 @@ impl MetaDataCache {
         c
     }
 
+    pub(crate) fn add_fallback_caches(&mut self, dirs: Vec<PathBuf>) {
+        self.ebuild_md5_cache_dir.add_children(dirs)
+    }
+
     fn ensure_cache_dir(&self) {
         match self.cache_dir.metadata() {
             Err(e) => match e.kind() {
