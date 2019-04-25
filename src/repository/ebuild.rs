@@ -88,6 +88,25 @@ impl std::fmt::Debug for Ebuild {
     }
 }
 
+impl Clone for Ebuild {
+    fn clone(&self) -> Self {
+        Self {
+            root:     self.root.clone(),
+            category: self.category.clone(),
+            package:  self.package.clone(),
+            ebuild:   self.package.clone(),
+            version:  match self.version.get() {
+                Some(v) => {
+                    let cell = OnceCell::INIT;
+                    cell.set(v.to_owned()).unwrap();
+                    cell
+                },
+                None => OnceCell::INIT,
+            },
+        }
+    }
+}
+
 impl crate::util::repoobject::RepoObject for Ebuild {
     fn name(&self) -> String { self.ebuild.to_owned() }
 
