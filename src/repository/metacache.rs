@@ -102,6 +102,22 @@ impl MetaDataCache {
         }
         self.eclass_md5_cache.get(&my_name).unwrap()
     }
+
+    fn cache_config(&self, name: &str, repo: &str) -> String {
+        format!(
+            "[DEFAULT]
+             main-repo = {name}
+
+             [{name}]
+             location = {repo}
+             sync-type = rsync
+             syc-uri = rsync://invalid
+             ",
+            name = name,
+            repo = repo,
+        )
+    }
+
 }
 impl fmt::Debug for MetaDataCache {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
