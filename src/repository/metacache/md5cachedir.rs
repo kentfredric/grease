@@ -56,6 +56,28 @@ impl Md5CacheDir {
         }
     }
 
+    pub(crate) fn get_iter(
+        &self, path: &str,
+    ) -> Box<dyn Iterator<Item = PathBuf>> {
+        match self.get(path) {
+            Err(_) => unimplemented!(),
+            Ok(Some(p)) => {
+                if let Some(c) = &self.child {
+                    Box::new(std::iter::once(p).chain(c.get_iter(path)))
+                } else {
+                    Box::new(std::iter::once(p))
+                }
+            },
+            Ok(None) => {
+                if let Some(c) = &self.child {
+                    c.get_iter(path)
+                } else {
+                    Box::new(std::iter::empty())
+                }
+            },
+        }
+    }
+
     fn get_all(&self, path: &str) -> Result<Option<Vec<PathBuf>>, ()> {
         let mut out: Vec<PathBuf> = Vec::new();
         match self.get(path) {
