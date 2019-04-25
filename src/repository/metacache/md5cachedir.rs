@@ -33,7 +33,7 @@ impl Md5CacheDir {
         }
     }
 
-    fn add_children(&mut self, roots: Vec<PathBuf>) {
+    pub(crate) fn add_children(&mut self, roots: Vec<PathBuf>) {
         for root in roots {
             self.add_child(root)
         }
