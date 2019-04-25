@@ -27,7 +27,7 @@ pub(super) struct CacheEntry {
 impl CacheEntry {
     fn new() -> Self { CacheEntry { values: HashMap::new() } }
 
-    fn read_from(p: &Path) -> Self {
+    pub(super) fn read_from(p: &Path) -> Self {
         let mut h: HashMap<String, String> = HashMap::new();
         let br = BufReader::new(File::open(p).unwrap());
         for line in br.lines() {
@@ -60,6 +60,18 @@ impl CacheEntry {
         self.values.get("_eclasses_")
     }
 
+    pub(super) fn eclasses(&self) -> Vec<(String, String)> {
+        match self.raw__eclasses_() {
+            None => Vec::new(),
+            Some(s) => {
+                let cvec: Vec<&str> = s.split('\u{0009}').collect();
+                cvec.chunks(2)
+                    .map(|e| (e[0].to_owned(), e[1].to_owned()))
+                    .collect()
+            },
+        }
+    }
+
     fn raw_homepage(&self) -> Option<&String> { self.values.get("HOMEPAGE") }
 
     fn raw_iuse(&self) -> Option<&String> { self.values.get("IUSE") }
@@ -69,6 +81,13 @@ impl CacheEntry {
     fn raw_license(&self) -> Option<&String> { self.values.get("LICENSE") }
 
     fn raw__md5_(&self) -> Option<&String> { self.values.get("_md5_") }
+
+    pub(super) fn md5(&self) -> String {
+        match self.raw__md5_() {
+            None => "".to_owned(),
+            Some(s) => s.to_owned(),
+        }
+    }
 
     fn raw_pdepend(&self) -> Option<&String> { self.values.get("PDEPEND") }
 
