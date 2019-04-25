@@ -105,6 +105,18 @@ impl MetaDataCache {
         self.eclass_md5_cache.get(&my_name).unwrap()
     }
 
+    fn get_cache_for(&mut self, ebuild: Ebuild) -> Option<CacheEntry> {
+        let cache_key = format!("{}/{}", ebuild.category(), ebuild.pf());
+
+        match self.get_disk_cache_for(ebuild.to_owned()) {
+            None => {
+                self.generate_cache_for(ebuild.to_owned());
+                self.get_disk_cache_for(ebuild)
+            },
+            other => other,
+        }
+    }
+
     fn cache_config(&self, name: &str, repo: &str) -> String {
         format!(
             "[DEFAULT]
