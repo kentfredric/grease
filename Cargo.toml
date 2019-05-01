@@ -1,0 +1,34 @@
+[package]
+name = "grease"
+version = "0.1.0"
+authors = ["Kent Fredric <kentnl@gentoo.org>"]
+edition = "2018"
+description = "A Low Level utility kit for performing tasks with gentoo"
+license = "Artistic-1.0 OR GPL-2.0-or-later"
+repository = "https://github.com/kentfredric/grease.git"
+exclude = ["/target/doc/**", "/.gitignore", "/.cargo/**", "/util/**", "/rustfmt.toml"]
+keywords = ["gentoo", "portage", "repository" ]
+categories = ["filesystem"]
+readme = "src/repository/repository.md"
+
+[dependencies]
+
+[features]
+default  = ["external_doc"]
+external_doc = []
+
+[package.metadata.docs.rs]
+features = [ "external_doc" ]
+
+[profile.release]
+lto = true
+opt-level = 'z'
+codegen-units = 1
+panic = "abort"
+
+[lib]
+name = "grease"
+path = "src/lib.rs"
+test = true
+doctest = true
+doc = true
