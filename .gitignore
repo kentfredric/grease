@@ -1,0 +1,8 @@
+/target/debug
+/target/release
+/target/criterion
+/target/doctests
+/target/package
+/target/.*
+**/*.rs.bk
+/.md5_cache
