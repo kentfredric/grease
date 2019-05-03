@@ -13,6 +13,11 @@ readme = "src/repository/repository.md"
 
 [dependencies]
 
+[dev-dependencies.failure]
+version = "~0.1"
+default-features = false
+features = ["std","derive","failure_derive","backtrace"]
+
 [features]
 default  = ["external_doc"]
 external_doc = []

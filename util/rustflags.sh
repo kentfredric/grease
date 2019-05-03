@@ -44,6 +44,7 @@ RDOCFLAGS=(
   "-Z" "unstable-options"
   "--disable-minification"
   "--enable-index-page"
+  "--extern-html-root-url" "failure=https://docs.rs/failure/0.1.5"
 )
 CLIPPYFLAGS=(
   "-W" "clippy::all"
