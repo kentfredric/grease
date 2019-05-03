@@ -18,4 +18,13 @@ mod repository {
         let p = r.path();
         assert_eq!(test_root, p);
     }
+
+    #[test]
+    fn name() {
+        let test_root = repos("basic").unwrap();
+        let r = Repository::new(&test_root);
+
+        let n = r.name().unwrap();
+        assert_eq!(n, "grease-test");
+    }
 }
