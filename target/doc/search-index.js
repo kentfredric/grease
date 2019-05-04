@@ -15,73 +15,82 @@ searchIndex["grease"] = {
   , [13, "NotADir", "", "A specified path was not a directory, but a directory was…", 0, null]
   , [13, "NotAFile", "", "A specified path was not a file, but a file was expected", 0, null]
   , [13, "FileReadError", "", "A specified file had IO errors when reading it", 0, null]
-  , [11, "new", "", "Construct a new Repository trait object", 1, [
+  , [0, "category", "", "Representation of a category in a Gentoo repository", null, null]
+  , [3, "Category", "grease::repository::category", "Represents a concrete Gentoo category", null, null]
+  , [11, "new", "", "Construct a new [`Category`] explicitly", 1, [
+   [
+    ["s"]
+    , ["p"]
+   ]
+   , ["self"]
+  ]]
+  , [11, "new", "grease::repository", "Construct a new Repository trait object", 2, [
    [
     ["p"]
    ]
    , ["self"]
   ]]
-  , [11, "path", "", "Returns the path to this repository", 1, [
+  , [11, "path", "", "Returns the path to this repository", 2, [
    [
     ["self"]
    ]
    , ["pathbuf"]
   ]]
-  , [11, "name", "", "Extract this repositories name from its profiles dir", 1, [
+  , [11, "name", "", "Extract this repositories name from its profiles dir", 2, [
    [
     ["self"]
    ]
    , [
     ["string"]
-    , ["result", ["string", "repositoryerror"]]
     , ["repositoryerror"]
+    , ["result", ["string", "repositoryerror"]]
    ]
   ]]
-  , [11, "to_owned", "", "", 1, [
+  , [11, "to_owned", "", "", 2, [
    [
     ["self"]
    ]
    , ["t"]
   ]]
-  , [11, "clone_into", "", "", 1, [
+  , [11, "clone_into", "", "", 2, [
    [
     ["t"]
     , ["self"]
    ]
   ]]
-  , [11, "into", "", "", 1, [
+  , [11, "into", "", "", 2, [
    []
    , ["u"]
   ]]
-  , [11, "from", "", "", 1, [
+  , [11, "from", "", "", 2, [
    [
     ["t"]
    ]
    , ["t"]
   ]]
-  , [11, "try_from", "", "", 1, [
+  , [11, "try_from", "", "", 2, [
    [
     ["u"]
    ]
    , ["result"]
   ]]
-  , [11, "try_into", "", "", 1, [
+  , [11, "try_into", "", "", 2, [
    []
    , ["result"]
   ]]
-  , [11, "borrow", "", "", 1, [
+  , [11, "borrow", "", "", 2, [
    [
     ["self"]
    ]
    , ["t"]
   ]]
-  , [11, "borrow_mut", "", "", 1, [
+  , [11, "borrow_mut", "", "", 2, [
    [
     ["self"]
    ]
    , ["t"]
   ]]
-  , [11, "type_id", "", "", 1, [
+  , [11, "type_id", "", "", 2, [
    [
     ["self"]
    ]
@@ -137,13 +146,69 @@ searchIndex["grease"] = {
    ]
    , ["fail"]
   ]]
+  , [11, "to_owned", "grease::repository::category", "", 1, [
+   [
+    ["self"]
+   ]
+   , ["t"]
+  ]]
+  , [11, "clone_into", "", "", 1, [
+   [
+    ["t"]
+    , ["self"]
+   ]
+  ]]
+  , [11, "into", "", "", 1, [
+   []
+   , ["u"]
+  ]]
+  , [11, "from", "", "", 1, [
+   [
+    ["t"]
+   ]
+   , ["t"]
+  ]]
+  , [11, "try_from", "", "", 1, [
+   [
+    ["u"]
+   ]
+   , ["result"]
+  ]]
+  , [11, "try_into", "", "", 1, [
+   []
+   , ["result"]
+  ]]
+  , [11, "borrow", "", "", 1, [
+   [
+    ["self"]
+   ]
+   , ["t"]
+  ]]
+  , [11, "borrow_mut", "", "", 1, [
+   [
+    ["self"]
+   ]
+   , ["t"]
+  ]]
+  , [11, "type_id", "", "", 1, [
+   [
+    ["self"]
+   ]
+   , ["typeid"]
+  ]]
   , [11, "clone", "", "", 1, [
+   [
+    ["self"]
+   ]
+   , ["category"]
+  ]]
+  , [11, "clone", "grease::repository", "", 2, [
    [
     ["self"]
    ]
    , ["repository"]
   ]]
-  , [11, "as_ref", "", "", 1, [
+  , [11, "as_ref", "", "", 2, [
    [
     ["self"]
    ]
@@ -156,14 +221,21 @@ searchIndex["grease"] = {
    ]
    , ["result"]
   ]]
-  , [11, "fmt", "", "", 0, [
+  , [11, "fmt", "grease::repository::category", "", 1, [
    [
     ["self"]
     , ["formatter"]
    ]
    , ["result"]
   ]]
-  , [11, "fmt", "", "", 1, [
+  , [11, "fmt", "grease::repository", "", 0, [
+   [
+    ["self"]
+    , ["formatter"]
+   ]
+   , ["result"]
+  ]]
+  , [11, "fmt", "", "", 2, [
    [
     ["self"]
     , ["formatter"]
@@ -200,6 +272,7 @@ searchIndex["grease"] = {
  ]
  , "p": [
   [4, "RepositoryError"]
+  , [3, "Category"]
   , [3, "Repository"]
  ]
 };

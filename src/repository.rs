@@ -12,6 +12,9 @@ use std::{
     path::PathBuf,
 };
 
+pub mod category;
+pub use category::Category;
+
 /// Class of errors producable by Repositories
 #[derive(Fail, Debug)]
 #[fail(display = "An error occurred in repository handling")]
