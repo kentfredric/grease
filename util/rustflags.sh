@@ -23,7 +23,9 @@ RFLAGS=(
   "-W" "rust-2018-idioms"
 # Not in 1.31
   "-W" "rustdoc"
-  "-W" "single-use-lifetimes"
+# Currently false-positives
+# https://github.com/rust-lang/rust/issues/60554
+# "-W" "single-use-lifetimes"
   "-W" "trivial-casts"
   "-W" "trivial-numeric-casts"
   "-W" "unreachable-pub"

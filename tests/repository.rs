@@ -60,3 +60,38 @@ mod repository {
     }
 
 }
+
+mod category {
+    mod basic {
+        use crate::util::repos;
+        use grease::repository::Category;
+
+        #[test]
+        fn new() {
+            let test_root = repos("basic").unwrap();
+            let _r = Category::new(&test_root, "dev-perl");
+        }
+    }
+
+    mod noncat {
+        use crate::util::repos;
+        use grease::repository::Category;
+
+        #[test]
+        fn new() {
+            let test_root = repos("basic").unwrap();
+            let _r = Category::new(&test_root, "profiles");
+        }
+    }
+
+    mod nonexisting {
+        use crate::util::repos;
+        use grease::repository::Category;
+
+        #[test]
+        fn new() {
+            let test_root = repos("basic").unwrap();
+            let _r = Category::new(&test_root, "I-do-not-exist");
+        }
+    }
+}
