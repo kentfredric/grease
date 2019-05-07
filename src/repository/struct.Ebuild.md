@@ -7,6 +7,10 @@ let e = Ebuild::new(
     "example",
     "example-9999.ebuild",
 );
+assert_eq!(
+    e.path(),
+    Path::new("/usr/portage/dev-perl/example/example-9999.ebuild")
+);
 ```
 
 # Construction

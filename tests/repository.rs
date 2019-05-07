@@ -247,4 +247,20 @@ mod ebuild {
             "example-0.1.0.ebuild",
         );
     }
+
+    #[test]
+    fn path() {
+        let test_root = repos("basic").unwrap();
+        let r = Ebuild::new(
+            &test_root,
+            "dev-perl",
+            "example",
+            "example-0.1.0.ebuild",
+        );
+
+        assert_eq!(
+            test_root.join("dev-perl/example/example-0.1.0.ebuild"),
+            r.path()
+        );
+    }
 }

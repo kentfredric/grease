@@ -45,6 +45,12 @@ searchIndex["grease"] = {
    ]
    , ["self"]
   ]]
+  , [11, "path", "", "Returns a path to the ebuild file", 2, [
+   [
+    ["self"]
+   ]
+   , ["pathbuf"]
+  ]]
   , [0, "package", "grease::repository", "Representation of a package in a Gentoo repository", null, null]
   , [3, "Package", "grease::repository::package", "Represents a discrete gentoo package", null, null]
   , [11, "new", "", "Construct a new Package Type Object", 3, [
