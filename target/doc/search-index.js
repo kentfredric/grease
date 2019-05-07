@@ -143,6 +143,12 @@ searchIndex["grease"] = {
    ]
    , ["repository"]
   ]]
+  , [11, "as_ref", "", "", 1, [
+   [
+    ["self"]
+   ]
+   , ["pathbuf"]
+  ]]
   , [11, "fmt", "", "", 0, [
    [
     ["self"]

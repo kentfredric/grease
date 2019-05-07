@@ -52,7 +52,7 @@
     </div><a class="sidebar-title"
          href="#implementations">Trait Implementations</a>
     <div class="sidebar-links">
-     <a href="#impl-Clone">Clone</a><a href="#impl-Debug">Debug</a>
+     <a href="#impl-AsRef%3CPathBuf%3E">AsRef&lt;PathBuf&gt;</a><a href="#impl-Clone">Clone</a><a href="#impl-Debug">Debug</a>
     </div><a class="sidebar-title"
          href="#synthetic-implementations">Auto Trait Implementations</a>
     <div class="sidebar-links">
@@ -150,6 +150,24 @@
     <span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;/usr/portage&quot;</span>).<span class="ident">to_path_buf</span>().<span class="ident">into_boxed_path</span>(),
 );</pre>
    </div>
+   <h1 id="conversions"
+       class="section-header"><a href="#conversions">Conversions</a></h1>
+   <p>Due to <a href="../../grease/repository/struct.Repository.html"
+      title="`Repository`"><code>Repository</code></a>'s being inherently <a href="https://doc.rust-lang.org/nightly/std/path/struct.Path.html"><code>Path</code></a> based, conversions are provided so you may use them in various <a href= 
+      "https://doc.rust-lang.org/nightly/std/path/struct.Path.html"><code>Path</code></a> contexts:</p>
+   <h2 id="asrefpathbuf"
+       class="section-header"><a href="#asrefpathbuf">AsRef&lt;PathBuf&gt;</a></h2>
+   <div class="example-wrap">
+    <pre class="rust rust-example-rendered">
+<span class="kw">fn</span> <span class="ident">demo</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">P</span>) <span class="op">-&gt;</span> ()
+<span class="kw">where</span>
+  <span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
+{
+  <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;/usr/portage&quot;</span>), <span class="ident">path</span>.<span class=
+"ident">as_ref</span>());
+}
+<span class="ident">demo</span>(<span class="ident">Repository</span>::<span class="ident">new</span>(<span class="string">&quot;/usr/portage&quot;</span>));</pre>
+   </div>
   </div>
   <h2 id='methods'
       class='small-section-header'>Methods<a href='#methods'
@@ -233,6 +251,29 @@
        title='goto source code'>[src]</a></h4>
     <div class='docblock'>
      <p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+    </div>
+   </div>
+   <h3 id='impl-AsRef%3CPathBuf%3E'
+       class='impl'><code class='in-band'>impl <a class="trait"
+      href="https://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html"
+      title="trait core::convert::AsRef">AsRef</a>&lt;<a class="struct"
+      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+      title="struct std::path::PathBuf">PathBuf</a>&gt; for <a class="struct"
+      href="../../grease/repository/struct.Repository.html"
+      title="struct grease::repository::Repository">Repository</a></code><a href='#impl-AsRef%3CPathBuf%3E'
+      class='anchor'></a><a class='srclink'
+      href='../../src/grease/repository.rs.html#70-72'
+      title='goto source code'>[src]</a></h3>
+   <div class='impl-items'>
+    <h4 id='method.as_ref'
+        class="method hidden"><code id='as_ref.v'>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html#tymethod.as_ref'
+       class='fnname'>as_ref</a>(&amp;self) -&gt; &amp;<a class="struct"
+       href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+       title="struct std::path::PathBuf">PathBuf</a></code><a class='srclink'
+       href='../../src/grease/repository.rs.html#71'
+       title='goto source code'>[src]</a></h4>
+    <div class='docblock hidden'>
+     <p>Performs the conversion.</p>
     </div>
    </div>
    <h3 id='impl-Debug'
