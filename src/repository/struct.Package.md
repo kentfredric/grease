@@ -2,6 +2,7 @@
 # use grease::repository::Package;
 # use std::path::Path;
 let p = Package::new("/usr/portage", "dev-perl", "example");
+assert_eq!(p.path(), Path::new("/usr/portage/dev-perl/example"));
 ```
 
 # Construction

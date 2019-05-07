@@ -45,6 +45,12 @@ searchIndex["grease"] = {
    ]
    , ["self"]
   ]]
+  , [11, "path", "", "Return the path to a gentoo package", 2, [
+   [
+    ["self"]
+   ]
+   , ["pathbuf"]
+  ]]
   , [11, "new", "grease::repository", "Construct a new Repository trait object", 3, [
    [
     ["p"]
@@ -62,9 +68,9 @@ searchIndex["grease"] = {
     ["self"]
    ]
    , [
-    ["result", ["string", "repositoryerror"]]
-    , ["string"]
+    ["string"]
     , ["repositoryerror"]
+    , ["result", ["string", "repositoryerror"]]
    ]
   ]]
   , [11, "to_owned", "", "", 3, [

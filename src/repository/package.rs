@@ -27,4 +27,7 @@ impl Package {
         let path = r.join(&c).join(&p);
         Self { root: r, category: c, package: p, path }
     }
+
+    /// Return the path to a gentoo package
+    pub fn path(&self) -> PathBuf { self.path.to_owned() }
 }

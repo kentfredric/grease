@@ -10,4 +10,5 @@ let p = Package::new("/usr/portage", "dev-perl", "example");
 assert_eq!(r.path(), Path::new("/usr/portage"));
 assert_eq!(c.path(), Path::new("/usr/portage/dev-perl"));
 assert_eq!(c.name(), "dev-perl");
+assert_eq!(p.path(), Path::new("/usr/portage/dev-perl/example"));
 ```
