@@ -30,6 +30,12 @@ searchIndex["grease"] = {
    ]
    , ["pathbuf"]
   ]]
+  , [11, "name", "", "Return the name of the category", 1, [
+   [
+    ["self"]
+   ]
+   , ["string"]
+  ]]
   , [11, "new", "grease::repository", "Construct a new Repository trait object", 2, [
    [
     ["p"]
@@ -47,8 +53,8 @@ searchIndex["grease"] = {
     ["self"]
    ]
    , [
-    ["result", ["string", "repositoryerror"]]
-    , ["string"]
+    ["string"]
+    , ["result", ["string", "repositoryerror"]]
     , ["repositoryerror"]
    ]
   ]]

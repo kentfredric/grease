@@ -3,6 +3,7 @@
 # use std::path::Path;
 let c = Category::new("/usr/portage", "dev-perl");
 assert_eq!(c.path(), Path::new("/usr/portage/dev-perl"));
+assert_eq!(c.name(), "dev-perl");
 ```
 
 # Construction

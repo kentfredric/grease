@@ -106,6 +106,9 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
 </pre>
   <div class="example-wrap">
    <pre class="rust ">
@@ -143,6 +146,10 @@
     <span class="doccomment">/// Returns the path to this repository</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">PathBuf</span> { <span class=
 "self">self</span>.<span class="ident">path</span>.<span class="ident">to_owned</span>() }
+
+    <span class="doccomment">/// Return the name of the category</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> { <span class=
+"self">self</span>.<span class="ident">category</span>.<span class="ident">to_owned</span>() }
 }
 </pre>
   </div>

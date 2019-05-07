@@ -79,6 +79,14 @@ mod category {
 
             assert_eq!(test_root.join("dev-perl"), r.path());
         }
+
+        #[test]
+        fn name() {
+            let test_root = repos("basic").unwrap();
+            let r = Category::new(&test_root, "dev-perl");
+
+            assert_eq!("dev-perl", r.name());
+        }
     }
 
     mod noncat {
@@ -98,6 +106,15 @@ mod category {
 
             assert_eq!(test_root.join("profiles"), r.path());
         }
+
+        #[test]
+        fn name() {
+            let test_root = repos("basic").unwrap();
+            let r = Category::new(&test_root, "profiles");
+
+            assert_eq!("profiles", r.name());
+        }
+
     }
 
     mod nonexisting {
@@ -116,6 +133,14 @@ mod category {
             let r = Category::new(&test_root, "I-do-not-exist");
 
             assert_eq!(test_root.join("I-do-not-exist"), r.path());
+        }
+
+        #[test]
+        fn name() {
+            let test_root = repos("basic").unwrap();
+            let r = Category::new(&test_root, "I-do-not-exist");
+
+            assert_eq!("I-do-not-exist", r.name());
         }
     }
 }

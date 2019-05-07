@@ -29,4 +29,7 @@ impl Category {
 
     /// Returns the path to this repository
     pub fn path(&self) -> PathBuf { self.path.to_owned() }
+
+    /// Return the name of the category
+    pub fn name(&self) -> String { self.category.to_owned() }
 }
