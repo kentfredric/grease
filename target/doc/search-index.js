@@ -51,6 +51,12 @@ searchIndex["grease"] = {
    ]
    , ["pathbuf"]
   ]]
+  , [11, "name", "", "Get the full name of this package", 2, [
+   [
+    ["self"]
+   ]
+   , ["string"]
+  ]]
   , [11, "new", "grease::repository", "Construct a new Repository trait object", 3, [
    [
     ["p"]
