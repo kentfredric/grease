@@ -5,6 +5,10 @@
   , synthetic: false
   , types: ["grease::repository::category::Category"]
  }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html\" title=\"trait core::clone::Clone\">Clone</a> for <a class=\"struct\" href=\"grease/repository/package/struct.Package.html\" title=\"struct grease::repository::package::Package\">Package</a>"
+  , synthetic: false
+  , types: ["grease::repository::package::Package"]
+ }, {
   text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html\" title=\"trait core::clone::Clone\">Clone</a> for <a class=\"struct\" href=\"grease/repository/struct.Repository.html\" title=\"struct grease::repository::Repository\">Repository</a>"
   , synthetic: false
   , types: ["grease::repository::Repository"]

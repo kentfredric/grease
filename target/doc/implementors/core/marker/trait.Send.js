@@ -12,6 +12,10 @@
   text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.Send.html\" title=\"trait core::marker::Send\">Send</a> for <a class=\"struct\" href=\"grease/repository/category/struct.Category.html\" title=\"struct grease::repository::category::Category\">Category</a>"
   , synthetic: true
   , types: ["grease::repository::category::Category"]
+ }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.Send.html\" title=\"trait core::marker::Send\">Send</a> for <a class=\"struct\" href=\"grease/repository/package/struct.Package.html\" title=\"struct grease::repository::package::Package\">Package</a>"
+  , synthetic: true
+  , types: ["grease::repository::package::Package"]
  }, ];
 
  if (window.register_implementors) {
