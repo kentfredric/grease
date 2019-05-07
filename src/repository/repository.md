@@ -18,4 +18,8 @@ assert_eq!(c.path(), Path::new("/usr/portage/dev-perl"));
 assert_eq!(c.name(), "dev-perl");
 assert_eq!(p.path(), Path::new("/usr/portage/dev-perl/example"));
 assert_eq!(p.name(), "dev-perl/example");
+assert_eq!(
+    e.path(),
+    Path::new("/usr/portage/dev-perl/example/example-9999.ebuild")
+);
 ```
