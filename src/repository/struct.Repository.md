@@ -26,3 +26,22 @@ Repository::new(
     Path::new("/usr/portage").to_path_buf().into_boxed_path(),
 );
 ```
+
+# Conversions
+
+Due to [`Repository`]'s being inherently [`Path`](std::path::Path) based,
+conversions are provided so you may use them in various
+[`Path`](std::path::Path) contexts:
+
+## AsRef\<PathBuf\>
+```rust
+# use grease::repository::Repository;
+# use std::path::{Path,PathBuf};
+fn demo<P>(path: P) -> ()
+where
+  P: AsRef<PathBuf>,
+{
+  assert_eq!(Path::new("/usr/portage"), path.as_ref());
+}
+demo(Repository::new("/usr/portage"));
+```

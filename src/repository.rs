@@ -66,3 +66,7 @@ impl Repository {
             .map(|content| content.trim_end().to_owned())
     }
 }
+
+impl AsRef<PathBuf> for Repository {
+    fn as_ref(&self) -> &PathBuf { &self.root }
+}
