@@ -2,11 +2,17 @@
 working with literal filesystem repositories.
 
 ```rust
-use grease::repository::{Category, Package, Repository};
+use grease::repository::{Category, Ebuild, Package, Repository};
 use std::path::Path;
 let r = Repository::new("/usr/portage");
 let c = Category::new("/usr/portage", "dev-perl");
 let p = Package::new("/usr/portage", "dev-perl", "example");
+let e = Ebuild::new(
+    "/usr/portage",
+    "dev-perl",
+    "example",
+    "example-9999.ebuild",
+);
 assert_eq!(r.path(), Path::new("/usr/portage"));
 assert_eq!(c.path(), Path::new("/usr/portage/dev-perl"));
 assert_eq!(c.name(), "dev-perl");

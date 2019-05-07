@@ -13,8 +13,10 @@ use std::{
 };
 
 pub mod category;
+pub mod ebuild;
 pub mod package;
 pub use category::Category;
+pub use ebuild::Ebuild;
 pub use package::Package;
 
 /// Class of errors producable by Repositories
