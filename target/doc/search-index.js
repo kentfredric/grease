@@ -24,6 +24,12 @@ searchIndex["grease"] = {
    ]
    , ["self"]
   ]]
+  , [11, "path", "", "Returns the path to this repository", 1, [
+   [
+    ["self"]
+   ]
+   , ["pathbuf"]
+  ]]
   , [11, "new", "grease::repository", "Construct a new Repository trait object", 2, [
    [
     ["p"]
@@ -41,9 +47,9 @@ searchIndex["grease"] = {
     ["self"]
    ]
    , [
-    ["string"]
+    ["result", ["string", "repositoryerror"]]
+    , ["string"]
     , ["repositoryerror"]
-    , ["result", ["string", "repositoryerror"]]
    ]
   ]]
   , [11, "to_owned", "", "", 2, [

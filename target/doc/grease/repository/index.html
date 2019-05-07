@@ -116,7 +116,9 @@
 <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Category</span>::<span class="ident">new</span>(<span class="string">&quot;/usr/portage&quot;</span>, <span class=
 "string">&quot;dev-perl&quot;</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">r</span>.<span class="ident">path</span>(), <span class="ident">Path</span>::<span class="ident">new</span>(<span class=
-"string">&quot;/usr/portage&quot;</span>));</pre>
+"string">&quot;/usr/portage&quot;</span>));
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">path</span>(), <span class="ident">Path</span>::<span class="ident">new</span>(<span class=
+"string">&quot;/usr/portage/dev-perl&quot;</span>));</pre>
    </div>
   </div>
   <h2 id='reexports'

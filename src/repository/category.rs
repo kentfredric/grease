@@ -26,4 +26,7 @@ impl Category {
         let path = r.join(&c);
         Self { root: r, category: c, path }
     }
+
+    /// Returns the path to this repository
+    pub fn path(&self) -> PathBuf { self.path.to_owned() }
 }

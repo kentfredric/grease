@@ -48,7 +48,7 @@
     <a class="sidebar-title"
          href="#methods">Methods</a>
     <div class="sidebar-links">
-     <a href="#method.new">new</a>
+     <a href="#method.new">new</a><a href="#method.path">path</a>
     </div><a class="sidebar-title"
          href="#implementations">Trait Implementations</a>
     <div class="sidebar-links">
@@ -117,7 +117,9 @@
    <div class="example-wrap">
     <pre class="rust rust-example-rendered">
 <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Category</span>::<span class="ident">new</span>(<span class="string">&quot;/usr/portage&quot;</span>, <span class=
-"string">&quot;dev-perl&quot;</span>);</pre>
+"string">&quot;dev-perl&quot;</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">path</span>(), <span class="ident">Path</span>::<span class="ident">new</span>(<span class=
+"string">&quot;/usr/portage/dev-perl&quot;</span>));</pre>
    </div>
    <h1 id="construction"
        class="section-header"><a href="#construction">Construction</a></h1>
@@ -175,7 +177,7 @@
      href="../../../grease/repository/category/struct.Category.html"
      title="struct grease::repository::category::Category">Category</a></code><a href='#impl'
      class='anchor'></a><a class='srclink'
-     href='../../../src/grease/repository/category.rs.html#17-29'
+     href='../../../src/grease/repository/category.rs.html#17-32'
      title='goto source code'>[src]</a></h3>
   <div class='impl-items'>
    <h4 id='method.new'
@@ -197,6 +199,16 @@
    <div class='docblock'>
     <p>Construct a new <a href="../../../grease/repository/category/struct.Category.html"
        title="`Category`"><code>Category</code></a> explicitly</p>
+   </div>
+   <h4 id='method.path'
+       class="method"><code id='path.v'>pub fn <a href='#method.path'
+      class='fnname'>path</a>(&amp;self) -&gt; <a class="struct"
+      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+      title="struct std::path::PathBuf">PathBuf</a></code><a class='srclink'
+      href='../../../src/grease/repository/category.rs.html#31'
+      title='goto source code'>[src]</a></h4>
+   <div class='docblock'>
+    <p>Returns the path to this repository</p>
    </div>
   </div>
   <h2 id='implementations'
