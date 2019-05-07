@@ -232,3 +232,19 @@ mod package {
         drop(r);
     }
 }
+
+mod ebuild {
+    use crate::util::repos;
+    use grease::repository::Ebuild;
+
+    #[test]
+    fn new() {
+        let test_root = repos("basic").unwrap();
+        let _r = Ebuild::new(
+            &test_root,
+            "dev-perl",
+            "example",
+            "example-0.1.0.ebuild",
+        );
+    }
+}

@@ -5,6 +5,10 @@
   , synthetic: false
   , types: ["grease::repository::category::Category"]
  }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"grease/repository/ebuild/struct.Ebuild.html\" title=\"struct grease::repository::ebuild::Ebuild\">Ebuild</a>"
+  , synthetic: false
+  , types: ["grease::repository::ebuild::Ebuild"]
+ }, {
   text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"grease/repository/package/struct.Package.html\" title=\"struct grease::repository::package::Package\">Package</a>"
   , synthetic: false
   , types: ["grease::repository::package::Package"]
