@@ -185,4 +185,12 @@ mod package {
         let _r = Package::new(&test_root, "dev-perl", "example");
     }
 
+    #[test]
+    fn path() {
+        let test_root = repos("basic").unwrap();
+        let r = Package::new(&test_root, "dev-perl", "example");
+
+        assert_eq!(test_root.join("dev-perl").join("example"), r.path());
+    }
+
 }
