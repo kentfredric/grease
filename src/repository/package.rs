@@ -30,4 +30,9 @@ impl Package {
 
     /// Return the path to a gentoo package
     pub fn path(&self) -> PathBuf { self.path.to_owned() }
+
+    /// Get the full name of this package
+    pub fn name(&self) -> String {
+        self.category.to_owned() + "/" + &self.package
+    }
 }
