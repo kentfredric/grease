@@ -13,7 +13,9 @@ use std::{
 };
 
 pub mod category;
+pub mod package;
 pub use category::Category;
+pub use package::Package;
 
 /// Class of errors producable by Repositories
 #[derive(Fail, Debug)]
