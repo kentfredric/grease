@@ -59,3 +59,20 @@ where
 }
 demo(Package::new("/usr/portage", "dev-perl", "example"));
 ```
+
+## Into\<PathBuf\>
+```rust
+# use grease::repository::Package;
+# use std::path::{Path,PathBuf};
+fn demo<P>(path: P) -> ()
+where
+    P: Into<PathBuf>,
+{
+    assert_eq!(Path::new("/usr/portage/dev-perl/example"), path.into());
+}
+let p = Package::new("/usr/portage", "dev-perl", "example");
+// Using From<&Package>
+demo(&p);
+// Using From<Package>
+demo(p);
+```

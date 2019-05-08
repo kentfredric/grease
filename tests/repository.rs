@@ -209,4 +209,26 @@ mod package {
         let p = r.as_ref();
         assert_eq!(&test_root.join("dev-perl").join("example"), p);
     }
+
+    #[test]
+    fn into_pathbuf() {
+        use std::path::PathBuf;
+        let test_root = repos("basic").unwrap();
+        let r = Package::new(&test_root, "dev-perl", "example");
+
+        let p: PathBuf = r.into();
+        assert_eq!(test_root.join("dev-perl/example"), p);
+    }
+
+    #[test]
+    fn borrow_into_pathbuf() {
+        use std::path::PathBuf;
+        let test_root = repos("basic").unwrap();
+        let r = Package::new(&test_root, "dev-perl", "example");
+
+        let p: PathBuf = (&r).into();
+        assert_eq!(test_root.join("dev-perl/example"), p);
+        // Check is borrowed this far
+        drop(r);
+    }
 }
