@@ -87,6 +87,15 @@ mod category {
 
             assert_eq!("dev-perl", r.name());
         }
+
+        #[test]
+        fn as_ref_path() {
+            let test_root = repos("basic").unwrap();
+            let r = Category::new(&test_root, "dev-perl");
+
+            let p = r.as_ref();
+            assert_eq!(&test_root.join("dev-perl"), p);
+        }
     }
 
     mod noncat {
