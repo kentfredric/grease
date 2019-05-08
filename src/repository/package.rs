@@ -40,3 +40,10 @@ impl Package {
 impl AsRef<PathBuf> for Package {
     fn as_ref(&self) -> &PathBuf { &self.path }
 }
+
+impl From<Package> for PathBuf {
+    fn from(other: Package) -> Self { other.path }
+}
+impl From<&Package> for PathBuf {
+    fn from(other: &Package) -> Self { other.path.to_owned() }
+}
