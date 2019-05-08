@@ -37,3 +37,10 @@ impl Category {
 impl AsRef<PathBuf> for Category {
     fn as_ref(&self) -> &PathBuf { &self.path }
 }
+
+impl From<Category> for PathBuf {
+    fn from(other: Category) -> Self { other.path }
+}
+impl From<&Category> for PathBuf {
+    fn from(other: &Category) -> Self { other.path.to_owned() }
+}

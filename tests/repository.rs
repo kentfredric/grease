@@ -96,6 +96,27 @@ mod category {
             let p = r.as_ref();
             assert_eq!(&test_root.join("dev-perl"), p);
         }
+        #[test]
+        fn into_pathbuf() {
+            use std::path::PathBuf;
+            let test_root = repos("basic").unwrap();
+            let r = Category::new(&test_root, "dev-perl");
+
+            let p: PathBuf = r.into();
+            assert_eq!(test_root.join("dev-perl"), p);
+        }
+
+        #[test]
+        fn borrow_into_pathbuf() {
+            use std::path::PathBuf;
+            let test_root = repos("basic").unwrap();
+            let r = Category::new(&test_root, "dev-perl");
+
+            let p: PathBuf = (&r).into();
+            assert_eq!(test_root.join("dev-perl"), p);
+            // Check is borrowed this far
+            drop(r);
+        }
     }
 
     mod noncat {

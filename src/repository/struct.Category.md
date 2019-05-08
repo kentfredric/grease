@@ -54,3 +54,20 @@ where
 }
 demo(Category::new("/usr/portage", "dev-perl"));
 ```
+
+## Into\<PathBuf\>
+```rust
+# use grease::repository::Category;
+# use std::path::{Path, PathBuf};
+fn demo<P>(path: P) -> ()
+where
+    P: Into<PathBuf>,
+{
+    assert_eq!(Path::new("/usr/portage/dev-perl"), path.into());
+}
+let c = Category::new("/usr/portage", "dev-perl");
+// Using From<&Category>
+demo(&c);
+// Using From<Category>
+demo(c);
+```

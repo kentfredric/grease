@@ -53,9 +53,9 @@ searchIndex["grease"] = {
     ["self"]
    ]
    , [
-    ["string"]
+    ["result", ["string", "repositoryerror"]]
+    , ["string"]
     , ["repositoryerror"]
-    , ["result", ["string", "repositoryerror"]]
    ]
   ]]
   , [11, "to_owned", "", "", 2, [
