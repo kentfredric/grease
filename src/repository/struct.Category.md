@@ -35,3 +35,22 @@ Category::new(String::from("/usr/portage"), String::from("dev-perl"));
 let r = Repository::new("/usr/portage");
 Category::new(&r, "dev-perl");
 ```
+
+# Conversions
+A [`Category`] is inherently [`Path`](std::path::Path) based, due to the
+implicit conjugation of `root` and `category`. Various convenience
+conversions are provided so that you can use a [`Category`] in places you
+might want to use a `Path`.
+
+## AsRef\<PathBuf\>
+```rust
+# use grease::repository::Category;
+# use std::path::{Path,PathBuf};
+fn demo<P>(path: P) -> ()
+where
+    P: AsRef<PathBuf>,
+{
+    assert_eq!(Path::new("/usr/portage/dev-perl"), path.as_ref());
+}
+demo(Category::new("/usr/portage", "dev-perl"));
+```
