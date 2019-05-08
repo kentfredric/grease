@@ -25,6 +25,9 @@ Repository::new(Path::new("/usr/portage"));
 Repository::new(
     Path::new("/usr/portage").to_path_buf().into_boxed_path(),
 );
+// This is legal due to Repository implementing Into<PathBuf>, But you probably just want
+// to use Clone/ToOwned
+Repository::new(Repository::new("/usr/portage"));
 ```
 
 # Conversions
@@ -44,4 +47,21 @@ where
   assert_eq!(Path::new("/usr/portage"), path.as_ref());
 }
 demo(Repository::new("/usr/portage"));
+```
+
+## Into\<PathBuf\>
+```rust
+# use grease::repository::Repository;
+# use std::path::{Path, PathBuf};
+fn demo<P>(path: P) -> ()
+where
+  P: Into<PathBuf>,
+{
+  assert_eq!(Path::new("/usr/portage"), path.into());
+}
+let r = Repository::new("/usr/portage");
+// Using From<&Repository>
+demo(&r);
+// Using From<Repository>
+demo(r);
 ```

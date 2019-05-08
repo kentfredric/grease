@@ -36,4 +36,27 @@ mod repository {
         let p = r.as_ref();
         assert_eq!(&test_root, p);
     }
+
+    #[test]
+    fn into_pathbuf() {
+        use std::path::PathBuf;
+        let test_root = repos("basic").unwrap();
+        let r = Repository::new(&test_root);
+
+        let p: PathBuf = r.into();
+        assert_eq!(test_root, p);
+    }
+
+    #[test]
+    fn borrow_into_pathbuf() {
+        use std::path::PathBuf;
+        let test_root = repos("basic").unwrap();
+        let r = Repository::new(&test_root);
+
+        let p: PathBuf = (&r).into();
+        assert_eq!(test_root, p);
+        // Check is borrowed this far
+        drop(r);
+    }
+
 }

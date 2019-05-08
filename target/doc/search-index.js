@@ -32,8 +32,8 @@ searchIndex["grease"] = {
     ["self"]
    ]
    , [
-    ["result", ["string", "repositoryerror"]]
-    , ["string"]
+    ["string"]
+    , ["result", ["string", "repositoryerror"]]
     , ["repositoryerror"]
    ]
   ]]

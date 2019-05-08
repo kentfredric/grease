@@ -70,3 +70,10 @@ impl Repository {
 impl AsRef<PathBuf> for Repository {
     fn as_ref(&self) -> &PathBuf { &self.root }
 }
+
+impl From<Repository> for PathBuf {
+    fn from(other: Repository) -> Self { other.root }
+}
+impl From<&Repository> for PathBuf {
+    fn from(other: &Repository) -> Self { other.root.to_owned() }
+}
