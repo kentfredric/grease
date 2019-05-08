@@ -263,4 +263,21 @@ mod ebuild {
             r.path()
         );
     }
+
+    #[test]
+    fn as_ref_pathbuf() {
+        let test_root = repos("basic").unwrap();
+        let r = Ebuild::new(
+            &test_root,
+            "dev-perl",
+            "example",
+            "example-0.1.0.ebuild",
+        );
+        let p = r.as_ref();
+        assert_eq!(
+            &test_root.join("dev-perl/example/example-0.1.0.ebuild"),
+            p
+        );
+    }
+
 }
