@@ -75,3 +75,27 @@ demo(Ebuild::new(
     "example-9999.ebuild",
 ));
 ```
+## Into\<PathBuf\>
+```rust
+# use grease::repository::Ebuild;
+# use std::path::{Path,PathBuf};
+fn demo<P>(path: P) -> ()
+where
+    P: Into<PathBuf>,
+{
+    assert_eq!(
+        Path::new("/usr/portage/dev-perl/example/example-9999.ebuild"),
+        path.into()
+    );
+}
+let e = Ebuild::new(
+    "/usr/portage",
+    "dev-perl",
+    "example",
+    "example-9999.ebuild",
+);
+// Using From<&Ebuild>
+demo(&e);
+// Using From<Ebuild>
+demo(e);
+```

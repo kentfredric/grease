@@ -280,4 +280,42 @@ mod ebuild {
         );
     }
 
+    #[test]
+    fn into_pathbuf() {
+        use std::path::PathBuf;
+        let test_root = repos("basic").unwrap();
+        let r = Ebuild::new(
+            &test_root,
+            "dev-perl",
+            "example",
+            "example-0.1.0.ebuild",
+        );
+
+        let p: PathBuf = r.into();
+        assert_eq!(
+            test_root.join("dev-perl/example/example-0.1.0.ebuild"),
+            p
+        );
+    }
+
+    #[test]
+    fn borrow_into_pathbuf() {
+        use std::path::PathBuf;
+        let test_root = repos("basic").unwrap();
+        let r = Ebuild::new(
+            &test_root,
+            "dev-perl",
+            "example",
+            "example-0.1.0.ebuild",
+        );
+
+        let p: PathBuf = (&r).into();
+        assert_eq!(
+            test_root.join("dev-perl/example/example-0.1.0.ebuild"),
+            p
+        );
+        // Check is borrowed this far
+        drop(r);
+    }
+
 }
