@@ -38,3 +38,10 @@ impl Ebuild {
 impl AsRef<PathBuf> for Ebuild {
     fn as_ref(&self) -> &PathBuf { &self.path }
 }
+
+impl From<Ebuild> for PathBuf {
+    fn from(other: Ebuild) -> Self { other.path }
+}
+impl From<&Ebuild> for PathBuf {
+    fn from(other: &Ebuild) -> Self { other.path.to_owned() }
+}

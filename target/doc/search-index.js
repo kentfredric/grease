@@ -89,8 +89,8 @@ searchIndex["grease"] = {
     ["self"]
    ]
    , [
-    ["string"]
-    , ["result", ["string", "repositoryerror"]]
+    ["result", ["string", "repositoryerror"]]
+    , ["string"]
     , ["repositoryerror"]
    ]
   ]]
