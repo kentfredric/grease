@@ -90,8 +90,8 @@ searchIndex["grease"] = {
    ]
    , [
     ["string"]
-    , ["repositoryerror"]
     , ["result", ["string", "repositoryerror"]]
+    , ["repositoryerror"]
    ]
   ]]
   , [11, "to_owned", "", "", 4, [
@@ -369,6 +369,12 @@ searchIndex["grease"] = {
    , ["repository"]
   ]]
   , [11, "as_ref", "grease::repository::category", "", 1, [
+   [
+    ["self"]
+   ]
+   , ["pathbuf"]
+  ]]
+  , [11, "as_ref", "grease::repository::ebuild", "", 2, [
    [
     ["self"]
    ]

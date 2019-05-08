@@ -34,3 +34,7 @@ impl Ebuild {
     /// Returns a path to the ebuild file
     pub fn path(&self) -> PathBuf { self.path.to_owned() }
 }
+
+impl AsRef<PathBuf> for Ebuild {
+    fn as_ref(&self) -> &PathBuf { &self.path }
+}

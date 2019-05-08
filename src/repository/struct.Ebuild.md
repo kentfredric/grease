@@ -48,3 +48,30 @@ Ebuild::new(
 let r = Repository::new("/usr/portage");
 Ebuild::new(&r, "dev-perl", "example", "example-9999.ebuild");
 ```
+
+# Conversions
+A [`Ebuild`] is inherently [`Path`](std::path::Path) based, due to the
+implicit conjugation of `root`, `category`, `package` and `ebuild`.
+Various convenience conversions are provided so that you can use a
+[`Ebuild`] in places you might want to use a `Path`.
+
+## AsRef\<PathBuf\>
+```rust
+# use grease::repository::Ebuild;
+# use std::path::{Path,PathBuf};
+fn demo<P>(path: P) -> ()
+where
+    P: AsRef<PathBuf>,
+{
+    assert_eq!(
+        Path::new("/usr/portage/dev-perl/example/example-9999.ebuild"),
+        path.as_ref()
+    );
+}
+demo(Ebuild::new(
+    "/usr/portage",
+    "dev-perl",
+    "example",
+    "example-9999.ebuild",
+));
+```
