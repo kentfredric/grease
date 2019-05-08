@@ -40,3 +40,22 @@ Package::new(
 let r = Repository::new("/usr/portage");
 Package::new(&r, "dev-perl", "example");
 ```
+
+# Conversions
+
+Due to [`Package`] being inherently [`Path`](std::path::Path) based,
+conversions are provided so you may use them in various
+[`Path`](std::path::Path) contexts:
+
+## AsRef\<PathBuf\>
+```rust
+# use grease::repository::Package;
+# use std::path::{Path,PathBuf};
+fn demo<P>(path: P) -> ()
+where
+    P: AsRef<PathBuf>,
+{
+    assert_eq!(Path::new("/usr/portage/dev-perl/example"), path.as_ref());
+}
+demo(Package::new("/usr/portage", "dev-perl", "example"));
+```

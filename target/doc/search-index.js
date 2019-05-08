@@ -303,6 +303,12 @@ searchIndex["grease"] = {
    ]
    , ["pathbuf"]
   ]]
+  , [11, "as_ref", "grease::repository::package", "", 2, [
+   [
+    ["self"]
+   ]
+   , ["pathbuf"]
+  ]]
   , [11, "as_ref", "grease::repository", "", 3, [
    [
     ["self"]

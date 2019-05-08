@@ -201,4 +201,12 @@ mod package {
         assert_eq!("dev-perl/example", r.name());
     }
 
+    #[test]
+    fn as_ref_pathbuf() {
+        let test_root = repos("basic").unwrap();
+        let r = Package::new(&test_root, "dev-perl", "example");
+
+        let p = r.as_ref();
+        assert_eq!(&test_root.join("dev-perl").join("example"), p);
+    }
 }
