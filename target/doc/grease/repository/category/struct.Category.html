@@ -53,7 +53,7 @@
          href="#implementations">Trait Implementations</a>
     <div class="sidebar-links">
      <a href="#impl-AsRef%3CPathBuf%3E">AsRef&lt;PathBuf&gt;</a><a href="#impl-Clone">Clone</a><a href="#impl-Debug">Debug</a><a href="#impl-From%3C%26%27_%20Category%3E">From&lt;&amp;&#39;_ Category&gt;</a><a href=
-     "#impl-From%3CCategory%3E">From&lt;Category&gt;</a>
+     "#impl-From%3CCategory%3E">From&lt;Category&gt;</a><a href="#impl-PartialEq%3CCategory%3E">PartialEq&lt;Category&gt;</a>
     </div><a class="sidebar-title"
          href="#synthetic-implementations">Auto Trait Implementations</a>
     <div class="sidebar-links">
@@ -107,7 +107,7 @@
   <h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs"
      href="javascript:void(0)"
      title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink'
-     href='../../../src/grease/repository/category.rs.html#11-15'
+     href='../../../src/grease/repository/category.rs.html#17-21'
      title='goto source code'>[src]</a></span><span class='in-band'>Struct <a href='../../index.html'>grease</a>::<wbr><a href='../index.html'>repository</a>::<wbr><a href='index.html'>category</a>::<wbr><a class="struct"
      href=''>Category</a></span></h1>
   <div class="docblock type-decl hidden-by-usual-hider">
@@ -216,7 +216,7 @@
      href="../../../grease/repository/category/struct.Category.html"
      title="struct grease::repository::category::Category">Category</a></code><a href='#impl'
      class='anchor'></a><a class='srclink'
-     href='../../../src/grease/repository/category.rs.html#17-35'
+     href='../../../src/grease/repository/category.rs.html#23-41'
      title='goto source code'>[src]</a></h3>
   <div class='impl-items'>
    <h4 id='method.new'
@@ -233,7 +233,7 @@
       href="https://doc.rust-lang.org/nightly/alloc/borrow/enum.Cow.html"
       title="enum alloc::borrow::Cow">Cow</a>&lt;'a, <a class="primitive"
       href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>&gt;&gt;,&nbsp;</span></code><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#19-28'
+      href='../../../src/grease/repository/category.rs.html#25-34'
       title='goto source code'>[src]</a></h4>
    <div class='docblock'>
     <p>Construct a new <a href="../../../grease/repository/category/struct.Category.html"
@@ -244,7 +244,7 @@
       class='fnname'>path</a>(&amp;self) -&gt; <a class="struct"
       href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
       title="struct std::path::PathBuf">PathBuf</a></code><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#31'
+      href='../../../src/grease/repository/category.rs.html#37'
       title='goto source code'>[src]</a></h4>
    <div class='docblock'>
     <p>Returns the path to this repository</p>
@@ -254,7 +254,7 @@
       class='fnname'>name</a>(&amp;self) -&gt; <a class="struct"
       href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html"
       title="struct alloc::string::String">String</a></code><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#34'
+      href='../../../src/grease/repository/category.rs.html#40'
       title='goto source code'>[src]</a></h4>
    <div class='docblock'>
     <p>Return the name of the category</p>
@@ -264,6 +264,41 @@
       class='small-section-header'>Trait Implementations<a href='#implementations'
      class='anchor'></a></h2>
   <div id='implementations-list'>
+   <h3 id='impl-PartialEq%3CCategory%3E'
+       class='impl'><code class='in-band'>impl <a class="trait"
+      href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"
+      title="trait core::cmp::PartialEq">PartialEq</a>&lt;<a class="struct"
+      href="../../../grease/repository/category/struct.Category.html"
+      title="struct grease::repository::category::Category">Category</a>&gt; for <a class="struct"
+      href="../../../grease/repository/category/struct.Category.html"
+      title="struct grease::repository::category::Category">Category</a></code><a href='#impl-PartialEq%3CCategory%3E'
+      class='anchor'></a><a class='srclink'
+      href='../../../src/grease/repository/category.rs.html#16'
+      title='goto source code'>[src]</a></h3>
+   <div class='impl-items'>
+    <h4 id='method.eq'
+        class="method hidden"><code id='eq.v'>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq'
+       class='fnname'>eq</a>(&amp;self, other: &amp;<a class="struct"
+       href="../../../grease/repository/category/struct.Category.html"
+       title="struct grease::repository::category::Category">Category</a>) -&gt; <a class="primitive"
+       href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code><a class='srclink'
+       href='../../../src/grease/repository/category.rs.html#16'
+       title='goto source code'>[src]</a></h4>
+    <div class='docblock hidden'>
+     <p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+    </div>
+    <h4 id='method.ne'
+        class="method hidden"><code id='ne.v'>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne'
+       class='fnname'>ne</a>(&amp;self, other: &amp;<a class="struct"
+       href="../../../grease/repository/category/struct.Category.html"
+       title="struct grease::repository::category::Category">Category</a>) -&gt; <a class="primitive"
+       href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code><a class='srclink'
+       href='../../../src/grease/repository/category.rs.html#16'
+       title='goto source code'>[src]</a></h4>
+    <div class='docblock hidden'>
+     <p>This method tests for <code>!=</code>.</p>
+    </div>
+   </div>
    <h3 id='impl-Clone'
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"
@@ -271,7 +306,7 @@
       href="../../../grease/repository/category/struct.Category.html"
       title="struct grease::repository::category::Category">Category</a></code><a href='#impl-Clone'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#10'
+      href='../../../src/grease/repository/category.rs.html#16'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.clone'
@@ -279,7 +314,7 @@
        class='fnname'>clone</a>(&amp;self) -&gt; <a class="struct"
        href="../../../grease/repository/category/struct.Category.html"
        title="struct grease::repository::category::Category">Category</a></code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#10'
+       href='../../../src/grease/repository/category.rs.html#16'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
@@ -304,7 +339,7 @@
       href="../../../grease/repository/category/struct.Category.html"
       title="struct grease::repository::category::Category">Category</a></code><a href='#impl-AsRef%3CPathBuf%3E'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#37-39'
+      href='../../../src/grease/repository/category.rs.html#43-45'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.as_ref'
@@ -312,7 +347,7 @@
        class='fnname'>as_ref</a>(&amp;self) -&gt; &amp;<a class="struct"
        href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
        title="struct std::path::PathBuf">PathBuf</a></code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#38'
+       href='../../../src/grease/repository/category.rs.html#44'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Performs the conversion.</p>
@@ -327,7 +362,7 @@
       href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
       title="struct std::path::PathBuf">PathBuf</a></code><a href='#impl-From%3CCategory%3E'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#41-43'
+      href='../../../src/grease/repository/category.rs.html#47-49'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.from'
@@ -335,7 +370,7 @@
        class='fnname'>from</a>(other: <a class="struct"
        href="../../../grease/repository/category/struct.Category.html"
        title="struct grease::repository::category::Category">Category</a>) -&gt; Self</code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#42'
+       href='../../../src/grease/repository/category.rs.html#48'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Performs the conversion.</p>
@@ -350,7 +385,7 @@
       href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
       title="struct std::path::PathBuf">PathBuf</a></code><a href='#impl-From%3C%26%27_%20Category%3E'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#44-46'
+      href='../../../src/grease/repository/category.rs.html#50-52'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.from-1'
@@ -358,7 +393,7 @@
        class='fnname'>from</a>(other: &amp;<a class="struct"
        href="../../../grease/repository/category/struct.Category.html"
        title="struct grease::repository::category::Category">Category</a>) -&gt; Self</code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#45'
+       href='../../../src/grease/repository/category.rs.html#51'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Performs the conversion.</p>
@@ -371,7 +406,7 @@
       href="../../../grease/repository/category/struct.Category.html"
       title="struct grease::repository::category::Category">Category</a></code><a href='#impl-Debug'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#10'
+      href='../../../src/grease/repository/category.rs.html#16'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.fmt'
@@ -381,7 +416,7 @@
        title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type"
        href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html"
        title="type core::fmt::Result">Result</a></code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#10'
+       href='../../../src/grease/repository/category.rs.html#16'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>

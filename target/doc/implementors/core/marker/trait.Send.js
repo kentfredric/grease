@@ -13,6 +13,14 @@
   , synthetic: true
   , types: ["grease::repository::category::Category"]
  }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.Send.html\" title=\"trait core::marker::Send\">Send</a> for <a class=\"struct\" href=\"grease/repository/category/struct.CategoryFileIterator.html\" title=\"struct grease::repository::category::CategoryFileIterator\">CategoryFileIterator</a>"
+  , synthetic: true
+  , types: ["grease::repository::category::CategoryFileIterator"]
+ }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.Send.html\" title=\"trait core::marker::Send\">Send</a> for <a class=\"enum\" href=\"grease/repository/category/enum.CategoryFileError.html\" title=\"enum grease::repository::category::CategoryFileError\">CategoryFileError</a>"
+  , synthetic: true
+  , types: ["grease::repository::category::CategoryFileError"]
+ }, {
   text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.Send.html\" title=\"trait core::marker::Send\">Send</a> for <a class=\"struct\" href=\"grease/repository/ebuild/struct.Ebuild.html\" title=\"struct grease::repository::ebuild::Ebuild\">Ebuild</a>"
   , synthetic: true
   , types: ["grease::repository::ebuild::Ebuild"]

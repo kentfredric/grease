@@ -15,7 +15,7 @@ use std::{
 pub mod category;
 pub mod ebuild;
 pub mod package;
-pub use category::Category;
+pub use category::{Category, CategoryFileError, CategoryFileIterator};
 pub use ebuild::Ebuild;
 pub use package::Package;
 

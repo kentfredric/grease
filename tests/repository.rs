@@ -319,3 +319,25 @@ mod ebuild {
     }
 
 }
+
+mod category_file_iterator {
+    use crate::util::repos;
+    use grease::repository::{category::CategoryFileIterator, Category};
+
+    #[test]
+    fn basic() {
+        let test_root = repos("basic").unwrap();
+        let i = CategoryFileIterator::for_file(
+            &test_root,
+            &test_root.join("profiles/categories"),
+        );
+        let results: Vec<Category> = i
+            .unwrap()
+            .filter_map(|item| match item {
+                Ok(x) => Some(x),
+                Err(e) => panic!("{:?}", e),
+            })
+            .collect();
+        assert_eq!(results, vec![Category::new(&test_root, "dev-perl")]);
+    }
+}
