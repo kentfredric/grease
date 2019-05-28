@@ -7,10 +7,10 @@
  <meta name="generator"
        content="rustdoc">
  <meta name="description"
-       content="API documentation for the Rust `CategoryFileIterator` struct in crate `grease`.">
+       content="API documentation for the Rust `CategoryDirsIterator` struct in crate `grease`.">
  <meta name="keywords"
-       content="rust, rustlang, rust-lang, CategoryFileIterator">
- <title>grease::repository::category::CategoryFileIterator - Rust</title>
+       content="rust, rustlang, rust-lang, CategoryDirsIterator">
+ <title>grease::repository::category::CategoryDirsIterator - Rust</title>
  <link rel="stylesheet"
        type="text/css"
        href="../../../normalize.css">
@@ -42,13 +42,13 @@
   </div><a href='../../../grease/index.html'>
   <div class='logo-container'><img src='../../../rust-logo.png'
        alt='logo'></div></a>
-  <p class='location'>Struct CategoryFileIterator</p>
+  <p class='location'>Struct CategoryDirsIterator</p>
   <div class="sidebar-elems">
    <div class="block items">
     <a class="sidebar-title"
          href="#methods">Methods</a>
     <div class="sidebar-links">
-     <a href="#method.for_file">for_file</a>
+     <a href="#method.for_repo">for_repo</a>
     </div><a class="sidebar-title"
          href="#implementations">Trait Implementations</a>
     <div class="sidebar-links">
@@ -66,7 +66,7 @@
    </div>
    <p class='location'><a href='../../index.html'>grease</a>::<wbr><a href='../index.html'>repository</a>::<wbr><a href='index.html'>category</a></p>
    <script>
-   window.sidebarCurrent = {name: 'CategoryFileIterator', ty: 'struct', relpath: ''};
+   window.sidebarCurrent = {name: 'CategoryDirsIterator', ty: 'struct', relpath: ''};
    </script>
    <script defer
         src="sidebar-items.js"></script>
@@ -106,156 +106,42 @@
   <h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs"
      href="javascript:void(0)"
      title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink'
-     href='../../../src/grease/repository/category.rs.html#83-87'
+     href='../../../src/grease/repository/category.rs.html#358-362'
      title='goto source code'>[src]</a></span><span class='in-band'>Struct <a href='../../index.html'>grease</a>::<wbr><a href='../index.html'>repository</a>::<wbr><a href='index.html'>category</a>::<wbr><a class="struct"
-     href=''>CategoryFileIterator</a></span></h1>
+     href=''>CategoryDirsIterator</a></span></h1>
   <div class="docblock type-decl hidden-by-usual-hider">
-   <pre class='rust struct'>pub struct CategoryFileIterator { /* fields omitted */ }</pre>
+   <pre class='rust struct'>pub struct CategoryDirsIterator { /* fields omitted */ }</pre>
   </div>
   <div class='docblock'>
-   <p>Iterate a <code>categories</code> file in a portage repository</p>
-   <p>In a standard Gentoo repository, a file may exist in <code>profiles/categories</code> which contains a white-list of all known categories shipped in the repository, in order to distinguish directories containing categories from
-   directories containing other data, without relying on hard-coded exception rules in traversal, and without relying on deep directory traversal just to identify the purpose of a directory.</p>
-   <p>A <a href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="`CategoryFileIterator`"><code>CategoryFileIterator</code></a> is a low-level tool that provides an <a href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html"
-      title="`Iterator`"><code>Iterator</code></a> over this file, emitting <a href="../../../grease/repository/category/struct.Category.html"
-      title="`Category`"><code>Category</code></a> entries for respective lines, rooted in the passed <code>root</code></p>
-   <h1 id="construction"
-       class="section-header"><a href="#construction">Construction</a></h1>
-   <p>Creating a <a href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="`CategoryFileIterator`"><code>CategoryFileIterator</code></a> requires two arguments: a <code>root</code> to use as the base for returned <a href="../../../grease/repository/category/struct.Category.html"
-      title="`Category`"><code>Category</code></a> objects, and a <code>file</code> to read for category listing.</p>
-   <p>While there is no inherent requirement that <code>file</code> be stored within <code>root</code>, most practical applications will want this to be the case.</p>
-   <p>Both <code>root</code> and <code>file</code> may be anything that implements <code><a href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html"
-      title="Into">Into</a>&lt;<a href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
-      title="PathBuf">PathBuf</a>&gt;</code>, such as:</p>
-   <ul>
-    <li>
-     <a href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html"
-         title="`String`"><code>String</code></a>
-    </li>
-    <li>
-     <a href="https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html"><code>OsString</code></a>
-    </li>
-    <li>
-     <a href="https://doc.rust-lang.org/nightly/std/path/struct.Path.html"><code>Path</code></a>
-    </li>
-    <li><code><a href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html"
-       title="Box">Box</a>&lt;<a href="https://doc.rust-lang.org/nightly/std/path/struct.Path.html">Path</a>\&gt;</code></li>
-    <li>
-     <a href="../../../grease/repository/struct.Repository.html"><code>Repository</code></a>
-    </li>
-   </ul>
-   <div class="example-wrap">
-    <pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">grease</span>::<span class="ident">repository</span>::<span class="ident">CategoryFileIterator</span>;
-<span class="kw">match</span> <span class="ident">CategoryFileIterator</span>::<span class="ident">for_file</span>(
-    <span class="string">&quot;/usr/portage&quot;</span>,
-    <span class="string">&quot;/usr/portage/profiles/categories&quot;</span>,
-) {
-    <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="ident">e</span>),
-    <span class="prelude-val">Ok</span>(<span class="ident">iterator</span>) <span class="op">=&gt;</span> {
-        <span class="kw">for</span> <span class="ident">category</span> <span class="kw">in</span> <span class="ident">iterator</span> {
-            <span class="kw">match</span> <span class="ident">category</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="ident">e</span>),
-                <span class="prelude-val">Ok</span>(<span class="ident">c</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class=
-"ident">c</span>.<span class="ident">name</span>()),
-            }
-        }
-    },
-}</pre>
-   </div>
-   <h2 id="errors"
-       class="section-header"><a href="#errors">Errors</a></h2>
-   <p>Constructing a <a href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="`CategoryFileIterator`"><code>CategoryFileIterator</code></a> performs various <code>IO</code> tasks, validating and opening the passed <code>file</code>, and naturally, this process can emit errors of its own. ( This is why
-      <code>for_file</code> was chosen as a name instead of <code>new</code> )</p>
-   <p><code>for_file</code> returns a <code><a href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html"
-      title="Result">Result</a>&lt;<a href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="CategoryFileIterator">CategoryFileIterator</a>,<a href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="CategoryFileError">CategoryFileError</a>&gt;</code> which must be handled to see if an error was returned.</p>
-   <ul>
-    <li>
-     <a href="../../../grease/repository/category/enum.CategoryFileError.html#PathNotFound.v"
-         title="`CategoryFileError::PathNotFound`"><code>CategoryFileError::PathNotFound</code></a> : The value passed for <code>file</code> did not exist
-    </li>
-    <li>
-     <a href="../../../grease/repository/category/enum.CategoryFileError.html#PathAccessError.v"
-         title="`CategoryFileError::PathAccessError`"><code>CategoryFileError::PathAccessError</code></a> : Some othe kind of IO error occurred while trying to <code>stat()</code> or <code>open()</code> the passed <code>file</code>
-    </li>
-    <li>
-     <a href="../../../grease/repository/category/enum.CategoryFileError.html#NotAFile.v"
-         title="`CategoryFileError::NotAFile`"><code>CategoryFileError::NotAFile</code></a> : <code>file</code> seems to exist alright, but it needs to be a file, not a directory
-    </li>
-   </ul>
-   <h1 id="iteration"
-       class="section-header"><a href="#iteration">Iteration</a></h1>
-   <p>Most work performed with <a href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="`CategoryFileIterator`"><code>CategoryFileIterator</code></a> will focus around <code>.next()</code>, or any of the methods provided by <a href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html"
-      title="`Iterator`"><code>Iterator</code></a> which maps results from <code>.next()</code></p>
-   <p><code>.next()</code> Returns an <code><a href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html"
-      title="`Option`"><code>Option</code></a>&lt;<a href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html"
-      title="Result">Result</a>&lt;<a href="../../../grease/repository/category/struct.Category.html"
-      title="Category">Category</a>,<a href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="CategoryFileError">CategoryFileError</a>&gt;&gt;</code> where each <a href="../../../grease/repository/category/struct.Category.html"
-      title="`Category`"><code>Category</code></a> is built from the provided <code>root</code> and the extracted entry from the <code>file</code>, and the aggregate needs to be destructured before it can be used.</p>
-   <div class="example-wrap">
-    <pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">grease</span>::<span class="ident">repository</span>::<span class="ident">CategoryFileIterator</span>;
-<span class="kw">let</span> <span class="ident">iterator</span> <span class="op">=</span> <span class="ident">CategoryFileIterator</span>::<span class="ident">for_file</span>(
-    <span class="string">&quot;/usr/portage&quot;</span>,
-    <span class="string">&quot;/usr/portage/profiles/categories&quot;</span>,
-);
-<span class="kw">for</span> <span class="ident">item_result</span> <span class="kw">in</span> <span class="ident">iterator</span>.<span class="ident">unwrap</span>() {
-    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">item_result</span>.<span class="ident">unwrap</span>().<span class="ident">name</span>());
-}</pre>
-   </div>
-   <h2 id="errors-1"
-       class="section-header"><a href="#errors-1">Errors</a></h2>
-   <p>The underlying <code>file</code> of this iterator is prone to various <code>OS</code> emitted <code>IO</code> errors, and when seeing one of these, a <a href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html#Err.v"
-      title="`Result::Err`"><code>Result::Err</code></a> is returned, where <code>Err</code> contains a <a href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="`CategoryFileError`"><code>CategoryFileError</code></a>:</p>
-   <ul>
-    <li>
-     <a href="../../../grease/repository/category/enum.CategoryFileError.html#FileDecodeError.v"
-         title="`CategoryFileError::FileDecodeError`"><code>CategoryFileError::FileDecodeError</code></a> : The underlying layers emitted an <a href="https://doc.rust-lang.org/nightly/std/io/error/enum.ErrorKind.html#InvalidData.v"
-         title="`io::ErrorKind::InvalidData`"><code>io::ErrorKind::InvalidData</code></a> which likely indicates malformed UTF8, but documentation isn't explicitly clear about all possible causes for this.
-    </li>
-    <li>
-     <a href="../../../grease/repository/category/enum.CategoryFileError.html#FileReadError.v"
-         title="`CategoryFileError::FileReadError`"><code>CategoryFileError::FileReadError</code></a> : Some other kind of <code>IO</code> error was produced, but we presently have no better way to identify it other than genericaly, due to
-         lack of adequate documentation and substantial source indirection
-    </li>
-   </ul>
+   <p>Iterate categories in a portage repository via discovery</p>
   </div>
   <h2 id='methods'
       class='small-section-header'>Methods<a href='#methods'
      class='anchor'></a></h2>
   <h3 id='impl'
       class='impl'><code class='in-band'>impl <a class="struct"
-     href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-     title="struct grease::repository::category::CategoryFileIterator">CategoryFileIterator</a></code><a href='#impl'
+     href="../../../grease/repository/category/struct.CategoryDirsIterator.html"
+     title="struct grease::repository::category::CategoryDirsIterator">CategoryDirsIterator</a></code><a href='#impl'
      class='anchor'></a><a class='srclink'
-     href='../../../src/grease/repository/category.rs.html#89-107'
+     href='../../../src/grease/repository/category.rs.html#364-385'
      title='goto source code'>[src]</a></h3>
   <div class='impl-items'>
-   <h4 id='method.for_file'
-       class="method"><code id='for_file.v'>pub fn <a href='#method.for_file'
-      class='fnname'>for_file</a>&lt;P&gt;(root: P, file: P) -&gt; <a class="enum"
+   <h4 id='method.for_repo'
+       class="method"><code id='for_repo.v'>pub fn <a href='#method.for_repo'
+      class='fnname'>for_repo</a>&lt;P&gt;(root: P) -&gt; <a class="enum"
       href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html"
       title="enum core::result::Result">Result</a>&lt;Self, <a class="enum"
-      href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="enum grease::repository::category::CategoryFileError">CategoryFileError</a>&gt; <span class="where fmt-newline">where<br>
+      href="../../../grease/repository/category/enum.CategoryDirsError.html"
+      title="enum grease::repository::category::CategoryDirsError">CategoryDirsError</a>&gt; <span class="where fmt-newline">where<br>
    &nbsp;&nbsp;&nbsp;&nbsp;P: <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html"
       title="trait core::convert::Into">Into</a>&lt;<a class="struct"
       href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
       title="struct std::path::PathBuf">PathBuf</a>&gt;,&nbsp;</span></code><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#92-106'
+      href='../../../src/grease/repository/category.rs.html#366-384'
       title='goto source code'>[src]</a></h4>
    <div class='docblock'>
-    <p>Create a <a href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-       title="`CategoryFileIterator`"><code>CategoryFileIterator</code></a> for a given <code>file</code> in a repository <code>root</code></p>
+    <p>Construct a discovery based category iterator for a repository</p>
    </div>
   </div>
   <h2 id='implementations'
@@ -266,10 +152,10 @@
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html"
       title="trait core::iter::traits::iterator::Iterator">Iterator</a> for <a class="struct"
-      href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="struct grease::repository::category::CategoryFileIterator">CategoryFileIterator</a></code><a href='#impl-Iterator'
+      href="../../../grease/repository/category/struct.CategoryDirsIterator.html"
+      title="struct grease::repository::category::CategoryDirsIterator">CategoryDirsIterator</a></code><a href='#impl-Iterator'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#108-127'
+      href='../../../src/grease/repository/category.rs.html#387-432'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='associatedtype.Item'
@@ -279,8 +165,8 @@
        title="enum core::result::Result">Result</a>&lt;<a class="struct"
        href="../../../grease/repository/category/struct.Category.html"
        title="struct grease::repository::category::Category">Category</a>, <a class="enum"
-       href="../../../grease/repository/category/enum.CategoryFileError.html"
-       title="enum grease::repository::category::CategoryFileError">CategoryFileError</a>&gt;</code></h4>
+       href="../../../grease/repository/category/enum.CategoryDirsError.html"
+       title="enum grease::repository::category::CategoryDirsError">CategoryDirsError</a>&gt;</code></h4>
     <div class='docblock'>
      <p>The type of the elements being iterated over.</p>
     </div>
@@ -291,7 +177,7 @@
        title="enum core::option::Option">Option</a>&lt;Self::<a class="type"
        href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html#associatedtype.Item"
        title="type core::iter::traits::iterator::Iterator::Item">Item</a>&gt;</code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#111-126'
+       href='../../../src/grease/repository/category.rs.html#390-431'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Advances the iterator and returns the next value. <a href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html#tymethod.next">Read more</a></p>
@@ -1342,10 +1228,10 @@
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"
       title="trait core::fmt::Debug">Debug</a> for <a class="struct"
-      href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="struct grease::repository::category::CategoryFileIterator">CategoryFileIterator</a></code><a href='#impl-Debug'
+      href="../../../grease/repository/category/struct.CategoryDirsIterator.html"
+      title="struct grease::repository::category::CategoryDirsIterator">CategoryDirsIterator</a></code><a href='#impl-Debug'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#82'
+      href='../../../src/grease/repository/category.rs.html#357'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.fmt'
@@ -1355,7 +1241,7 @@
        title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type"
        href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html"
        title="type core::fmt::Result">Result</a></code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#82'
+       href='../../../src/grease/repository/category.rs.html#357'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
@@ -1370,16 +1256,16 @@
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html"
       title="trait core::marker::Send">Send</a> for <a class="struct"
-      href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="struct grease::repository::category::CategoryFileIterator">CategoryFileIterator</a></code><a href='#impl-Send'
+      href="../../../grease/repository/category/struct.CategoryDirsIterator.html"
+      title="struct grease::repository::category::CategoryDirsIterator">CategoryDirsIterator</a></code><a href='#impl-Send'
       class='anchor'></a></h3>
    <div class='impl-items'></div>
    <h3 id='impl-Sync'
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html"
       title="trait core::marker::Sync">Sync</a> for <a class="struct"
-      href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="struct grease::repository::category::CategoryFileIterator">CategoryFileIterator</a></code><a href='#impl-Sync'
+      href="../../../grease/repository/category/struct.CategoryDirsIterator.html"
+      title="struct grease::repository::category::CategoryDirsIterator">CategoryDirsIterator</a></code><a href='#impl-Sync'
       class='anchor'></a></h3>
    <div class='impl-items'></div>
   </div>

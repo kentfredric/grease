@@ -11,7 +11,8 @@ keywords = ["gentoo", "portage", "repository" ]
 categories = ["filesystem"]
 readme = "src/repository/repository.md"
 
-[dependencies]
+[dependencies.libc]
+version = "~0.2"
 
 [dependencies.failure]
 version = "~0.1"

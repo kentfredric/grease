@@ -5,6 +5,10 @@
   , synthetic: false
   , types: ["grease::repository::category::CategoryFileError"]
  }, {
+  text: "impl <a class=\"trait\" href=\"https://docs.rs/failure/0.1.5/failure/trait.Fail.html\" title=\"trait failure::Fail\">Fail</a> for <a class=\"enum\" href=\"grease/repository/category/enum.CategoryDirsError.html\" title=\"enum grease::repository::category::CategoryDirsError\">CategoryDirsError</a>"
+  , synthetic: false
+  , types: ["grease::repository::category::CategoryDirsError"]
+ }, {
   text: "impl <a class=\"trait\" href=\"https://docs.rs/failure/0.1.5/failure/trait.Fail.html\" title=\"trait failure::Fail\">Fail</a> for <a class=\"enum\" href=\"grease/repository/enum.RepositoryError.html\" title=\"enum grease::repository::RepositoryError\">RepositoryError</a>"
   , synthetic: false
   , types: ["grease::repository::RepositoryError"]

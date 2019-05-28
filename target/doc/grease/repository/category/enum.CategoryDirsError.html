@@ -7,10 +7,10 @@
  <meta name="generator"
        content="rustdoc">
  <meta name="description"
-       content="API documentation for the Rust `CategoryFileError` enum in crate `grease`.">
+       content="API documentation for the Rust `CategoryDirsError` enum in crate `grease`.">
  <meta name="keywords"
-       content="rust, rustlang, rust-lang, CategoryFileError">
- <title>grease::repository::category::CategoryFileError - Rust</title>
+       content="rust, rustlang, rust-lang, CategoryDirsError">
+ <title>grease::repository::category::CategoryDirsError - Rust</title>
  <link rel="stylesheet"
        type="text/css"
        href="../../../normalize.css">
@@ -42,14 +42,16 @@
   </div><a href='../../../grease/index.html'>
   <div class='logo-container'><img src='../../../rust-logo.png'
        alt='logo'></div></a>
-  <p class='location'>Enum CategoryFileError</p>
+  <p class='location'>Enum CategoryDirsError</p>
   <div class="sidebar-elems">
    <div class="block items">
     <a class="sidebar-title"
          href="#variants">Variants</a>
     <div class="sidebar-links">
-     <a href="#variant.PathNotFound">PathNotFound</a><a href="#variant.PathAccessError">PathAccessError</a><a href="#variant.NotAFile">NotAFile</a><a href="#variant.FileDecodeError">FileDecodeError</a><a href=
-     "#variant.FileReadError">FileReadError</a>
+     <a href="#variant.RepoNotFound">RepoNotFound</a><a href="#variant.RepoAccessError">RepoAccessError</a><a href="#variant.RepoNotADir">RepoNotADir</a><a href="#variant.RepoReadDirError">RepoReadDirError</a><a href= 
+     "#variant.CategoryNameDecodeError">CategoryNameDecodeError</a><a href="#variant.CategoryNotFound">CategoryNotFound</a><a href="#variant.CategoryAccessError">CategoryAccessError</a><a href=
+     "#variant.CategoryPathLacksFileName">CategoryPathLacksFileName</a><a href="#variant.PackageAccessError">PackageAccessError</a><a href="#variant.EbuildAccessError">EbuildAccessError</a><a href=
+     "#variant.EbuildNameDecodeError">EbuildNameDecodeError</a><a href="#variant.CategoryReadDirError">CategoryReadDirError</a>
     </div><a class="sidebar-title"
          href="#implementations">Trait Implementations</a>
     <div class="sidebar-links">
@@ -67,7 +69,7 @@
    </div>
    <p class='location'><a href='../../index.html'>grease</a>::<wbr><a href='../index.html'>repository</a>::<wbr><a href='index.html'>category</a></p>
    <script>
-   window.sidebarCurrent = {name: 'CategoryFileError', ty: 'enum', relpath: ''};
+   window.sidebarCurrent = {name: 'CategoryDirsError', ty: 'enum', relpath: ''};
    </script>
    <script defer
         src="sidebar-items.js"></script>
@@ -107,30 +109,59 @@
   <h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs"
      href="javascript:void(0)"
      title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink'
-     href='../../../src/grease/repository/category.rs.html#59-75'
+     href='../../../src/grease/repository/category.rs.html#133-196'
      title='goto source code'>[src]</a></span><span class='in-band'>Enum <a href='../../index.html'>grease</a>::<wbr><a href='../index.html'>repository</a>::<wbr><a href='index.html'>category</a>::<wbr><a class="enum"
-     href=''>CategoryFileError</a></span></h1>
+     href=''>CategoryDirsError</a></span></h1>
   <div class="docblock type-decl hidden-by-usual-hider">
-   <pre class='rust enum'>pub enum CategoryFileError {
-    PathNotFound(<a class="struct"
+   <pre class='rust enum'>pub enum CategoryDirsError {
+    RepoNotFound(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
      title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>),
-    PathAccessError(<a class="struct"
+    RepoAccessError(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
      title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>),
-    NotAFile(<a class="struct"
+    RepoNotADir(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>),
-    FileDecodeError(<a class="struct"
+    RepoReadDirError(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
      title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>),
-    FileReadError(<a class="struct"
+    CategoryNameDecodeError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html"
+     title="struct std::ffi::os_str::OsString">OsString</a>),
+    CategoryNotFound(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
+     title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
+     href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html"
+     title="struct alloc::string::String">String</a>),
+    CategoryAccessError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
+     title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
+     href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html"
+     title="struct alloc::string::String">String</a>),
+    CategoryPathLacksFileName(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+     title="struct std::path::PathBuf">PathBuf</a>),
+    PackageAccessError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
+     title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+     title="struct std::path::PathBuf">PathBuf</a>),
+    EbuildAccessError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
+     title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+     title="struct std::path::PathBuf">PathBuf</a>),
+    EbuildNameDecodeError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html"
+     title="struct std::ffi::os_str::OsString">OsString</a>),
+    CategoryReadDirError(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
      title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
@@ -138,54 +169,111 @@
 }</pre>
   </div>
   <div class='docblock'>
-   <p>Types of errors that can be emitted when creating an instance of <a href="../../../grease/repository/category/struct.CategoryFileIterator.html"
-      title="`CategoryFileIterator`"><code>CategoryFileIterator</code></a></p>
+   <p>Types of errors that can be emitted when creating an instance of <a href="../../../grease/repository/category/struct.CategoryDirsIterator.html"
+      title="`CategoryDirsIterator`"><code>CategoryDirsIterator</code></a></p>
   </div>
   <h2 id='variants'
       class='variants small-section-header'>Variants<a href='#variants'
-     class='anchor'></a></h2><span id="variant.PathNotFound"
-           class="variant small-section-header"><a href="#variant.PathNotFound"
-     class="anchor field"></a><code id='PathNotFound.v'>PathNotFound(<a class="struct"
+     class='anchor'></a></h2><span id="variant.RepoNotFound"
+           class="variant small-section-header"><a href="#variant.RepoNotFound"
+     class="anchor field"></a><code id='RepoNotFound.v'>RepoNotFound(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
      title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>)</code></span>
   <div class='docblock'>
-   <p>A specified path did not appear to exist on the filesystem</p>
-  </div><span id="variant.PathAccessError"
-           class="variant small-section-header"><a href="#variant.PathAccessError"
-     class="anchor field"></a><code id='PathAccessError.v'>PathAccessError(<a class="struct"
+   <p>A specified repository root was not found</p>
+  </div><span id="variant.RepoAccessError"
+           class="variant small-section-header"><a href="#variant.RepoAccessError"
+     class="anchor field"></a><code id='RepoAccessError.v'>RepoAccessError(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
      title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>)</code></span>
   <div class='docblock'>
-   <p>A specified path generated IO errors during discovery</p>
-  </div><span id="variant.NotAFile"
-           class="variant small-section-header"><a href="#variant.NotAFile"
-     class="anchor field"></a><code id='NotAFile.v'>NotAFile(<a class="struct"
+   <p>An IO error occurred accessing the repository root</p>
+  </div><span id="variant.RepoNotADir"
+           class="variant small-section-header"><a href="#variant.RepoNotADir"
+     class="anchor field"></a><code id='RepoNotADir.v'>RepoNotADir(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>)</code></span>
   <div class='docblock'>
-   <p>A specified path was not a file, but a file was expected</p>
-  </div><span id="variant.FileDecodeError"
-           class="variant small-section-header"><a href="#variant.FileDecodeError"
-     class="anchor field"></a><code id='FileDecodeError.v'>FileDecodeError(<a class="struct"
+   <p>A specified repository root was not a dir, but a dir was expected</p>
+  </div><span id="variant.RepoReadDirError"
+           class="variant small-section-header"><a href="#variant.RepoReadDirError"
+     class="anchor field"></a><code id='RepoReadDirError.v'>RepoReadDirError(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
      title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>)</code></span>
   <div class='docblock'>
-   <p>An entry in a file encountered decoding errors</p>
-  </div><span id="variant.FileReadError"
-           class="variant small-section-header"><a href="#variant.FileReadError"
-     class="anchor field"></a><code id='FileReadError.v'>FileReadError(<a class="struct"
+   <p>An error occurred in invoking readdir()</p>
+  </div><span id="variant.CategoryNameDecodeError"
+           class="variant small-section-header"><a href="#variant.CategoryNameDecodeError"
+     class="anchor field"></a><code id='CategoryNameDecodeError.v'>CategoryNameDecodeError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html"
+     title="struct std::ffi::os_str::OsString">OsString</a>)</code></span>
+  <div class='docblock'>
+   <p>An error occurred decoding a filename to Unicode</p>
+  </div><span id="variant.CategoryNotFound"
+           class="variant small-section-header"><a href="#variant.CategoryNotFound"
+     class="anchor field"></a><code id='CategoryNotFound.v'>CategoryNotFound(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
+     title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
+     href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html"
+     title="struct alloc::string::String">String</a>)</code></span>
+  <div class='docblock'>
+   <p>A discovered category in root was not found</p>
+  </div><span id="variant.CategoryAccessError"
+           class="variant small-section-header"><a href="#variant.CategoryAccessError"
+     class="anchor field"></a><code id='CategoryAccessError.v'>CategoryAccessError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
+     title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
+     href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html"
+     title="struct alloc::string::String">String</a>)</code></span>
+  <div class='docblock'>
+   <p>A discovered category in root had IO Access Errors</p>
+  </div><span id="variant.CategoryPathLacksFileName"
+           class="variant small-section-header"><a href="#variant.CategoryPathLacksFileName"
+     class="anchor field"></a><code id='CategoryPathLacksFileName.v'>CategoryPathLacksFileName(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+     title="struct std::path::PathBuf">PathBuf</a>)</code></span>
+  <div class='docblock'>
+   <p>Weirdly, the category iterator passed a PathBuf for category_path that lacked a tail component</p>
+  </div><span id="variant.PackageAccessError"
+           class="variant small-section-header"><a href="#variant.PackageAccessError"
+     class="anchor field"></a><code id='PackageAccessError.v'>PackageAccessError(<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
      title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
      href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
      title="struct std::path::PathBuf">PathBuf</a>)</code></span>
   <div class='docblock'>
-   <p>An IO error occurred reading a file</p>
+   <p>A discovered cat/pn file had IO Access Errors</p>
+  </div><span id="variant.EbuildAccessError"
+           class="variant small-section-header"><a href="#variant.EbuildAccessError"
+     class="anchor field"></a><code id='EbuildAccessError.v'>EbuildAccessError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
+     title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+     title="struct std::path::PathBuf">PathBuf</a>)</code></span>
+  <div class='docblock'>
+   <p>A discovered cat/pn file had IO Access Errors</p>
+  </div><span id="variant.EbuildNameDecodeError"
+           class="variant small-section-header"><a href="#variant.EbuildNameDecodeError"
+     class="anchor field"></a><code id='EbuildNameDecodeError.v'>EbuildNameDecodeError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html"
+     title="struct std::ffi::os_str::OsString">OsString</a>)</code></span>
+  <div class='docblock'>
+   <p>An error with decoding a file within a cat/pn dir</p>
+  </div><span id="variant.CategoryReadDirError"
+           class="variant small-section-header"><a href="#variant.CategoryReadDirError"
+     class="anchor field"></a><code id='CategoryReadDirError.v'>CategoryReadDirError(<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html"
+     title="struct std::io::error::Error">Error</a>,&nbsp;<a class="struct"
+     href="https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html"
+     title="struct std::path::PathBuf">PathBuf</a>)</code></span>
+  <div class='docblock'>
+   <p>An error occurred in invoking readdir() on a category</p>
   </div>
   <h2 id='implementations'
       class='small-section-header'>Trait Implementations<a href='#implementations'
@@ -195,10 +283,10 @@
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"
       title="trait core::fmt::Display">Display</a> for <a class="enum"
-      href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="enum grease::repository::category::CategoryFileError">CategoryFileError</a></code><a href='#impl-Display'
+      href="../../../grease/repository/category/enum.CategoryDirsError.html"
+      title="enum grease::repository::category::CategoryDirsError">CategoryDirsError</a></code><a href='#impl-Display'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#57'
+      href='../../../src/grease/repository/category.rs.html#131'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.fmt'
@@ -208,7 +296,7 @@
        title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type"
        href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html"
        title="type core::fmt::Result">Result</a></code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#57'
+       href='../../../src/grease/repository/category.rs.html#131'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt">Read more</a></p>
@@ -218,10 +306,10 @@
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"
       title="trait core::fmt::Debug">Debug</a> for <a class="enum"
-      href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="enum grease::repository::category::CategoryFileError">CategoryFileError</a></code><a href='#impl-Debug'
+      href="../../../grease/repository/category/enum.CategoryDirsError.html"
+      title="enum grease::repository::category::CategoryDirsError">CategoryDirsError</a></code><a href='#impl-Debug'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#57'
+      href='../../../src/grease/repository/category.rs.html#131'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.fmt-1'
@@ -231,7 +319,7 @@
        title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type"
        href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html"
        title="type core::fmt::Result">Result</a></code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#57'
+       href='../../../src/grease/repository/category.rs.html#131'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
@@ -241,10 +329,10 @@
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://docs.rs/failure/0.1.5/failure/trait.Fail.html"
       title="trait failure::Fail">Fail</a> for <a class="enum"
-      href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="enum grease::repository::category::CategoryFileError">CategoryFileError</a></code><a href='#impl-Fail'
+      href="../../../grease/repository/category/enum.CategoryDirsError.html"
+      title="enum grease::repository::category::CategoryDirsError">CategoryDirsError</a></code><a href='#impl-Fail'
       class='anchor'></a><a class='srclink'
-      href='../../../src/grease/repository/category.rs.html#57'
+      href='../../../src/grease/repository/category.rs.html#131'
       title='goto source code'>[src]</a></h3>
    <div class='impl-items'>
     <h4 id='method.name'
@@ -253,7 +341,7 @@
        href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html"
        title="enum core::option::Option">Option</a>&lt;&amp;<a class="primitive"
        href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>&gt;</code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#57'
+       href='../../../src/grease/repository/category.rs.html#131'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Returns the &quot;name&quot; of the error. <a href="https://docs.rs/failure/0.1.5/failure/trait.Fail.html#method.name">Read more</a></p>
@@ -265,7 +353,7 @@
        title="enum core::option::Option">Option</a>&lt;&amp;dyn <a class="trait"
        href="https://docs.rs/failure/0.1.5/failure/trait.Fail.html"
        title="trait failure::Fail">Fail</a>&gt;</code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#57'
+       href='../../../src/grease/repository/category.rs.html#131'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Returns a reference to the underlying cause of this failure, if it is an error that wraps other errors. <a href="https://docs.rs/failure/0.1.5/failure/trait.Fail.html#method.cause">Read more</a></p>
@@ -277,7 +365,7 @@
        title="enum core::option::Option">Option</a>&lt;&amp;<a class="struct"
        href="https://docs.rs/failure/0.1.5/failure/backtrace/struct.Backtrace.html"
        title="struct failure::backtrace::Backtrace">Backtrace</a>&gt;</code><a class='srclink'
-       href='../../../src/grease/repository/category.rs.html#57'
+       href='../../../src/grease/repository/category.rs.html#131'
        title='goto source code'>[src]</a></h4>
     <div class='docblock hidden'>
      <p>Returns a reference to the <code>Backtrace</code> carried by this failure, if it carries one. <a href="https://docs.rs/failure/0.1.5/failure/trait.Fail.html#method.backtrace">Read more</a></p>
@@ -319,16 +407,16 @@
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html"
       title="trait core::marker::Send">Send</a> for <a class="enum"
-      href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="enum grease::repository::category::CategoryFileError">CategoryFileError</a></code><a href='#impl-Send'
+      href="../../../grease/repository/category/enum.CategoryDirsError.html"
+      title="enum grease::repository::category::CategoryDirsError">CategoryDirsError</a></code><a href='#impl-Send'
       class='anchor'></a></h3>
    <div class='impl-items'></div>
    <h3 id='impl-Sync'
        class='impl'><code class='in-band'>impl <a class="trait"
       href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html"
       title="trait core::marker::Sync">Sync</a> for <a class="enum"
-      href="../../../grease/repository/category/enum.CategoryFileError.html"
-      title="enum grease::repository::category::CategoryFileError">CategoryFileError</a></code><a href='#impl-Sync'
+      href="../../../grease/repository/category/enum.CategoryDirsError.html"
+      title="enum grease::repository::category::CategoryDirsError">CategoryDirsError</a></code><a href='#impl-Sync'
       class='anchor'></a></h3>
    <div class='impl-items'></div>
   </div>

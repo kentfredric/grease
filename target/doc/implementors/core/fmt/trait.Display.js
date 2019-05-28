@@ -5,6 +5,10 @@
   , synthetic: false
   , types: ["grease::repository::category::CategoryFileError"]
  }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html\" title=\"trait core::fmt::Display\">Display</a> for <a class=\"enum\" href=\"grease/repository/category/enum.CategoryDirsError.html\" title=\"enum grease::repository::category::CategoryDirsError\">CategoryDirsError</a>"
+  , synthetic: false
+  , types: ["grease::repository::category::CategoryDirsError"]
+ }, {
   text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html\" title=\"trait core::fmt::Display\">Display</a> for <a class=\"enum\" href=\"grease/repository/enum.RepositoryError.html\" title=\"enum grease::repository::RepositoryError\">RepositoryError</a>"
   , synthetic: false
   , types: ["grease::repository::RepositoryError"]

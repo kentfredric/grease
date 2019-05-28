@@ -341,3 +341,23 @@ mod category_file_iterator {
         assert_eq!(results, vec![Category::new(&test_root, "dev-perl")]);
     }
 }
+
+mod category_dirs_iterator {
+    use crate::util::repos;
+    use grease::repository::{category::CategoryDirsIterator, Category};
+
+    #[test]
+    fn basic() {
+        let test_root = repos("basic").unwrap();
+        let i = CategoryDirsIterator::for_repo(&test_root);
+        let results: Vec<Category> = i
+            .unwrap()
+            .filter_map(|item| match item {
+                Ok(x) => Some(x),
+                Err(e) => panic!("{:?}", e),
+            })
+            .collect();
+        assert_eq!(results, vec![Category::new(&test_root, "dev-perl")]);
+    }
+
+}

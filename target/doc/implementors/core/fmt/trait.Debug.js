@@ -13,6 +13,18 @@
   , synthetic: false
   , types: ["grease::repository::category::CategoryFileIterator"]
  }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"enum\" href=\"grease/repository/category/enum.CategoryDirsError.html\" title=\"enum grease::repository::category::CategoryDirsError\">CategoryDirsError</a>"
+  , synthetic: false
+  , types: ["grease::repository::category::CategoryDirsError"]
+ }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"enum\" href=\"grease/repository/category/enum.CategoryMatcher.html\" title=\"enum grease::repository::category::CategoryMatcher\">CategoryMatcher</a>"
+  , synthetic: false
+  , types: ["grease::repository::category::CategoryMatcher"]
+ }, {
+  text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"grease/repository/category/struct.CategoryDirsIterator.html\" title=\"struct grease::repository::category::CategoryDirsIterator\">CategoryDirsIterator</a>"
+  , synthetic: false
+  , types: ["grease::repository::category::CategoryDirsIterator"]
+ }, {
   text: "impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"grease/repository/ebuild/struct.Ebuild.html\" title=\"struct grease::repository::ebuild::Ebuild\">Ebuild</a>"
   , synthetic: false
   , types: ["grease::repository::ebuild::Ebuild"]
