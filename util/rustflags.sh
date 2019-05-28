@@ -47,13 +47,14 @@ RDOCFLAGS=(
   "--disable-minification"
   "--enable-index-page"
   "--extern-html-root-url" "failure=https://docs.rs/failure/0.1.5"
+  "--extern-html-root-url" "libc=https://docs.rs/failure/0.2.57"
 )
 
 CLIPPY_FLAGS_MASTER=(
-  "-W" "clippy::checked_conversions"
 )
 
 CLIPPY_FLAGS_NIGHTLY=(
+  "-W" "clippy::checked_conversions"
   "-W" "clippy::copy_iterator"
   "-W" "clippy::explicit_into_iter_loop"
   "-W" "clippy::explicit_iter_loop"
@@ -112,4 +113,5 @@ CLIPPYFLAGS=(
   "-W" "clippy::cargo"
   "${CLIPPY_FLAGS_0_0_212[@]}"
   "${CLIPPY_FLAGS_NIGHTLY[@]}"
+  "${CLIPPY_FLAGS_MASTER[@]}"
 )
